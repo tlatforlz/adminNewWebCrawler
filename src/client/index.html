@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html ng-app="app">
+
+<head>
+  <style>
+    /* This helps the ng-show/ng-hide animations start at the right place. */
+    /* Since Angular has this but needs to load, this gives us the class early. */
+
+    .ng-hide {
+      display: none!important;
+    }
+
+  </style>
+  <title ng-bind="title">
+    newsNode
+  </title>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+  <base href="/">
+
+  <!-- build:css styles/lib.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="/bower_components/bootstrap/dist/css/bootstrap.css" />
+  <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.css" />
+  <link rel="stylesheet" href="/bower_components/toastr/toastr.css" />
+  <link rel="stylesheet" href="/bower_components/bootstrap-horizon/bootstrap-horizon.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
+  <!-- build:css styles/app.css -->
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/.tmp/styles.css">
+  <!-- endinject -->
+  <!-- endbuild -->
+  <link rel="stylesheet" href="/src/client/assets/css/theme.css">
+  <!-- Add the slick-theme.css if you want default styling -->
+</head>
+
+<body>
+  <my-header-admin></my-header-admin>
+  <ui-view> </ui-view>
+  <!-- build:js js/lib.js -->
+  <!-- bower:js -->
+  <script src="/bower_components/jquery/dist/jquery.js"></script>
+  <script src="/bower_components/angular/angular.js"></script>
+  <script src="/bower_components/angular-animate/angular-animate.js"></script>
+  <script src="/bower_components/angular-sanitize/angular-sanitize.js"></script>
+  <script src="/bower_components/angular-jwt/dist/angular-jwt.js"></script>
+  <script src="/bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="/bower_components/extras.angular.plus/ngplus-overlay.js"></script>
+  <script src="/bower_components/moment/moment.js"></script>
+  <script src="/bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="/bower_components/toastr/toastr.js"></script>
+  <script src="/bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+  <script src="/bower_components/ngstorage/ngStorage.js"></script>
+  <script src="/bower_components/ngInfiniteScroll/build/ng-infinite-scroll.js"></script>
+  <script src="/bower_components/ngSanitize/index.js"></script>
+  <script src="/bower_components/angular-ui-scroll/dist/ui-scroll.js"></script>
+  <script src="/bower_components/angular-ui-scrollpoint/dist/scrollpoint.js"></script>
+  <script src="/bower_components/angular-ui-event/dist/event.js"></script>
+  <script src="/bower_components/angular-ui-mask/dist/mask.js"></script>
+  <script src="/bower_components/angular-ui-validate/dist/validate.js"></script>
+  <script src="/bower_components/angular-ui-indeterminate/dist/indeterminate.js"></script>
+  <script src="/bower_components/angular-ui-uploader/dist/uploader.js"></script>
+  <script src="/bower_components/angular-ui-utils/index.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
+  <script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
+  <!-- build:js js/app.js -->
+  <!-- inject:js -->
+  <script src="/src/client/app/app.module.js"></script>
+  <script src="/src/client/app/components/admin-archive/archive.module.js"></script>
+  <script src="/src/client/app/components/admin-call-spider/callspider.module.js"></script>
+  <script src="/src/client/app/components/admin-category/category.module.js"></script>
+  <script src="/src/client/app/components/admin-login/adminlogin.module.js"></script>
+  <script src="/src/client/app/components/admin-news/news.module.js"></script>
+  <script src="/src/client/app/components/admin-page/adminpage.module.js"></script>
+  <script src="/src/client/app/components/admin-spider/spider.module.js"></script>
+  <script src="/src/client/app/components/admin-urls/urls.module.js"></script>
+  <script src="/src/client/app/shared/blocks/exception/exception.module.js"></script>
+  <script src="/src/client/app/shared/blocks/logger/logger.module.js"></script>
+  <script src="/src/client/app/shared/blocks/router/router.module.js"></script>
+  <script src="/src/client/app/shared/directives/headeradmin/headeradmin.module.js"></script>
+  <script src="/src/client/app/app.route.js"></script>
+  <script src="/src/client/app/components/admin-archive/archive.controller.js"></script>
+  <script src="/src/client/app/components/admin-archive/archive.route.js"></script>
+  <script src="/src/client/app/components/admin-call-spider/callspider.controller.js"></script>
+  <script src="/src/client/app/components/admin-call-spider/callspider.route.js"></script>
+  <script src="/src/client/app/components/admin-category/category.controller.js"></script>
+  <script src="/src/client/app/components/admin-category/category.route.js"></script>
+  <script src="/src/client/app/components/admin-login/adminlogin.controller.js"></script>
+  <script src="/src/client/app/components/admin-login/adminlogin.route.js"></script>
+  <script src="/src/client/app/components/admin-news/news.controller.js"></script>
+  <script src="/src/client/app/components/admin-news/news.route.js"></script>
+  <script src="/src/client/app/components/admin-page/adminpage.controller.js"></script>
+  <script src="/src/client/app/components/admin-page/adminpage.route.js"></script>
+  <script src="/src/client/app/components/admin-spider/spider.controller.js"></script>
+  <script src="/src/client/app/components/admin-spider/spider.route.js"></script>
+  <script src="/src/client/app/components/admin-urls/urls.controller.js"></script>
+  <script src="/src/client/app/components/admin-urls/urls.route.js"></script>
+  <script src="/src/client/app/shared/blocks/exception/exception-handler.provider.js"></script>
+  <script src="/src/client/app/shared/blocks/exception/exception.js"></script>
+  <script src="/src/client/app/shared/blocks/logger/logger.js"></script>
+  <script src="/src/client/app/shared/blocks/router/router-helper.provider.js"></script>
+  <script src="/src/client/app/shared/blocks/toastr/constants.js"></script>
+  <script src="/src/client/app/shared/blocks/toastr/toastr.config.js"></script>
+  <script src="/src/client/app/shared/directives/headeradmin/headeradmin.controller.js"></script>
+  <script src="/src/client/app/shared/directives/headeradmin/headeradmin.js"></script>
+  <script src="/src/client/app/shared/services/auth.js"></script>
+  <script src="/src/client/app/shared/services/errorTranslator.js"></script>
+  <!-- endinject -->
+
+  <!-- inject:templates:js -->
+  <!-- endinject -->
+  <!-- endbuild -->
+
+</body>
+
+</html>
