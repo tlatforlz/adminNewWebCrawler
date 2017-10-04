@@ -4,14 +4,6 @@
   angular
     .module('app')
     .run(appRun)
-    .config(authConfig);
-
-  function authConfig($stateProvider) {
-    $stateProvider
-      .state('root', {
-        url: '/',
-      });
-  }
 
   appRun.$inject = ['$state', '$rootScope', 'routerHelper', 'authService'];
 
@@ -21,13 +13,6 @@
     routerHelper.configureStates(getStates(), otherwise);
     $rootScope.$on('$stateChangeStart', function (event, toState, fromState) {
       console.log(toState.url);
-      if (toState.url === '/adminpage') {
-        console.log(authService.login(null, 2));
-        if (!authService.login(null, 2)) {
-          event.preventDefault();
-          $state.go('adminlogin');
-        }
-      }
     });
   }
 

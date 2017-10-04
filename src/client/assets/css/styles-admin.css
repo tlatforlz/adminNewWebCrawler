@@ -66,10 +66,7 @@ table tr th {
   color: #fff;
 }
 
-#container {
-  width: 100%;
-  height: 100%;
-}
+#container {}
 
 .Creative-pro,
 .Creative-pro h3 {
