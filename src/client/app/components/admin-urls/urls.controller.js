@@ -21,7 +21,6 @@
 
     getListUrl().then(
       function (res) {
-        console.log(res.urls);
         vm.urls = res.urls;
       });
 
@@ -31,8 +30,8 @@
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
         ariaDescribedBy: 'modal-body',
-        templateUrl: 'addNewCategory.html',
-        controller: 'addNewCategory',
+        templateUrl: 'addNewUrl.html',
+        controller: 'addNewUrl',
         controllerAs: 'vm',
         size: size
       }).closed.then(function () {
@@ -46,7 +45,6 @@
     vm.animationsEnabled = true;
     vm.moreInformation = function (id) {
       $rootScope.id = id;
-      console.log($rootScope.id);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -61,6 +59,66 @@
             vm.urls = res.urls;
           });
       });
+    };
+
+    vm.animationsEnabled = true;
+    vm.conform = function (id) {
+      $rootScope.id = id;
+      console.log(id);
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'conformDelete.html',
+        controller: 'conformDelete2',
+        controllerAs: 'vm',
+        size: 'sm'
+      }).closed.then(function () {
+        getListUrl().then(
+          function (res) {
+            vm.urls = res.urls;
+          });
+      });
+    };
+  }
+
+
+  angular.module('app.adminurls')
+    .controller('addNewUrl', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', addNewUrl]);
+
+  function addNewUrl($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function addNewUrl(url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/url',
+        data: url
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.ok = function () {
+      var url = {
+        'title': vm.title,
+        'hostname': vm.hostname
+      }
+      addNewUrl(url).then(function (res) {
+        if (res.message === 'CREATE_SUCCESS') {
+          $uibModalInstance.close();
+        }
+      }, function () {
+        vm.isShow = true;
+      })
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
     };
   }
 
@@ -92,6 +150,39 @@
 
     vm.ok = function () {
       $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  }
+
+  angular.module('app.adminurls')
+    .controller('conformDelete2', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformDelete2]);
+
+  function conformDelete2($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function deleteCategory(category) {
+      var deferred = $q.defer();
+      $http({
+        method: 'DELETE',
+        url: '/api/url/' + $rootScope.id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    vm.ok = function () {
+      deleteCategory().then(function (res) {
+        if (res.message === 'DELETE_SUCCESS') {
+          $uibModalInstance.close();
+        }
+      }, function () {
+        vm.isShow = true;
+      });
     };
 
     vm.cancel = function () {
