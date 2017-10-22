@@ -5,8 +5,13 @@ function adminloginConfig($stateProvider) {
   $stateProvider
     .state('admincallspider', {
       url: '/admincallspider/:id',
-      templateUrl: 'app/components/admin-call-spider/callspider.html',
-      controller: 'CallSpiderController',
-      controllerAs: 'vm'
+      views: {
+        "content": {
+          templateUrl: 'app/components/admin-call-spider/callspider.html',
+          controller: 'CallSpiderController',
+          controllerAs: 'vm'
+        }
+      }
+
     });
 }

@@ -3,6 +3,7 @@ var NewsDao = require('./news.dao.js');
 var successMessage = require('./../services/successMessage');
 var failMessage = require('./../services/failMessage');
 var ListSpider = require('./../services/spider');
+var SpiderCatgory = require('./../services/spiderCatagory');
 var News = require('./../model/news.model');
 var async = require('async');
 
@@ -21,8 +22,23 @@ module.exports = {
   testSpider: testSpider,
   getNewsCall: getNewsCall,
   getNewsNone: getNewsNone,
-  countSpider: countSpider
+  countSpider: countSpider,
+
+  getCategoryByUrl: getCategoryByUrl
 };
+
+//getCategoryByUrl
+function getCategoryByUrl(request) {
+  return new Promise(function (resolve, reject) {
+    SpiderCatgory.spiderCatagoryGetByUrl(request.urlId)
+      .then(function (res) {
+        return resolve(res);
+      })
+      .catch(function (err) {
+        return reject(err);
+      })
+  });
+}
 
 //getNewsNone
 function countSpider(request) {

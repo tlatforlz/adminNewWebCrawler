@@ -15,17 +15,18 @@
     <ul class="nav pull-right top-menu">
       <li class="dropdown">
         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <span class="profile-ava">
-                                <img alt="" src="">
-                            </span>
-                            <span class="username">Admin</span>
-                            <b class="caret"></b>
-                        </a>
+          <span class="profile-ava">
+            <img alt="" src="">
+          </span>
+          <span class="username">Admin</span>
+          <b class="caret"></b>
+        </a>
         <ul class="dropdown-menu extended logout">
           <div class="log-arrow-up"></div>
 
           <li>
-            <a ng-click="vm.logout()"><i class="icon_key_alt"></i> Log Out</a>
+            <a ng-click="vm.logout()">
+              <i class="icon_key_alt"></i> Log Out</a>
           </li>
 
         </ul>
@@ -38,26 +39,43 @@
   <div id="sidebar" class="nav-collapse ">
     <ul class="sidebar-menu">
       <li>
-        <a class="" href="/adminpage"><i class="icon_house_alt"></i><span>Dashboard</span></a>
+        <a class="" ng-click="vm.dashboard()">
+          <iclass="icon_house_alt">
+            </i>
+            <span>Dashboard</span>
+        </a>
       </li>
       <li>
-        <a class="" href="/admincategory"><i class="icon_house_alt"></i><span>Categories</span></a>
+        <a class="" ng-click="vm.categories()">
+          <i class="icon_house_alt"></i>
+          <span>Categories</span>
+        </a>
       </li>
       <li>
-        <a class="" href="/adminarchive"><i class="icon_house_alt"></i><span>Archive</span></a>
+        <a class="" ng-click="vm.adminarchive()">
+          <i class="icon_house_alt"></i>
+          <span>Archive</span>
+        </a>
       </li>
       <li>
-        <a class="" href="/adminnews"><i class="icon_house_alt"></i><span>News</span></a>
+        <a class="" ng-click="vm.adminnews()">
+          <i class="icon_house_alt"></i>
+          <span>News</span>
+        </a>
       </li>
       <li>
-        <a class="" href="/adminurls"><i class="icon_house_alt"></i><span>Urls</span></a>
+        <a class="" ng-click="vm.adminurls()">
+          <i class="icon_house_alt"></i>
+          <span>Urls</span>
+        </a>
       </li>
       <li>
-        <a class="" href="/adminspider"><i class="icon_house_alt"></i><span>Spiders</span></a>
+        <a class="" ng-click="vm.adminspider()">
+          <i class="icon_house_alt"></i>
+          <span>Spiders</span>
+        </a>
       </li>
-      <li>
-        <a class="" href="/#"><i class="icon_house_alt"></i><span>History</span></a>
-      </li>
+
     </ul>
   </div>
 </aside>

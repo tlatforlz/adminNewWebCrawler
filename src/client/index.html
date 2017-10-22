@@ -37,7 +37,11 @@
 </head>
 
 <body>
-  <div ui-view> </div>
+  <div id="header-admin">
+    <div ui-view="content">
+    </div>
+  </div>
+  <div ui-view="login"></div>
   <!-- build:js js/lib.js -->
   <!-- bower:js -->
   <script src="/bower_components/jquery/dist/jquery.js"></script>
@@ -105,6 +109,7 @@
   <script src="/src/client/app/shared/blocks/toastr/toastr.config.js"></script>
   <script src="/src/client/app/shared/directives/headeradmin/headeradmin.controller.js"></script>
   <script src="/src/client/app/shared/directives/headeradmin/headeradmin.js"></script>
+  <script src="/src/client/app/shared/directives/searchKey.js"></script>
   <script src="/src/client/app/shared/services/auth.js"></script>
   <script src="/src/client/app/shared/services/errorTranslator.js"></script>
   <!-- endinject -->

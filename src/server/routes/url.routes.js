@@ -7,6 +7,37 @@ module.exports = function () {
   router.get('/:id', getUrlById);
   router.put('/:id', updateUrl);
   router.delete('/:id', deleteUrl);
+  router.post('/addPath/:id', addPathInUrl);
+  router.post('/removePath/:id/:pathId', removePathInUrl);
+
+  function addPathInUrl(req, res, next) {
+    var request = {
+      id: req.params.id,
+      namePath: req.body.namePath
+    }
+    console.log(request);
+    urlDao.addPathInUrl(request)
+      .then(function (url) {
+        res.status(200).send(url).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function removePathInUrl(req, res, next) {
+    var request = {
+      id: req.params.id,
+      pathId: req.params.pathId
+    }
+    urlDao.removePathInUrl(request)
+      .then(function (url) {
+        res.status(200).send(url).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function createUrl(req, res, next) {
     var request = {

@@ -5,8 +5,14 @@ function admincategoryConfig($stateProvider) {
   $stateProvider
     .state('admincategory', {
       url: '/admincategory',
-      templateUrl: 'app/components/admin-category/category.html',
-      controller: 'CategoryAdminController',
-      controllerAs: 'vm'
+      views: {
+        "content": {
+          templateUrl: 'app/components/admin-category/category.html',
+          controller: 'CategoryAdminController',
+          controllerAs: 'vm'
+        }
+      },
+      reload: true
+
     });
 }

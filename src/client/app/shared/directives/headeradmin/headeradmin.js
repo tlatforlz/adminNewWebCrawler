@@ -16,6 +16,41 @@
           toastr.success(authService.logout());
           $state.go('adminlogin');
         }
+        vm.dashboard = dashboard;
+
+        function dashboard() {
+          $state.go('adminpage');
+        }
+
+        vm.categories = categories;
+
+        function categories() {
+          $state.go('admincategory');
+        }
+
+        vm.adminarchive = adminarchive;
+
+        function adminarchive() {
+          $state.go('adminarchive');
+        }
+
+        vm.adminnews = adminnews;
+
+        function adminnews() {
+          $state.go('adminnews');
+        }
+
+        vm.adminurls = adminurls;
+
+        function adminurls() {
+          $state.go('adminurls');
+        }
+
+        vm.adminspider = adminspider;
+
+        function adminspider() {
+          $state.go('adminspider');
+        }
       }],
       controllerAs: 'vm',
       scope: {},

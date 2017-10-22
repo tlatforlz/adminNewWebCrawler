@@ -210,10 +210,8 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
 }
 
 function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
-  console.log('call pat ');
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
-      console.log('calllll page die ' + path);
       return resolve(true);
     }
     async.whilst(function () {

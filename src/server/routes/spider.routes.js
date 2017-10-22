@@ -17,6 +17,21 @@ module.exports = function () {
   router.post('/:crawlingName/call/url', callSpiderUrl);
   router.post('/:crawlingName/:url/updateurl', updateNewsSpiderUrl);
 
+  router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
+
+  function getCategoryByUrl(req, res, next) {
+    var request = {
+      urlId: req.params.urlId
+    };
+    spiderDao.getCategoryByUrl(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
   function createSpider(req, res, next) {
     var request = {
       urlId: req.body.urlId,

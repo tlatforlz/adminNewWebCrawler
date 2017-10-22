@@ -5,8 +5,13 @@ function adminloginConfig($stateProvider) {
   $stateProvider
     .state('adminspider', {
       url: '/adminspider',
-      templateUrl: 'app/components/admin-spider/spider.html',
-      controller: 'SpiderController',
-      controllerAs: 'vm'
+      views: {
+        "content": {
+          templateUrl: 'app/components/admin-spider/spider.html',
+          controller: 'SpiderController',
+          controllerAs: 'vm'
+        }
+      }
+
     });
 }

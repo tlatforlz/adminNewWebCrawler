@@ -5,8 +5,13 @@ function adminloginConfig($stateProvider) {
   $stateProvider
     .state('adminurls', {
       url: '/adminurls',
-      templateUrl: 'app/components/admin-urls/urls.html',
-      controller: 'UrlController',
-      controllerAs: 'vm'
+      views: {
+        "content": {
+          templateUrl: 'app/components/admin-urls/urls.html',
+          controller: 'UrlController',
+          controllerAs: 'vm'
+        }
+      }
+
     });
 }

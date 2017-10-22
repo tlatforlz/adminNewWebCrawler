@@ -7,8 +7,44 @@ module.exports = {
   getAllUrl: getAllUrl,
   getUrlById: getUrlById,
   updateUrl: updateUrl,
-  deleteUrl: deleteUrl
+  deleteUrl: deleteUrl,
+  addPathInUrl: addPathInUrl,
+  removePathInUrl: removePathInUrl
 };
+
+function removePathInUrl(request) {
+  console.log(request);
+  return Url.update({
+    _id: request.id
+  }, {
+    $pull: {
+      'path': {
+        _id: request.pathId
+      }
+    }
+  }).then(function (res) {
+    return Promise.resolve(res);
+  }).catch(function (err) {
+    return Promise.reject(err);
+  })
+}
+
+function addPathInUrl(request) {
+  var newPath = {
+    "namePath": request.namePath
+  }
+  return Url.update({
+    _id: request.id,
+    $push: {
+      path: newPath
+    }
+  }).then(function (res) {
+    return Promise.resolve(res);
+  }).catch(function (err) {
+    return Promise.reject(err);
+  })
+
+}
 
 function createUrl(request) {
   var newUrl = new Url({
