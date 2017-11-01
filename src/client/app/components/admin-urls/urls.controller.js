@@ -80,6 +80,26 @@
           });
       });
     };
+
+    vm.animationsEnabled = true;
+    vm.callSpider = function (id) {
+      $rootScope.id = id;
+      console.log(id);
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'conformCallUrl.html',
+        controller: 'conformCallUrl',
+        controllerAs: 'vm',
+        size: 'lg'
+      }).closed.then(function () {
+        getListUrl().then(
+          function (res) {
+            vm.urls = res.urls;
+          });
+      });
+    }
   }
 
 
@@ -188,5 +208,31 @@
     vm.cancel = function () {
       $uibModalInstance.dismiss('cancel');
     };
+  }
+
+  angular.module('app.adminurls')
+    .controller('conformCallUrl', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformCallUrl]);
+
+  function conformCallUrl($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function getCategories(id) {
+      console.log(id);
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/callSpiderCategory/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    getCategories($rootScope.id).then(function (res) {
+      vm.listPath = res.arrayPath
+      console.log(res);
+    })
   }
 })();

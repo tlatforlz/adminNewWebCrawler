@@ -109,6 +109,34 @@
   <div class="modal-footer">
   </div>
 </script>
+
+
+<script type="text/ng-template" id="conformCallUrl.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Find Categories</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <table class="table table-striped table-advance table-hover">
+      <tbody>
+        <tr>
+          <th>
+            <i class="fa fa-list-ol"></i> STT</th>
+          <th>
+            <i class="fa fa-bug"></i> Path</th>
+          <th>
+            <i class="fa fa-key"></i> CategoryId</th>
+        </tr>
+        <tr ng-repeat="cate in vm.listPath">
+          <td>{{$index + 1}}</td>
+          <td>{{cate}}</td>
+          <td>{{cate.catelogyId}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="modal-footer">
+  </div>
+</script>
 <my-header-admin></my-header-admin>
 
 <section id="main-content">
