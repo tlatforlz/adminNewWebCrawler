@@ -6,7 +6,7 @@ function adminloginConfig($stateProvider) {
     .state('adminurls', {
       url: '/adminurls',
       views: {
-        "content": {
+        'content@layout': {
           templateUrl: 'app/components/admin-urls/urls.html',
           controller: 'UrlController',
           controllerAs: 'vm'

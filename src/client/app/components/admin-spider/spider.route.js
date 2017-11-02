@@ -6,7 +6,7 @@ function adminloginConfig($stateProvider) {
     .state('adminspider', {
       url: '/adminspider',
       views: {
-        "content": {
+        "content@layout": {
           templateUrl: 'app/components/admin-spider/spider.html',
           controller: 'SpiderController',
           controllerAs: 'vm'

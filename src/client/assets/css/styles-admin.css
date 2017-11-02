@@ -587,7 +587,10 @@ ul.sidebar-menu li.active a i {
 /*main content*/
 
 #main-content {
-  margin-left: 180px;
+  /* margin-left: 180px; */
+  position: fixed;
+  left: 200px;
+  width: 85%;
 }
 
 .admin-header,

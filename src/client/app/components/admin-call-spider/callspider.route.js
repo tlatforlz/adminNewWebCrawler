@@ -6,7 +6,7 @@ function adminloginConfig($stateProvider) {
     .state('admincallspider', {
       url: '/admincallspider/:id',
       views: {
-        "content": {
+        "layout@content": {
           templateUrl: 'app/components/admin-call-spider/callspider.html',
           controller: 'CallSpiderController',
           controllerAs: 'vm'
