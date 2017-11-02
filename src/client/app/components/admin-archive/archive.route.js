@@ -3,7 +3,7 @@ angular.module('app.adminarchive')
 
 function archiveConfig($stateProvider) {
   $stateProvider
-    .state('adminarchive', {
+    .state('layout.archive', {
       url: '/adminarchive',
       views: {
         "layout@content": {

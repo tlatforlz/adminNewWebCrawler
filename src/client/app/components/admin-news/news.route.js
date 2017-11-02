@@ -3,7 +3,7 @@ angular.module('app.adminnews')
 
 function newsConfig($stateProvider) {
   $stateProvider
-    .state('adminnews', {
+    .state('layout.news', {
       url: '/adminnews',
       views: {
         "layout@content": {
@@ -11,7 +11,6 @@ function newsConfig($stateProvider) {
           controller: 'NewsController',
           controllerAs: 'vm'
         }
-
       }
     });
 }

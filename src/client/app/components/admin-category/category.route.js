@@ -3,7 +3,7 @@ angular.module('app.admincategory')
 
 function admincategoryConfig($stateProvider) {
   $stateProvider
-    .state('admincategory', {
+    .state('layout.categories', {
       url: '/admincategory',
       views: {
         "layout@content": {

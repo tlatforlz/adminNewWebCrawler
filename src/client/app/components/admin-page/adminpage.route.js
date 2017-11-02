@@ -3,7 +3,7 @@ angular.module('app.adminpage')
 
 function adminpageConfig($stateProvider) {
   $stateProvider
-    .state('adminpage', {
+    .state('layout.dashboard', {
       url: '/adminpage',
       views: {
         "layout@content": {

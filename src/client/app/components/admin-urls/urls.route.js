@@ -3,15 +3,14 @@ angular.module('app.adminurls')
 
 function adminloginConfig($stateProvider) {
   $stateProvider
-    .state('adminurls', {
+    .state('layout.urls', {
       url: '/adminurls',
       views: {
-        'content@layout': {
+        'layout@content': {
           templateUrl: 'app/components/admin-urls/urls.html',
           controller: 'UrlController',
           controllerAs: 'vm'
         }
       }
-
     });
 }

@@ -3,10 +3,10 @@ angular.module('app.adminspider')
 
 function adminloginConfig($stateProvider) {
   $stateProvider
-    .state('adminspider', {
+    .state('layout.spider', {
       url: '/adminspider',
       views: {
-        "content@layout": {
+        "layout@content": {
           templateUrl: 'app/components/admin-spider/spider.html',
           controller: 'SpiderController',
           controllerAs: 'vm'
