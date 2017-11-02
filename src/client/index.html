@@ -37,11 +37,7 @@
 </head>
 
 <body>
-  <div id="header-admin">
-    <div ui-view="content">
-    </div>
-  </div>
-  <div ui-view="login"></div>
+  <ui-view></ui-view>
   <!-- build:js js/lib.js -->
   <!-- bower:js -->
   <script src="/bower_components/jquery/dist/jquery.js"></script>
@@ -80,6 +76,7 @@
   <script src="/src/client/app/components/admin-page/adminpage.module.js"></script>
   <script src="/src/client/app/components/admin-spider/spider.module.js"></script>
   <script src="/src/client/app/components/admin-urls/urls.module.js"></script>
+  <script src="/src/client/app/components/layout/layout.module.js"></script>
   <script src="/src/client/app/shared/blocks/exception/exception.module.js"></script>
   <script src="/src/client/app/shared/blocks/logger/logger.module.js"></script>
   <script src="/src/client/app/shared/blocks/router/router.module.js"></script>
@@ -101,6 +98,8 @@
   <script src="/src/client/app/components/admin-spider/spider.route.js"></script>
   <script src="/src/client/app/components/admin-urls/urls.controller.js"></script>
   <script src="/src/client/app/components/admin-urls/urls.route.js"></script>
+  <script src="/src/client/app/components/layout/layout.controller.js"></script>
+  <script src="/src/client/app/components/layout/layout.route.js"></script>
   <script src="/src/client/app/shared/blocks/exception/exception-handler.provider.js"></script>
   <script src="/src/client/app/shared/blocks/exception/exception.js"></script>
   <script src="/src/client/app/shared/blocks/logger/logger.js"></script>

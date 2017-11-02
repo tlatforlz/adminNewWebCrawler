@@ -6,7 +6,7 @@ function archiveConfig($stateProvider) {
     .state('adminarchive', {
       url: '/adminarchive',
       views: {
-        "content": {
+        "layout@content": {
           templateUrl: 'app/components/admin-archive/archive.html',
           controller: 'ArchiveController',
           controllerAs: 'vm'

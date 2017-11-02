@@ -3,6 +3,7 @@
 
   angular.module('app', [
     'app.adminlogin',
+    'app.layout',
     'app.adminpage',
     'app.adminarchive',
     'app.admincategory',
