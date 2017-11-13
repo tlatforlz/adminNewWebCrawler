@@ -231,8 +231,20 @@
     }
 
     getCategories($rootScope.id).then(function (res) {
-      vm.listPath = res.arrayPath
-      console.log(res);
+      vm.listPath = res.arrayPath;
+      let length = vm.listPath.length;
+      vm.result = [];
+      let seen = new Set();
+      outer:
+        for (var index = 0; index < length; index++) {
+          var value = vm.listPath[index];
+          if (seen.has(value)) {
+            continue outer;
+          }
+          seen.add(value);
+          vm.result.push(value);
+        }
+      console.log(vm.result);
     })
   }
 })();
