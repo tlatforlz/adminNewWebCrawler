@@ -230,11 +230,32 @@
       return deferred.promise;
     }
 
+    function addPath(path) {
+      var deferred = $q.defer();
+      var data = {
+        "namePath": path
+      };
+      $http({
+        method: 'POST',
+        url: '/api/addPath/' + $rootScope.id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.add = function (value) {
+      addPath(value).then(function (res) {
+
+      });
+    };
     getCategories($rootScope.id).then(function (res) {
       vm.listPath = res.arrayPath;
-      let length = vm.listPath.length;
+      var length = vm.listPath.length;
       vm.result = [];
-      let seen = new Set();
+      var seen = new Set();
       outer:
         for (var index = 0; index < length; index++) {
           var value = vm.listPath[index];
@@ -242,9 +263,12 @@
             continue outer;
           }
           seen.add(value);
-          vm.result.push(value);
+          vm.result.push({
+            'id': false,
+            'value': value
+          });
         }
       console.log(vm.result);
-    })
+    });
   }
 })();

@@ -32,22 +32,24 @@ function spiderCatagoryGetByUrl(urlId) {
             var FirstPromise = new Promise(function (resolve, reject) {
               $('header, nav, .mainMenu').find('a').each(function () {
                 var url = $(this).attr('href');
-                arrayPath.push(url);
+                if (url.indexOf(Url.hostname) !== -1) {
+                  arrayPath.push(url);
+                }
                 lengthHeader--;
               });
-              if (lengthHeader == 0) {
+              if (lengthHeader === 0) {
                 return resolve(true);
               }
-            })
+            });
             FirstPromise.then(function (res) {
               return resolve({
+                url: Url.hostname,
                 arrayPath: arrayPath
               });
-            })
-
+            });
           }
-        })
-      })
+        });
+      });
     })
     .catch(function (err) {
       console.log('err log ' + err);
