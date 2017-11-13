@@ -6,7 +6,7 @@ function adminpageConfig($stateProvider) {
     .state('layout.dashboard', {
       url: '/adminpage',
       views: {
-        "layout@content": {
+        'layout@content': {
           templateUrl: '/src/client/app/components/admin-page/adminpage.html',
           controller: 'AdminPageController',
           controllerAs: 'vm'

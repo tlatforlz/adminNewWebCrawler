@@ -3,15 +3,14 @@ angular.module('app.admincallspider')
 
 function adminloginConfig($stateProvider) {
   $stateProvider
-    .state('admincallspider', {
+    .state('layout.admincallspider', {
       url: '/admincallspider/:id',
       views: {
-        "layout@content": {
+        'layout@content': {
           templateUrl: 'app/components/admin-call-spider/callspider.html',
           controller: 'CallSpiderController',
           controllerAs: 'vm'
         }
       }
-
     });
 }

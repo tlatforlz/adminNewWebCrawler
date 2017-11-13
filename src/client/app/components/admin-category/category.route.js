@@ -6,7 +6,7 @@ function admincategoryConfig($stateProvider) {
     .state('layout.categories', {
       url: '/admincategory',
       views: {
-        "layout@content": {
+        'layout@content': {
           templateUrl: 'app/components/admin-category/category.html',
           controller: 'CategoryAdminController',
           controllerAs: 'vm'

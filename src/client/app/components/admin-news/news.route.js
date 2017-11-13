@@ -6,7 +6,7 @@ function newsConfig($stateProvider) {
     .state('layout.news', {
       url: '/adminnews',
       views: {
-        "layout@content": {
+        'layout@content': {
           templateUrl: 'app/components/admin-news/news.html',
           controller: 'NewsController',
           controllerAs: 'vm'
