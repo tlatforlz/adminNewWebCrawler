@@ -9,8 +9,48 @@ module.exports = {
   updateUrl: updateUrl,
   deleteUrl: deleteUrl,
   addPathInUrl: addPathInUrl,
-  removePathInUrl: removePathInUrl
+  removePathInUrl: removePathInUrl,
+  addCategory: addCategory,
+  removeCategory: removeCategory
 };
+
+function addCategory(request) {
+  console.log(request);
+  return Url.findById({
+    _id: request.id
+  }).then(w => {
+    console.log(w);
+    w.path.forEach(item => {
+      if (item._id == request.object) {
+        item.catelogyId = request.cateId;
+        w.save().then(function (res) {
+          return Promise.resolve(res);
+        });
+      }
+    })
+  }).catch(w => {
+    return Promise.reject(res);
+  })
+}
+
+function removeCategory(request) {
+  console.log(request);
+  return Url.findById({
+    _id: request.id
+  }).then(w => {
+    console.log(w);
+    w.path.forEach(item => {
+      if (item._id == request.object) {
+        item.catelogyId = null;
+        w.save().then(function (res) {
+          return Promise.resolve(res);
+        });
+      }
+    })
+  }).catch(w => {
+    return Promise.reject(res);
+  })
+}
 
 function removePathInUrl(request) {
   console.log(request);

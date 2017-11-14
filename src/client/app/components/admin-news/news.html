@@ -119,7 +119,7 @@
           <table show-filter="true" class="table table-condensed table-bordered table-striped" ng-table="vm.tableParams">
             <tr ng-repeat="row in $data">
               <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
-              <td data-title="'title'" filter="{title: 'text'}">{{row.title}}</td>
+              <td data-title="'title'" style="width:50%" filter="{title: 'text'}">{{row.title}}</td>
               <td data-title="'active'">
                 <input type="checkbox" name="myTextEditBox" ng-checked={{row.active}} ng-click="vm.checkAction(row.active,row._id)" />
               </td>

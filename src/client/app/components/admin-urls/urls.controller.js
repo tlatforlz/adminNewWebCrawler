@@ -143,9 +143,9 @@
   }
 
   angular.module('app.adminurls')
-    .controller('moreInformation', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', moreInformation]);
+    .controller('moreInformation', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', moreInformation]);
 
-  function moreInformation($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+  function moreInformation($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal) {
     var vm = this;
 
     function urlInformation(id) {
@@ -173,17 +173,189 @@
       });
       return deferred.promise;
     }
+
     urlInformation($rootScope.id).then(function (res) {
       vm.urlId = res.url._id;
       vm.urlTitle = res.url.title;
       vm.urlHostname = res.url.hostname;
       vm.path = res.url.path;
+      console.log(vm.path);
+      $rootScope.id = res.url._id;
     });
+
     vm.ok = function () {
       $uibModalInstance.close();
     };
 
     vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    vm.animationsEnabled = true;
+    vm.edit = function (id, cateId) {
+      $rootScope.cateId = cateId;
+      $rootScope.object = id;
+      console.log('Edit ' + cateId);
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'editCategory.html',
+        controller: 'editCategory',
+        controllerAs: 'vm',
+        size: 'lg'
+      }).closed.then(function () {
+        //GET LIST CATEGORY
+        urlInformation($rootScope.id).then(function (res) {
+          vm.urlId = res.url._id;
+          vm.urlTitle = res.url.title;
+          vm.urlHostname = res.url.hostname;
+          vm.path = res.url.path;
+          console.log(vm.path);
+        });
+      });
+    }
+  }
+
+
+  angular.module('app.adminurls')
+    .controller('editCategory', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', editCategory]);
+
+  function editCategory($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function getAllCategores() {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category/'
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getAllPath(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    };
+
+    function addCategoryInPath(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/url/addCategory/' + $rootScope.id + "/" + $rootScope.object + "/" + id
+      }).then(function successCallback(res) {
+        $rootScope.cateId = id;
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function removeCategoryInPath() {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/url/removeCategory/' + $rootScope.id + "/" + $rootScope.object
+      }).then(function successCallback(res) {
+        $rootScope.cateId = null;
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.remove = function () {
+      removeCategoryInPath();
+      vm.path = [];
+      getAllCategores().then(w => {
+        w.categorys.forEach(item => {
+          if (item._id === $rootScope.cateId) {
+            vm.path.push({
+              _id: item._id,
+              name: item.name,
+              keys: item.keys,
+              add: false,
+              remove: true
+            })
+          } else {
+            vm.path.push({
+              _id: item._id,
+              name: item.name,
+              keys: item.keys,
+              add: true,
+              remove: false
+            })
+          }
+        });
+      });
+    }
+
+
+    vm.add = function (id) {
+      removeCategoryInPath();
+      addCategoryInPath(id).then(w => {
+        vm.path = [];
+        getAllCategores().then(w => {
+          w.categorys.forEach(item => {
+            if (item._id === $rootScope.cateId) {
+              vm.path.push({
+                _id: item._id,
+                name: item.name,
+                keys: item.keys,
+                add: false,
+                remove: true
+              })
+            } else {
+              vm.path.push({
+                _id: item._id,
+                name: item.name,
+                keys: item.keys,
+                add: true,
+                remove: false
+              })
+            }
+          });
+        });
+      })
+    }
+    vm.path = [];
+    getAllCategores().then(w => {
+      w.categorys.forEach(item => {
+        if (item._id === $rootScope.cateId) {
+          vm.path.push({
+            _id: item._id,
+            name: item.name,
+            keys: item.keys,
+            add: false,
+            remove: true
+          })
+        } else {
+          vm.path.push({
+            _id: item._id,
+            name: item.name,
+            keys: item.keys,
+            add: true,
+            remove: false
+          })
+        }
+      });
+    });
+
+    vm.ok = function () {
       $uibModalInstance.dismiss('cancel');
     };
   }
@@ -242,7 +414,6 @@
     }
 
     function getAllPath(id) {
-      console.log('call me : ' + id);
       var deferred = $q.defer();
       $http({
         method: 'GET',

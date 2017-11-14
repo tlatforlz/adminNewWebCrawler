@@ -9,6 +9,40 @@ module.exports = function () {
   router.delete('/:id', deleteUrl);
   router.post('/addPath/:id', addPathInUrl);
   router.post('/removePath/:id', removePathInUrl);
+  router.post('/addCategory/:id/:object/:cateId', addCategory);
+  router.post('/removeCategory/:id/:object', addCategory);
+
+  function addCategory(req, res, next) {
+    var request = {
+      id: req.params.id,
+      object: req.params.object,
+      cateId: req.params.cateId
+    }
+    console.log(request);
+    urlDao.addCategory(request)
+      .then(function (url) {
+        res.status(200).send(url).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+
+  function removeCategory(req, res, next) {
+    var request = {
+      id: req.params.id,
+      object: req.params.object
+    }
+    console.log(request);
+    urlDao.removeCategory(request)
+      .then(function (url) {
+        res.status(200).send(url).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function addPathInUrl(req, res, next) {
     var request = {
