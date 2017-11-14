@@ -161,13 +161,24 @@
       return deferred.promise;
     }
 
+    function getName(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
     urlInformation($rootScope.id).then(function (res) {
       vm.urlId = res.url._id;
       vm.urlTitle = res.url.title;
       vm.urlHostname = res.url.hostname;
       vm.path = res.url.path;
     });
-
     vm.ok = function () {
       $uibModalInstance.close();
     };

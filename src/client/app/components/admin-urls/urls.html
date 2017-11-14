@@ -84,7 +84,7 @@
                 <td>{{$index + 1}}</td>
                 <td>{{cate._id}}</td>
                 <td>{{cate.namePath}}</td>
-                <td>{{cate.catelogyId}}</td>
+                <td ng-model="vm.nameCate(cate.catelogyId)"></td>
               </tr>
             </tbody>
           </table>
