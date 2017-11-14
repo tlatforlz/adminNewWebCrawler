@@ -251,6 +251,7 @@
 
       });
     };
+
     getCategories($rootScope.id).then(function (res) {
       vm.listPath = res.arrayPath;
       var length = vm.listPath.length;
