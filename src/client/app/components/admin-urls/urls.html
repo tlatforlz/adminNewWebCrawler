@@ -130,10 +130,10 @@
           <td>{{cate.value}}</td>
           <td>
             <div class="btn-group">
-              <a ng-show="vm.buttonAdd(cate.id)" class="btn btn-primary" ng-click="vm.add(cate.value)">
+              <a ng-show="cate.add" class="btn btn-primary" ng-click="vm.add(cate.value)">
                 <i class="fa fa-plus"></i>
               </a>
-              <a ng-show="vm.buttonRemove(cate.id)" style="background-color: indianred;" class="btn btn-primary" ng-click="vm.remove(cate.value)">
+              <a ng-show="cate.remove" style="background-color: indianred;" class="btn btn-primary" ng-click="vm.remove(cate.value)">
                 <i class="fa fa-minus"></i>
               </a>
             </div>

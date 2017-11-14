@@ -231,13 +231,13 @@
     }
 
     function getAllPath(id) {
-      console.log(id);
+      console.log('call me : ' + id);
       var deferred = $q.defer();
       $http({
         method: 'GET',
         url: '/api/url/' + id
       }).then(function successCallback(res) {
-        deferred.resolve(res.url);
+        deferred.resolve(res.data);
       }, function () {
         deferred.reject(null);
       });
@@ -249,9 +249,11 @@
       var data = {
         "namePath": path
       };
+      console.log(data);
       $http({
         method: 'POST',
-        url: '/api/addPath/' + $rootScope.id
+        url: '/api/url/addPath/' + $rootScope.id,
+        data: data
       }).then(function successCallback(res) {
         deferred.resolve(res.data);
       }, function () {
@@ -260,35 +262,177 @@
       return deferred.promise;
     }
 
-    vm.add = function (value) {
-      addPath(value).then(function (res) {
-
+    function removePath(path) {
+      var deferred = $q.defer();
+      var data = {
+        "namePath": path
+      };
+      console.log(data);
+      $http({
+        method: 'POST',
+        url: '/api/url/removePath/' + $rootScope.id,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
       });
+      return deferred.promise;
+    }
+
+    vm.remove = function (value) {
+      console.log(value + ' - remove');
+      getAllPath($rootScope.id).then(function (res_url) {
+        removePath(value.split(res_url.url.hostname)[1]).then(function (res2) {
+          getCategories($rootScope.id).then(function (res) {
+            getAllPath($rootScope.id).then(function (res_url) {
+              vm.listPath = res.arrayPath;
+              var length = vm.listPath.length;
+              vm.result = [];
+              var seen = new Set();
+              var index = 0;
+              vm.listPath.forEach(w => {
+                checkAdd(res_url.url.path, w)
+                  .then(function (res) {
+                    console.log('haha ' + res);
+                    if (!seen.has(w)) {
+                      if (res === true) {
+                        vm.result.push({
+                          'add': false,
+                          'remove': true,
+                          'value': w
+                        });
+                        vm.result.sort(function (a, b) {
+                          return a.value.length - b.value.length;
+                        });
+                      }
+                    }
+                    seen.add(w);
+                  })
+                  .catch(function () {
+                    console.log('hii');
+                    if (!seen.has(w)) {
+                      vm.result.push({
+                        'add': true,
+                        'remove': false,
+                        'value': w
+                      });
+                      vm.result.sort(function (a, b) {
+                        return a.value.length - b.value.length;
+                      });
+                    }
+                    seen.add(w);
+                  })
+              });
+            });
+          });
+        });
+      })
+    }
+    vm.add = function (value) {
+      getAllPath($rootScope.id).then(function (res_url) {
+        addPath(value.split(res_url.url.hostname)[1]).then(function (res2) {
+          getCategories($rootScope.id).then(function (res) {
+            getAllPath($rootScope.id).then(function (res_url) {
+              vm.listPath = res.arrayPath;
+              var length = vm.listPath.length;
+              vm.result = [];
+              var seen = new Set();
+              var index = 0;
+              vm.listPath.forEach(w => {
+                checkAdd(res_url.url.path, w)
+                  .then(function (res) {
+                    console.log('haha ' + res);
+                    if (!seen.has(w)) {
+                      if (res === true && w.split(res_url.hostname)[1] !== '/') {
+                        vm.result.push({
+                          'add': false,
+                          'remove': true,
+                          'value': w
+                        });
+                        vm.result.sort(function (a, b) {
+                          return a.value.length - b.value.length;
+                        });
+                      }
+                    }
+                    seen.add(w);
+                  })
+                  .catch(function () {
+                    console.log('hii');
+                    if (!seen.has(w)) {
+                      vm.result.push({
+                        'add': true,
+                        'remove': false,
+                        'value': w
+                      });
+                      vm.result.sort(function (a, b) {
+                        return a.value.length - b.value.length;
+                      });
+                    }
+                    seen.add(w);
+                  })
+              });
+            });
+          });
+        });
+      })
     };
+
+    function checkAdd(arr, value) {
+      var deferred = $q.defer();
+      arr.forEach(w => {
+        if (value.indexOf(w.namePath) !== -1) {
+          deferred.resolve(true);
+          return deferred.promise;
+        }
+      })
+      deferred.reject(false);
+      return deferred.promise;
+    }
 
     getCategories($rootScope.id).then(function (res) {
       getAllPath($rootScope.id).then(function (res_url) {
-        vm.buttonAdd = function (url) {
-          var check = false;
-
-        };
         vm.listPath = res.arrayPath;
         var length = vm.listPath.length;
         vm.result = [];
         var seen = new Set();
-        outer:
-          for (var index = 0; index < length; index++) {
-            var value = vm.listPath[index];
-            if (seen.has(value)) {
-              continue outer;
-            }
-            seen.add(value);
-            vm.result.push({
-              'id': false,
-              'value': value
-            });
-          }
-        console.log(vm.result);
+        var index = 0;
+        vm.listPath.forEach(w => {
+          checkAdd(res_url.url.path, w)
+            .then(function (res) {
+              console.log('haha ' + res);
+              if (!seen.has(w)) {
+                if (res === true && w.split(res_url.hostname)[1] !== '/') {
+                  vm.result.push({
+                    'add': false,
+                    'remove': true,
+                    'value': w
+                  });
+                  vm.result.sort(function (a, b) {
+                    return a.value.length - b.value.length;
+                  });
+                }
+              }
+              seen.add(w);
+            })
+            .catch(function () {
+              console.log('hii');
+              if (!seen.has(w)) {
+                vm.result.push({
+                  'add': true,
+                  'remove': false,
+                  'value': w
+                });
+                vm.result.sort(function (a, b) {
+                  return a.value.length - b.value.length;
+                });
+              }
+              seen.add(w);
+            })
+        });
+        vm.result.sort(function (a, b) {
+          return a.value.length - b.value.length;
+        });
       });
     });
   }
