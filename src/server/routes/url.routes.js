@@ -8,7 +8,7 @@ module.exports = function () {
   router.put('/:id', updateUrl);
   router.delete('/:id', deleteUrl);
   router.post('/addPath/:id', addPathInUrl);
-  router.post('/removePath/:id/:pathId', removePathInUrl);
+  router.post('/removePath/:id', removePathInUrl);
 
   function addPathInUrl(req, res, next) {
     var request = {
@@ -28,7 +28,7 @@ module.exports = function () {
   function removePathInUrl(req, res, next) {
     var request = {
       id: req.params.id,
-      pathId: req.params.pathId
+      namePath: req.body.namePath
     }
     urlDao.removePathInUrl(request)
       .then(function (url) {

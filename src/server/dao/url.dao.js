@@ -19,7 +19,7 @@ function removePathInUrl(request) {
   }, {
     $pull: {
       'path': {
-        _id: request.pathId
+        namePath: request.namePath
       }
     }
   }).then(function (res) {
@@ -33,17 +33,21 @@ function addPathInUrl(request) {
   var newPath = {
     "namePath": request.namePath
   }
-  return Url.update({
-    _id: request.id,
-    $push: {
-      path: newPath
-    }
-  }).then(function (res) {
-    return Promise.resolve(res);
-  }).catch(function (err) {
-    return Promise.reject(err);
+  return Url.findById({
+    _id: request.id
+  }).then(w => {
+    w.update({
+      $push: {
+        path: newPath
+      }
+    }).then(function (res) {
+      return Promise.resolve(res);
+    }).catch(function (err) {
+      return Promise.reject(err);
+    })
+  }).catch(w => {
+    return Promise.reject();
   })
-
 }
 
 function createUrl(request) {

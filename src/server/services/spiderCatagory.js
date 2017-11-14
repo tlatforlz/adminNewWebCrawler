@@ -32,7 +32,7 @@ function spiderCatagoryGetByUrl(urlId) {
             var FirstPromise = new Promise(function (resolve, reject) {
               $('header, nav, .mainMenu').find('a').each(function () {
                 var url = $(this).attr('href');
-                if (url.indexOf(Url.hostname) !== -1) {
+                if (url.indexOf(Url.hostname) !== -1 && url.split(Url.hostname)[1] !== '/') {
                   arrayPath.push(url);
                 }
                 lengthHeader--;
