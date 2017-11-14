@@ -230,6 +230,20 @@
       return deferred.promise;
     }
 
+    function getAllPath(id) {
+      console.log(id);
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.url);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    };
+
     function addPath(path) {
       var deferred = $q.defer();
       var data = {
@@ -251,24 +265,32 @@
 
       });
     };
+
+
     getCategories($rootScope.id).then(function (res) {
-      vm.listPath = res.arrayPath;
-      var length = vm.listPath.length;
-      vm.result = [];
-      var seen = new Set();
-      outer:
-        for (var index = 0; index < length; index++) {
-          var value = vm.listPath[index];
-          if (seen.has(value)) {
-            continue outer;
+      getAllPath($rootScope.id).then(function (res_url) {
+        vm.buttonAdd = function (url) {
+          var check = false;
+
+        };
+        vm.listPath = res.arrayPath;
+        var length = vm.listPath.length;
+        vm.result = [];
+        var seen = new Set();
+        outer:
+          for (var index = 0; index < length; index++) {
+            var value = vm.listPath[index];
+            if (seen.has(value)) {
+              continue outer;
+            }
+            seen.add(value);
+            vm.result.push({
+              'id': false,
+              'value': value
+            });
           }
-          seen.add(value);
-          vm.result.push({
-            'id': false,
-            'value': value
-          });
-        }
-      console.log(vm.result);
+        console.log(vm.result);
+      });
     });
   }
 })();

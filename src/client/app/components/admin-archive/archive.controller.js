@@ -92,7 +92,7 @@
           }
         }
         return check;
-      }
+      };
       vm.buttonAdd = function (cateid) {
         var check = true;
         for (var index = 0; index < res.Archive.listCategory.length; index++) {
@@ -101,7 +101,7 @@
           }
         }
         return check;
-      }
+      };
     });
 
     //http://localhost:8001/api/archive/addCategory/597cbdde0749a02b28b7f09b
