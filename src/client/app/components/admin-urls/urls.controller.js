@@ -99,7 +99,7 @@
             vm.urls = res.urls;
           });
       });
-    }
+    };
   }
 
 
@@ -127,14 +127,14 @@
       var url = {
         'title': vm.title,
         'hostname': vm.hostname
-      }
+      };
       addNewUrl(url).then(function (res) {
         if (res.message === 'CREATE_SUCCESS') {
           $uibModalInstance.close();
         }
       }, function () {
         vm.isShow = true;
-      })
+      });
     };
 
     vm.cancel = function () {
@@ -195,7 +195,6 @@
     vm.edit = function (id, cateId) {
       $rootScope.cateId = cateId;
       $rootScope.object = id;
-      console.log('Edit ' + cateId);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -400,7 +399,6 @@
     var vm = this;
 
     function getCategories(id) {
-      console.log(id);
       var deferred = $q.defer();
       $http({
         method: 'GET',
@@ -431,7 +429,6 @@
       var data = {
         "namePath": path
       };
-      console.log(data);
       $http({
         method: 'POST',
         url: '/api/url/addPath/' + $rootScope.id,
@@ -463,7 +460,6 @@
     }
 
     vm.remove = function (value) {
-      console.log(value + ' - remove');
       getAllPath($rootScope.id).then(function (res_url) {
         removePath(value.split(res_url.url.hostname)[1]).then(function (res2) {
           getCategories($rootScope.id).then(function (res) {
@@ -476,7 +472,6 @@
               vm.listPath.forEach(w => {
                 checkAdd(res_url.url.path, w)
                   .then(function (res) {
-                    console.log('haha ' + res);
                     if (!seen.has(w)) {
                       if (res === true) {
                         vm.result.push({
@@ -492,7 +487,6 @@
                     seen.add(w);
                   })
                   .catch(function () {
-                    console.log('hii');
                     if (!seen.has(w)) {
                       vm.result.push({
                         'add': true,
@@ -524,7 +518,6 @@
               vm.listPath.forEach(w => {
                 checkAdd(res_url.url.path, w)
                   .then(function (res) {
-                    console.log('haha ' + res);
                     if (!seen.has(w)) {
                       if (res === true && w.split(res_url.hostname)[1] !== '/') {
                         vm.result.push({
@@ -540,7 +533,6 @@
                     seen.add(w);
                   })
                   .catch(function () {
-                    console.log('hii');
                     if (!seen.has(w)) {
                       vm.result.push({
                         'add': true,
@@ -582,7 +574,6 @@
         vm.listPath.forEach(w => {
           checkAdd(res_url.url.path, w)
             .then(function (res) {
-              console.log('haha ' + res);
               if (!seen.has(w)) {
                 if (res === true && w.split(res_url.hostname)[1] !== '/') {
                   vm.result.push({
@@ -598,7 +589,6 @@
               seen.add(w);
             })
             .catch(function () {
-              console.log('hii');
               if (!seen.has(w)) {
                 vm.result.push({
                   'add': true,

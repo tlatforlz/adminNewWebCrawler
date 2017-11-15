@@ -124,6 +124,10 @@
       }, function () {});
     };
 
+    getSpider().then(function (res) {
+      vm.crawlingName = res.spider.crawlingName;
+    });
+
     vm.callOneUrl = function (_id) {
       getSpider().then(function (res) {
         callUrl(res.spider.crawlingName, _id).then(function (ress) {
@@ -153,12 +157,13 @@
       })
     }
     vm.updateSpider = function () {
-      getSpider().then(function (res) {
-        update(res.spider.crawlingName).then(function (ress) {
+      // getSpider().then(function (res) {
+      //   update(res.spider.crawlingName).then(function (ress) {
 
-        });
-      });
+      //   });
+      // });
     }
+
     getNewsSpider().then(function (res) {
       vm.listSpider = res.news;
       vm.tableParams = new NgTableParams({
@@ -234,8 +239,91 @@
             });
           });
         });
-      })
+      });
+    };
+
+    vm.callSpiderByPath = function () {
+      getSpider().then(function (res) {
+        $rootScope.spiderId = res.spider._id;
+        $rootScope.spiderName = res.spider.crawlingName;
+        var modalInstance = $uibModal.open({
+          animation: vm.animationsEnabled,
+          ariaLabelledBy: 'modal-title',
+          ariaDescribedBy: 'modal-body',
+          templateUrl: 'callSpiderByPath.html',
+          controller: 'callSpiderByPath',
+          controllerAs: 'vm',
+          size: 'lg'
+        }).closed.then(function () {
+          getNewsSpider().then(function (res) {
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
+        });
+      });
+    };
+
+    vm.updateNewsByCategory = function () {
+
+    };
+
+    vm.searchByKey = function () {
+
+    };
+  }
+  angular.module('app.admincallspider')
+    .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', callSpiderByPath]);
+
+  function callSpiderByPath($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function urlInformation(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
     }
+
+    function getSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    getSpider($rootScope.spiderId).then(w => {
+      urlInformation(w.spider.urlId).then(res => {
+        vm.urlId = res.url._id;
+        vm.urlTitle = res.url.title;
+        vm.urlHostname = res.url.hostname;
+        vm.path = res.url.path;
+      });
+    });
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
   }
 
   angular.module('app.admincallspider')
@@ -280,7 +368,6 @@
 
   function conformDelete($q, $http, $state, $scope, $rootScope, NgTableParams, $uibModalInstance) {
     var vm = this;
-    console.log('bla bla conformDelete');
 
     function getListNews() {
       var deferred = $q.defer();

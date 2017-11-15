@@ -4,9 +4,12 @@ angular.module('app.layout')
 function layoutConfig($stateProvider) {
   $stateProvider
     .state('layout', {
-      url: '',
-      templateUrl: 'app/components/layout/layout.html',
-      controller: 'layoutController',
-      controllerAs: 'vm'
+      views: {
+        'main': {
+          url: '',
+          templateUrl: 'app/components/layout/layout.html',
+          controller: 'layoutController',
+        }
+      }
     })
 }

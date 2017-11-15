@@ -16,7 +16,6 @@
   appRun.$inject = ['$state', '$rootScope', 'routerHelper', 'authService'];
 
   function appRun($state, $rootScope, routerHelper, authService) {
-
     var otherwise = '/404';
     routerHelper.configureStates(getStates(), otherwise);
     $rootScope.$on('$stateChangeStart', function (event, toState, fromState) {
