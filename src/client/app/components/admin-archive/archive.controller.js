@@ -27,7 +27,6 @@
     vm.animationsEnabled = true;
     vm.addCategoryInArchive = function (id) {
       $rootScope.id = id;
-      console.log(id);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',

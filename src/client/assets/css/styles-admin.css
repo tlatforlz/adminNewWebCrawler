@@ -8,8 +8,11 @@
 
 /* Import fonts */
 
+
+/* 
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,300italic,400italic,600,600italic,700,700italic,800,800italic);
-@import url(line-icons.css);
+@import url(line-icons.css); */
+
 body {
   color: #797979;
   background: #eeeeee;
@@ -308,10 +311,11 @@ table tr th {
 /*sidebar navigation*/
 
 #sidebar {
-  width: 180px;
+  width: 15%;
   height: 100%;
-  position: fixed;
+  float: left;
   background: #394a59;
+  position: absolute;
 }
 
 .nav-collapse.collapse {
@@ -591,7 +595,8 @@ ul.sidebar-menu li.active a i {
 }
 
 #content {
-  width: 90%;
+  width: 85%;
+  height: auto;
   float: right;
 }
 
