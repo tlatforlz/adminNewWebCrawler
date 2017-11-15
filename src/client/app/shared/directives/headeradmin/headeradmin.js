@@ -19,42 +19,40 @@
         vm.dashboard = dashboard;
 
         function dashboard() {
-          $state.go('adminpage');
+          $state.go('layout.dashboard');
         }
 
         vm.categories = categories;
 
         function categories() {
-          $state.go('admincategory');
+          $state.go('layout.categories');
         }
 
         vm.adminarchive = adminarchive;
 
         function adminarchive() {
-          $state.go('adminarchive');
+          $state.go('layout.archive');
         }
 
         vm.adminnews = adminnews;
 
         function adminnews() {
-          $state.go('adminnews');
+          $state.go('layout.news');
         }
 
         vm.adminurls = adminurls;
 
         function adminurls() {
-          $state.go('adminurls');
+          $state.go('layout.urls');
         }
 
         vm.adminspider = adminspider;
 
         function adminspider() {
-          $state.go('adminspider');
+          $state.go('layout.spider');
         }
       }],
-      controllerAs: 'vm',
-      scope: {},
-      templateUrl: 'app/shared/directives/headeradmin/headeradmin.html'
+      controllerAs: 'vm'
     };
 
     return directive;

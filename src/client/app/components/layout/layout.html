@@ -35,48 +35,47 @@
   </div>
 </header>
 
-<aside>
-  <div id="sidebar">
-    <ul class="sidebar-menu">
-      <li ui-sref-active="active">
-        <a class="" ui-sref="layout.dashboard">
-          <iclass="icon_house_alt">
-            </i>
-            <span>Dashboard</span>
-        </a>
-      </li>
-      <li>
-        <a class="" ui-sref="layout.categories">
-          <i class="icon_house_alt"></i>
-          <span>Categories</span>
-        </a>
-      </li>
-      <li>
-        <a class="" ui-sref="layout.archive">
-          <i class="icon_house_alt"></i>
-          <span>Archive</span>
-        </a>
-      </li>
-      <li>
-        <a class="" ui-sref="layout.news">
-          <i class="icon_house_alt"></i>
-          <span>News</span>
-        </a>
-      </li>
-      <li>
-        <a class="" ui-sref="layout.urls">
-          <i class="icon_house_alt"></i>
-          <span>Urls</span>
-        </a>
-      </li>
-      <li>
-        <a class="" ui-sref="layout.spider">
-          <i class="icon_house_alt"></i>
-          <span>Spiders</span>
-        </a>
-      </li>
-    </ul>
-  </div>
-</aside>
-<div ui-view="layout@content">
+<div id="sidebar">
+  <ul class="sidebar-menu">
+    <li ui-sref-active="active">
+      <a class="" ui-sref="layout.dashboard">
+        <iclass="icon_house_alt">
+          </i>
+          <span>Dashboard</span>
+      </a>
+    </li>
+    <li>
+      <a class="" ui-sref="layout.categories">
+        <i class="icon_house_alt"></i>
+        <span>Categories</span>
+      </a>
+    </li>
+    <li>
+      <a class="" ui-sref="layout.archive">
+        <i class="icon_house_alt"></i>
+        <span>Archive</span>
+      </a>
+    </li>
+    <li>
+      <a class="" ui-sref="layout.news">
+        <i class="icon_house_alt"></i>
+        <span>News</span>
+      </a>
+    </li>
+    <li>
+      <a class="" ui-sref="layout.urls">
+        <i class="icon_house_alt"></i>
+        <span>Urls</span>
+      </a>
+    </li>
+    <li>
+      <a class="" ui-sref="layout.spider">
+        <i class="icon_house_alt"></i>
+        <span>Spiders</span>
+      </a>
+    </li>
+  </ul>
+</div>
+
+<div id="content" ui-view="layout@content">
 </div>
