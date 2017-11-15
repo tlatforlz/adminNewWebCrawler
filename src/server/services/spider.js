@@ -279,7 +279,6 @@ function spiderTinNongNghiep_path(urlId, spiderId, catelogyId) {
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
-      console.log('FUCKC ' + disUrl);
       getPath_spiderTinNongNghiep(disUrl, spiderId, url.catelogyId);
     }
   });

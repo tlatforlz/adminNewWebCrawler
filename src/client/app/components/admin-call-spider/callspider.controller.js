@@ -352,7 +352,6 @@
     var vm = this;
 
     function getSpider(spiderId) {
-      console.log('lala ' + spiderId);
       var deferred = $q.defer();
       $http({
         method: 'GET',
@@ -369,7 +368,7 @@
       var deferred = $q.defer();
       $http({
         method: 'POST',
-        url: '/api/spider/' + spiderName + '/' + cateId
+        url: '/api/spider/callSpiderByPath/' + spiderName + '/' + cateId
       }).then(function successCallback(res) {
         deferred.resolve(res.data);
       }, function () {
@@ -378,7 +377,6 @@
       return deferred.promise;
     }
 
-    console.log('hhi ' + $rootScope.spiderId);
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.cateId).then(call => {
         console.log(call);

@@ -24,9 +24,21 @@ module.exports = {
   getNewsNone: getNewsNone,
   countSpider: countSpider,
 
-  getCategoryByUrl: getCategoryByUrl
+  getCategoryByUrl: getCategoryByUrl,
+  callSpiderByPath: callSpiderByPath
 };
-
+//callSpiderByPath
+function callSpiderByPath(request) {
+  return new Promise(function (resolve, reject) {
+    SpiderCatgory.callSpiderByPath(request.crawlingName, request.catelogyId)
+      .then(function (res) {
+        return resolve(res);
+      })
+      .catch(function (err) {
+        return reject(err);
+      })
+  });
+}
 //getCategoryByUrl
 function getCategoryByUrl(request) {
   return new Promise(function (resolve, reject) {

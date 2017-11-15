@@ -9,7 +9,13 @@ var UrlModel = require('./../model/url.model');
 
 module.exports = {
   spiderCatagoryGetAll: spiderCatagoryGetAll,
-  spiderCatagoryGetByUrl: spiderCatagoryGetByUrl
+  spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
+  callSpiderByPath: callSpiderByPath
+}
+
+function callSpiderByPath(crawlingName, catelogyId) {
+  console.log(crawlingName + " " + catelogyId);
+  
 }
 
 function spiderCatagoryGetAll() {

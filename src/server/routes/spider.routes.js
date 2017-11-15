@@ -18,6 +18,22 @@ module.exports = function () {
   router.post('/:crawlingName/:url/updateurl', updateNewsSpiderUrl);
 
   router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
+  router.post('/callSpiderByPath/:crawlingName/:catelogyId', callSpiderByPath);
+
+  function callSpiderByPath(req, res, next) {
+    var request = {
+      crawlingName: req.params.crawlingName,
+      catelogyId: req.params.catelogyId,
+    };
+    console.log(request);
+    spiderDao.callSpiderByPath(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function getCategoryByUrl(req, res, next) {
     var request = {
