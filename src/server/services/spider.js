@@ -96,18 +96,14 @@ function spiderCountUpdateAll(crawlingName) {
 function spiderTinNongNghiep(urlId, spiderId) {
   return new Promise(function (resolve, reject) {
     var page = 0;
-
     async.whilst(function () {
         return page < urlId.path.length;
       },
       function (next) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
         console.log(disUrl);
-        console.log(urlId.path[page]);
         getPath_spiderTinNongNghiep(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
-          console.log('log' + res);
           page++;
-          console.log(page);
           next();
         }).catch(function (err) {
           console.log(err);
@@ -148,9 +144,10 @@ function spiderNongNghiepVietNam(urlId, spiderId) {
 }
 
 function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
+  console.log('call 1');
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
-      return resolve(true);
+      return reject(false);
     }
     async.whilst(function () {
       return path !== undefined
@@ -166,7 +163,6 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                 url = ($(this).attr('href'));
                 console.log(url);
                 image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
-                console.log('image ' + image);
                 des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
                 if (image === undefined) {
                   image = null;
@@ -185,7 +181,6 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                   originalLink: news.originalLink
                 }, function (err, New) {
                   if (New === null) {
-                    console.log('News null');
                     news.save();
                   }
                 });
@@ -196,6 +191,8 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                 return resolve(true);
               }
               callback(null, gotoPage);
+            } else {
+              return reject(false);
             }
           });
         }
@@ -279,10 +276,10 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
 }
 
 function spiderTinNongNghiep_path(urlId, spiderId, catelogyId) {
-  console.log(urlId);
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
+      console.log('FUCKC ' + disUrl);
       getPath_spiderTinNongNghiep(disUrl, spiderId, url.catelogyId);
     }
   });

@@ -278,9 +278,9 @@
     };
   }
   angular.module('app.admincallspider')
-    .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', callSpiderByPath]);
+    .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', callSpiderByPath]);
 
-  function callSpiderByPath($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+  function callSpiderByPath($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal) {
     var vm = this;
 
     function urlInformation(id) {
@@ -310,6 +310,7 @@
     }
 
     getSpider($rootScope.spiderId).then(w => {
+      console.log($rootScope.spiderId);
       urlInformation(w.spider.urlId).then(res => {
         vm.urlId = res.url._id;
         vm.urlTitle = res.url.title;
@@ -317,6 +318,73 @@
         vm.path = res.url.path;
       });
     });
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    vm.callPath = function (urlId, cateId) {
+      console.log(urlId + " " + cateId);
+      $rootScope.urlId = urlId;
+      $rootScope.cateId = cateId;
+      $uibModalInstance.close();
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'showNewsCallPath.html',
+        controller: 'showNewsCallPath',
+        controllerAs: 'vm',
+        size: 'lg'
+      }).closed.then(function () {
+
+      });
+    };
+  }
+
+  angular.module('app.admincallspider')
+    .controller('showNewsCallPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', showNewsCallPath]);
+
+  function showNewsCallPath($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal) {
+    var vm = this;
+
+    function getSpider(spiderId) {
+      console.log('lala ' + spiderId);
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/' + spiderId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function callPath(spiderName, cateId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/' + spiderName + '/' + cateId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    console.log('hhi ' + $rootScope.spiderId);
+    getSpider($rootScope.spiderId).then(spider => {
+      callPath(spider.spider.crawlingName, $rootScope.cateId).then(call => {
+        console.log(call);
+      });
+    });
+    //$rootScope.spiderId
     vm.ok = function () {
       $uibModalInstance.close();
     };

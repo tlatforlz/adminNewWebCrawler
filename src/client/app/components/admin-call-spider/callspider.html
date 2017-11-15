@@ -30,6 +30,23 @@
 
 </style>
 
+<script type="text/ng-template" id="showNewsCallPath.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <div class="row">
+      <div class="col-lg-12">
+
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+  </div>
+</script>
+
+
 <script type="text/ng-template" id="callSpiderByPath.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
@@ -58,7 +75,7 @@
                 <td>
                   <div>
                     {{cate.catelogyId}}
-                    <button class="btn btn-primary" type="button" ng-click="vm.edit(cate._id, cate.catelogyId)" style="float: right;padding-left: 15px;padding-right: 15px;">CALL</button>
+                    <button class="btn btn-primary" type="button" ng-click="vm.callPath(vm.urlId, cate.catelogyId)" style="float: right;padding-left: 15px;padding-right: 15px;">CALL</button>
                   </div>
                 </td>
               </tr>
