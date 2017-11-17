@@ -28,11 +28,26 @@ module.exports = {
   getCategoryByUrl: getCategoryByUrl,
   callSpiderByPath: callSpiderByPath,
   getSpiderByCrawlingName: getSpiderByCrawlingName,
-  updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId
+  updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId,
+  getNewsByDate: getNewsByDate
 };
 
+function getNewsByDate(request) {
+  return News.find({
+      spiderId: request.spiderId,
+      updateDate: {
+        $gt: request.startDate,
+      }
+    }).exec()
+    .then(res => {
+      return Promise.resolve(res);
+    })
+    .catch(err => {
+      return Promise.reject(err);
+    });
+}
+
 function getSpiderByCrawlingName(callingName) {
-  console.log(callingName);
   return new Promise(function (resolve, reject) {
     return Spider.findOne({
         crawlingNane: callingName
@@ -47,7 +62,6 @@ function getSpiderByCrawlingName(callingName) {
 }
 //callSpiderByPath
 function callSpiderByPath(request) {
-  console.log(request);
   return new Promise(function (resolve, reject) {
     return SpiderCatgory.callSpiderByPath(request.crawlingName, request.namePath, request.catelogyId)
       .then(function (res) {
@@ -458,7 +472,7 @@ function updateNewsSpiderUrl(request) {
       if (spider === null) {
         return Promise.reject({
           message: failMessage.spider.notFound
-        });
+        })
       }
       switch (request.crawlingName) {
         case "spiderTinNongNghiep":

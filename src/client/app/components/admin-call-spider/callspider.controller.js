@@ -89,8 +89,6 @@
       return deferred.promise;
     }
 
-
-
     function updateNews(id, data) {
       var deferred = $q.defer();
       $http({
@@ -156,11 +154,31 @@
       })
     }
     vm.updateSpider = function () {
-      // getSpider().then(function (res) {
-      //   update(res.spider.crawlingName).then(function (ress) {
-
-      //   });
-      // });
+      getSpider().then(function (res) {
+        $rootScope.spiderName = res.spider.crawlingName;
+        $rootScope.spiderId = res.spider._id;
+        $rootScope.urlId = res.spider.urlId;
+        var modalInstance = $uibModal.open({
+          animation: vm.animationsEnabled,
+          ariaLabelledBy: 'modal-title',
+          ariaDescribedBy: 'modal-body',
+          templateUrl: 'updateSpider.html',
+          controller: 'updateSpider',
+          controllerAs: 'vm',
+          size: 'sm'
+        }).closed.then(function () {
+          getNewsSpider().then(function (res) {
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
+        });
+      });
     }
 
     getNewsSpider().then(function (res) {
@@ -203,7 +221,6 @@
       }).closed.then(function () {
         getNewsSpider().then(function (res) {
           vm.listSpider = res.news;
-          console.log(res.news.length);
           vm.tableParams = new NgTableParams({
             page: 1,
             count: 15,
@@ -218,6 +235,8 @@
     vm.callSpider = function () {
       getSpider().then(function (res) {
         $rootScope.spiderName = res.spider.crawlingName;
+        $rootScope.spiderId = res.spider._id;
+        $rootScope.urlId = res.spider.urlId;
         var modalInstance = $uibModal.open({
           animation: vm.animationsEnabled,
           ariaLabelledBy: 'modal-title',
@@ -415,11 +434,8 @@
     }
 
     vm.loading = true;
-    console.log('fuckckkksad');
-    console.log($rootScope.cateId);
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
-        console.log(call);
         if (call.status === true) {
           if (call.total > 0) {
             vm.loading = false;
@@ -513,6 +529,82 @@
         })
       });
     }
+
+
+    function updateNews(id, data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'PUT',
+        url: '/api/news/' + id,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.checkAction = function (active, _id) {
+      var data = {
+        'active': !active
+      };
+      updateNews(_id, data).then(function (res) {
+        setTimeout(function () {
+          vm.loadingNews = false;
+          getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+            vm.listSpider = news.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          })
+        }, 3000);
+      });
+    };
+
+    vm.index = 0;
+    vm.loadingNews = false;
+    vm.activePathAll = function () {
+      vm.loadingNewsActive = true;
+      getSpider($rootScope.spiderId).then(function (res) {
+        getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+          vm.total = news.news.length;
+          vm.listSpider = news.news;
+          var index = 0;
+          vm.listSpider.forEach(element => {
+            //originalLink
+            vm.loadingNews = true;
+            updateNews(element._id, {
+              'active': true
+            }).then(news => {
+              index++;
+              vm.index = index;
+              if (index == vm.total - 1) {
+                vm.loadingNews = false;
+                setTimeout(function () {
+                  vm.loadingNews = false;
+                  getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+                    vm.listSpider = news.news;
+                    vm.tableParams = new NgTableParams({
+                      page: 1,
+                      count: 15,
+                      header: false
+                    }, {
+                      dataset: vm.listSpider
+                    });
+                  })
+                }, 3000);
+              }
+            })
+          });
+        })
+      });
+    }
+
     vm.animationsEnabled = true;
     vm.newsDetail = function (_id) {
       $rootScope._id = _id;
@@ -672,6 +764,8 @@
   function callSpider($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
     var vm = this;
 
+    var start = Date.now();
+
     function call(name) {
       var deferred = $q.defer();
       $http({
@@ -684,17 +778,151 @@
       });
       return deferred.promise;
     }
-    call($rootScope.spiderName).then(function (ress) {
-      vm.animationsEnabled = true;
-      if (ress.spider === "CALL_SUCCESS") {
-        vm.checkShow = true;
-        setTimeout(function () {
-          vm.checkShow = false;
-          $uibModalInstance.close();
-        }, 3000);
+    //http://localhost:8001/api/spider/getNewsByDate/5999e8082a784f1ef0e9e235
+    function getNewsCall(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/getNewsByDate/' + id,
+        data: {
+          'startDate': start
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
 
-      }
-    })
+    function getUrl(urlId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + urlId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function callPath(spiderName, namePath, cateId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/categorySpider/callSpiderByPath/' + spiderName,
+        data: {
+          'namePath': namePath,
+          'catelogyId': cateId
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.toal = 0;
+    var index = 0;
+    vm.category = 0;
+    vm.totalCategory = 0;
+    vm.totalNews = 0;
+    getUrl($rootScope.urlId).then(urlPath => {
+      vm.totalCategory = urlPath.url.path.length;
+      urlPath.url.path.forEach(item => {
+        callPath($rootScope.spiderName, item.namePath, item.categoryId).then(news => {
+          index++;
+          vm.category = index;
+          vm.totalNews += news.total;
+          if (index == urlPath.url.path.length) {
+            setTimeout(function () {
+              $uibModalInstance.close();
+            }, 3000);
+          }
+        });
+      });
+    });
+  }
+
+  angular.module('app.admincallspider')
+    .controller('updateSpider', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', updateSpider]);
+
+  function updateSpider($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    var start = Date.now();
+
+    function call(name) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/' + name
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    //http://localhost:8001/api/spider/getNewsByDate/5999e8082a784f1ef0e9e235
+    function getNewsCall(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/getNewsByDate/' + id,
+        data: {
+          'startDate': start
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getUrl(urlId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + urlId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function callPath(spiderName, namePath, cateId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/categorySpider/callSpiderByPath/' + spiderName,
+        data: {
+          'namePath': namePath,
+          'catelogyId': cateId
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.toal = 0;
+    var index = 0;
+    vm.category = 0;
+    vm.totalCategory = 0;
+    vm.totalNews = 0;
+    getUrl($rootScope.urlId).then(urlPath => {
+      vm.totalCategory = urlPath.url.path.length;
+
+    });
   }
 
 })();

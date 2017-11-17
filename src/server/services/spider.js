@@ -111,7 +111,6 @@ function spiderTinNongNghiep(urlId, spiderId) {
         }).catch(function (err) {
           console.log(err);
         });
-
       },
       function (err) {
         return resolve("CALL_SUCCESS");
@@ -164,7 +163,6 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
               $('.post-listing .post-box-title a').each(function () {
                 //#main-content > div.content > div.post-listing > article:nth-child(1)
                 url = ($(this).attr('href'));
-                console.log(url + " " + total);
                 image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
                 des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
                 if (image === undefined) {
@@ -229,7 +227,6 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
         async.series({
             gotoPage: function (callback) {
               request(path, function (error, response, body) {
-                console.log('statusCode ' + response.statusCode);
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   let i = 1;
@@ -246,7 +243,6 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
                     } else {
                       image = image.split('-310x165').join('');
                     }
-
                     var news = new News({
                       originalLink: url,
                       spiderId: spiderId,

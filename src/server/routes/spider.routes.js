@@ -9,6 +9,7 @@ module.exports = function () {
   router.get('/getNewsCall/:id', getNewsCall);
   router.get('/getNewsCall/:id/:limit', getNewsCallLimit);
   router.get('/getNewsNone/:id', getNewsNone);
+  router.post('/getNewsByDate/:id', getNewsByDate);  
   router.put('/:id', updateSpider);
   router.delete('/:id', deleteSpider);
   router.post('/:crawlingName', callSpider);
@@ -23,6 +24,19 @@ module.exports = function () {
   router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
   router.post('/categorySpider/callSpiderByPath/:crawlingName', callSpiderByPath);
 
+
+  function getNewsByDate(req, res, next) {
+    var request = {
+      spiderId: req.params.id,
+      startDate: req.body.startDate
+    };
+    spiderDao.getNewsByDate(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      }).catch(function (err) {
+        res.status(400).send(err).end();
+      });
+  }
 
   function updateNewsSpiderUrlByNewsId(req, res, next) {
     var request = {
