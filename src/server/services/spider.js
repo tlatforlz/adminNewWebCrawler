@@ -15,6 +15,7 @@ module.exports = {
   spiderTinNongNghiep_updatePath: spiderTinNongNghiep_updatePath,
   spiderTinNongNghiep_Url: spiderTinNongNghiep_Url,
   spiderTinNongNghiep_updateUrl: spiderTinNongNghiep_updateUrl,
+  spiderTinNongNghiep_updateUrlVersion2: spiderTinNongNghiep_updateUrlVersion2,
   getPath_spiderTinNongNghiep: getPath_spiderTinNongNghiep,
 
   spiderNongNghiepVietNam: spiderNongNghiepVietNam,
@@ -150,6 +151,7 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
     if (path === undefined) {
       return reject(false);
     }
+    var total = 0;
     async.whilst(function () {
       return path !== undefined
     }, function (next) {
@@ -162,7 +164,7 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
               $('.post-listing .post-box-title a').each(function () {
                 //#main-content > div.content > div.post-listing > article:nth-child(1)
                 url = ($(this).attr('href'));
-                console.log(url);
+                console.log(url + " " + total);
                 image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
                 des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
                 if (image === undefined) {
@@ -190,10 +192,14 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                   }
                 });
                 i++;
+                total++;
               });
               gotoPage = $('#tie-next-page a').attr('href');
               if (gotoPage === undefined) {
-                return resolve(true);
+                return resolve({
+                  'total': total,
+                  'status': true
+                });
               }
               callback(null, gotoPage);
             } else {
@@ -216,6 +222,7 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
     if (path === undefined) {
       return resolve(true);
     }
+    var total = 0;
     async.whilst(function () {
         return path !== undefined
       }, function (next) {
@@ -246,7 +253,8 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
                       categoryId: catelogyId,
                       image: image,
                       description: des,
-                      active: false
+                      active: false,
+                      updateDate: Date.now()
                     });
                     News.findOne({
                       originalLink: news.originalLink
@@ -254,15 +262,22 @@ function getPath_spiderNongNghiepVietNam(path, spiderId, catelogyId) {
                       if (New === null) {
                         if (news.originalLink !== undefined) {
                           news.save();
+                        } else {
+                          New.updateDate = Date.now();
+                          New.save();
                         }
                       }
                     });
                     i++;
+                    total++;
                   });
 
                   gotoPage = $('#tie-next-page > a').attr('href');
                   if (gotoPage === undefined) {
-                    return resolve(true);
+                    return resolve({
+                      'total': total,
+                      'status': true
+                    });
                   }
                   callback(null, gotoPage);
                 }
@@ -658,7 +673,6 @@ function spiderTinNongNghiep_updateUrl(url) {
     _id: url
   }, function (err, upNews) {
     if (upNews !== null) {
-      console.log('this is upNews ' + upNews);
       request(upNews.originalLink, function (err, res, body) {
         if (!err && res.statusCode === 200) {
           var $ = cheerio.load(body);
@@ -694,8 +708,7 @@ function spiderTinNongNghiep_updateUrl(url) {
               upNews.author = result.author;
               upNews.createDate = result.createDate;
               upNews.updateDate = result.updateDate;
-              console.log(upNews.title);
-              console.log(upNews.createDate);
+              console.log(upNews.originalLink);
               upNews.save(function (err) {
                 if (err) {
                   console.log('error');
@@ -715,7 +728,6 @@ function spiderNongNghiepVietNam_updateUrl(url) {
     _id: url
   }, function (err, news) {
     if (news !== null) {
-      console.log('this is upNews ' + news);
       request(news.originalLink, function (err, res, body) {
         if (!err && res.statusCode === 200) {
           var $ = cheerio.load(body);
@@ -753,19 +765,80 @@ function spiderNongNghiepVietNam_updateUrl(url) {
               news.title = result.title;
               news.content = result.content;
               news.author = result.author;
-              news.createDate = result.createDate;
+              news.createDate = Date.now();
               news.updateDate = result.updateDate;
 
               news.save(function (err) {
-                if (err) {
-                  console.log('error');
-                }
+                if (err) {}
               });
             });
-        } else {
-          console.log('log die');
-        }
+        } else {}
       });
     }
   });
+}
+
+
+function spiderTinNongNghiep_updateUrlVersion2(url) {
+  return new Promise(function (resolve, reject) {
+    return News.findById({
+      _id: url
+    }, function (err, upNews) {
+      if (upNews !== null) {
+        request(upNews.originalLink, function (err, res, body) {
+          if (!err && res.statusCode === 200) {
+            var $ = cheerio.load(body);
+            async.series({
+                title: function (callback) {
+                  upNews.title = $('#main-content > div.content > article > div > h1 > span').text();
+                  callback(null, upNews.title);
+                },
+                content: function (callback) {
+                  let content = $('#main-content > div.content > article > div > div.entry').html();
+                  let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
+                  callback(null, content.split(remove).join(''));
+                },
+                author: function (callback) {
+                  upNews.author = $('#main-content > div.content > article > div > p > span:nth-child(1) > a').text();
+                  callback(null, upNews.author);
+                },
+                createDate: function (callback) {
+                  var date = new Date();
+                  var dateF = $('#main-content > div.content > article > div > p > span:nth-child(2)').text().split('/');
+                  date.setDate(dateF[0]);
+                  date.setMonth(dateF[1]);
+                  date.setFullYear(dateF[2]);
+                  callback(null, date);
+                },
+                updateDate: function (callback) {
+                  callback(null, Date.now());
+                }
+              },
+              function (err, result) {
+                upNews.title = result.title;
+                upNews.content = result.content;
+                upNews.author = result.author;
+                upNews.createDate = result.createDate;
+                upNews.updateDate = result.updateDate;
+                console.log(upNews.originalLink);
+                return upNews.save(function (err) {
+                  if (err) {
+                    return reject({
+                      'message': false
+                    });
+                  }
+                  return resolve({
+                    'message': true
+                  });
+                });
+              });
+          } else {
+            return reject({
+              'message': false
+            });
+          }
+        });
+      }
+    });
+  })
 }

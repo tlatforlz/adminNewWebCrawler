@@ -7,6 +7,7 @@ module.exports = function () {
   router.get('/countSpider', countSpider);
   router.get('/:id', getSpiderById);
   router.get('/getNewsCall/:id', getNewsCall);
+  router.get('/getNewsCall/:id/:limit', getNewsCallLimit);
   router.get('/getNewsNone/:id', getNewsNone);
   router.put('/:id', updateSpider);
   router.delete('/:id', deleteSpider);
@@ -16,14 +17,31 @@ module.exports = function () {
   router.post('/:crawlingName/:catelogyId/update', updateNewsSpiderPath);
   router.post('/:crawlingName/call/url', callSpiderUrl);
   router.post('/:crawlingName/:url/updateurl', updateNewsSpiderUrl);
+  router.post('/:crawlingName/:url/updateurlByNewsId', updateNewsSpiderUrlByNewsId);
+
 
   router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
-  router.post('/callSpiderByPath/:crawlingName/:catelogyId', callSpiderByPath);
+  router.post('/categorySpider/callSpiderByPath/:crawlingName', callSpiderByPath);
+
+
+  function updateNewsSpiderUrlByNewsId(req, res, next) {
+    var request = {
+      crawlingName: req.params.crawlingName,
+      url: req.params.url
+    };
+    spiderDao.updateNewsSpiderUrlByNewsId(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      }).catch(function (err) {
+        res.status(400).send(err).end();
+      });
+  }
 
   function callSpiderByPath(req, res, next) {
     var request = {
       crawlingName: req.params.crawlingName,
-      catelogyId: req.params.catelogyId,
+      namePath: req.body.namePath,
+      catelogyId: req.body.catelogyId,
     };
     console.log(request);
     spiderDao.callSpiderByPath(request)
@@ -192,7 +210,21 @@ module.exports = function () {
       crawlingName: req.params.crawlingName,
       url: req.params.url
     };
+    console.log(request);
     spiderDao.updateNewsSpiderUrl(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      }).catch(function (err) {
+        res.status(400).send(err).end();
+      });
+  }
+
+  function getNewsCallLimit(req, res, next) {
+    var request = {
+      _id: req.params.id,
+      limit: req.params.limit
+    };
+    spiderDao.getNewsCallLimit(request)
       .then(function (spider) {
         res.status(200).send(spider).end();
       }).catch(function (err) {

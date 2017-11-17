@@ -21,16 +21,35 @@ module.exports = {
   updateNewsSpiderUrl: updateNewsSpiderUrl,
   testSpider: testSpider,
   getNewsCall: getNewsCall,
+  getNewsCallLimit: getNewsCallLimit,
   getNewsNone: getNewsNone,
   countSpider: countSpider,
 
   getCategoryByUrl: getCategoryByUrl,
-  callSpiderByPath: callSpiderByPath
+  callSpiderByPath: callSpiderByPath,
+  getSpiderByCrawlingName: getSpiderByCrawlingName,
+  updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId
 };
+
+function getSpiderByCrawlingName(callingName) {
+  console.log(callingName);
+  return new Promise(function (resolve, reject) {
+    return Spider.findOne({
+        crawlingNane: callingName
+      }).exec()
+      .then(function (res) {
+        return resolve(res._id);
+      })
+      .catch(function (err) {
+        return reject(err);
+      });
+  });
+}
 //callSpiderByPath
 function callSpiderByPath(request) {
+  console.log(request);
   return new Promise(function (resolve, reject) {
-    SpiderCatgory.callSpiderByPath(request.crawlingName, request.catelogyId)
+    return SpiderCatgory.callSpiderByPath(request.crawlingName, request.namePath, request.catelogyId)
       .then(function (res) {
         return resolve(res);
       })
@@ -86,7 +105,21 @@ function getNewsNone(request) {
       content: undefined
     }).exec()
     .then(function (res) {
-      console.log(res);
+      return Promise.resolve({
+        news: res
+      })
+    })
+}
+
+function getNewsCallLimit(request) {
+  console.log(request);
+  return News.find({
+      active: false,
+      spiderId: request._id
+    })
+    .limit(parseInt(request.limit))
+    .exec()
+    .then(function (res) {
       return Promise.resolve({
         news: res
       })
@@ -439,5 +472,37 @@ function updateNewsSpiderUrl(request) {
         messsage: successMessage.spider.callSpider,
         spider: spider
       });
+    });
+}
+
+function updateNewsSpiderUrlByNewsId(request) {
+  return Spider.findOne({
+      crawlingName: request.crawlingName
+    })
+    .exec()
+    .then(function (spider) {
+      if (spider === null) {
+        return Promise.reject({
+          message: failMessage.spider.notFound
+        });
+      }
+      switch (request.crawlingName) {
+        case "spiderTinNongNghiep":
+          return ListSpider.spiderTinNongNghiep_updateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case "spiderTinNongNghiepVietNam":
+          ListSpider.spiderNongNghiepVietNam_updateUrl(request.url);
+          break;
+      }
     });
 }
