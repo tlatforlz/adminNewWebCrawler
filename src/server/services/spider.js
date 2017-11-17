@@ -15,13 +15,15 @@ module.exports = {
   spiderTinNongNghiep_updatePath: spiderTinNongNghiep_updatePath,
   spiderTinNongNghiep_Url: spiderTinNongNghiep_Url,
   spiderTinNongNghiep_updateUrl: spiderTinNongNghiep_updateUrl,
+  getPath_spiderTinNongNghiep: getPath_spiderTinNongNghiep,
 
   spiderNongNghiepVietNam: spiderNongNghiepVietNam,
   spiderNongNghiepVietNam_path: spiderNongNghiepVietNam_path,
   spiderNongNghiepVietNam_Url: spiderNongNghiepVietNam_Url,
   spiderNongNghiepVietNam_updateAll: spiderNongNghiepVietNam_updateAll,
   spiderNongNghiepVietNam_updateUrl: spiderNongNghiepVietNam_updateUrl,
-  spiderNongNghiepVietNam_updatePath: spiderNongNghiepVietNam_updatePath
+  spiderNongNghiepVietNam_updatePath: spiderNongNghiepVietNam_updatePath,
+  getPath_spiderNongNghiepVietNam: getPath_spiderNongNghiepVietNam
 }
 
 function spiderCountUpdateAll(crawlingName) {
@@ -144,7 +146,6 @@ function spiderNongNghiepVietNam(urlId, spiderId) {
 }
 
 function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
-  console.log('call 1');
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return reject(false);
@@ -175,13 +176,17 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                   categoryId: catelogyId,
                   image: image,
                   description: des,
-                  active: false
+                  active: false,
+                  updateDate: Date.now()
                 });
                 News.findOne({
                   originalLink: news.originalLink
                 }, function (err, New) {
                   if (New === null) {
                     news.save();
+                  } else {
+                    New.updateDate = Date.now();
+                    New.save();
                   }
                 });
                 i++;
