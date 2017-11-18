@@ -10,6 +10,21 @@ module.exports = function () {
   router.delete('/:id', deleteCategory);
   router.post('/addKey/:id', addKey);
   router.post('/removeKey/:id', removeKey);
+  router.post('/checkKey/:id', checkKey);
+
+  function checkKey(req, res, next) {
+    var request = {
+      key: req.body.key,
+      id: req.params.id
+    };
+    categoryDao.checkKey(request)
+      .then(function (Category) {
+        res.status(200).send(Category).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function addKey(req, res, next) {
     var request = {

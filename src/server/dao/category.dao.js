@@ -9,8 +9,21 @@ module.exports = {
   updateCategory: updateCategory,
   deleteCategory: deleteCategory,
   addKey: addKey,
-  removeKey: removeKey
+  removeKey: removeKey,
+  checkKey: checkKey
 };
+
+function checkKey(request) {
+  return Category.findOne({
+      _id: request.id,
+      keys: request.key
+    }).exec()
+    .then(cate => {
+      console.log(cate);
+      if (cate) return Promise.resolve(true);
+      else return Promise.reject(false);
+    })
+}
 
 function addKey(request) {
   return Category.findById({

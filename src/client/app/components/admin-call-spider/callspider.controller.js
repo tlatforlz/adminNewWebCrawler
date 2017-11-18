@@ -304,16 +304,16 @@
           controllerAs: 'vm',
           size: 'md'
         }).closed.then(function () {
-          getNewsSpider().then(function (res) {
-            vm.listSpider = res.news;
-            vm.tableParams = new NgTableParams({
-              page: 1,
-              count: 15,
-              header: false
-            }, {
-              dataset: vm.listSpider
-            });
-          });
+          // getNewsSpider().then(function (res) {
+          //   vm.listSpider = res.news;
+          //   vm.tableParams = new NgTableParams({
+          //     page: 1,
+          //     count: 15,
+          //     header: false
+          //   }, {
+          //     dataset: vm.listSpider
+          //   });
+          // });
         });
       });
     };
@@ -351,7 +351,36 @@
       return deferred.promise;
     }
 
-
+    vm.getKey = function () {
+      console.log(vm.searchKey);
+      $uibModalInstance.close();
+      console.log($rootScope.spiderId);
+      getSpider($rootScope.spiderId).then(function (res) {
+        $rootScope.spiderId = res.spider._id;
+        $rootScope.spiderName = res.spider.crawlingName;
+        $rootScope.searchKey = vm.searchKey;
+        var modalInstance = $uibModal.open({
+          animation: vm.animationsEnabled,
+          ariaLabelledBy: 'modal-title',
+          ariaDescribedBy: 'modal-body',
+          templateUrl: 'addSearchKeyInCategory.html',
+          controller: 'addSearchKeyInCategory',
+          controllerAs: 'vm',
+          size: 'lg'
+        }).closed.then(function () {
+          // getNewsSpider().then(function (res) {
+          //   vm.listSpider = res.news;
+          //   vm.tableParams = new NgTableParams({
+          //     page: 1,
+          //     count: 15,
+          //     header: false
+          //   }, {
+          //     dataset: vm.listSpider
+          //   });
+          // });
+        });
+      });
+    }
     vm.ok = function () {
       $uibModalInstance.close();
     };
@@ -360,6 +389,145 @@
       $uibModalInstance.dismiss('cancel');
     };
   }
+
+
+  angular.module('app.admincallspider')
+    .controller('addSearchKeyInCategory', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', addSearchKeyInCategory]);
+
+  function addSearchKeyInCategory($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal, NgTableParams) {
+    var vm = this;
+
+    function urlInformation(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getCategory() {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category'
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function checkKey(id, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/checkKey/' + id,
+        data: {
+          'key': key
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    vm.path = [];
+    vm.spiderName = $rootScope.spideName;
+    getCategory().then(cate => {
+      cate.categorys.forEach(item => {
+        checkKey(item._id, $rootScope.searchKey).then(check => {
+          if (check === true) {
+            var cateItem = {
+              '_id': item._id,
+              'name': item.name,
+              'keys': item.keys,
+              'add': false,
+              'remove': true
+            }
+            vm.path.push(cateItem);
+          }
+        }).catch(err => {
+          var cateItem = {
+            '_id': item._id,
+            'name': item.name,
+            'keys': item.keys,
+            'add': true,
+            'remove': false
+          }
+          vm.path.push(cateItem);
+        });
+      })
+    })
+
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    function getNewsSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/getNewsCall/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.callPath = function (urlId, namePath, cateId) {
+      $rootScope.urlId = urlId;
+      $rootScope.cateId = cateId;
+      $rootScope.namePath = namePath;
+      $uibModalInstance.close();
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'showNewsCallPath.html',
+        controller: 'showNewsCallPath',
+        controllerAs: 'vm',
+        size: 'lg'
+      }).closed.then(function () {
+        getNewsSpider($rootScope.spiderId).then(function (res) {
+          vm.listSpider = res.news;
+          vm.tableParams = new NgTableParams({
+            page: 1,
+            count: 15,
+            header: false
+          }, {
+            dataset: vm.listSpider
+          });
+        });
+      });
+    };
+  }
+
 
   angular.module('app.admincallspider')
     .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', callSpiderByPath]);
