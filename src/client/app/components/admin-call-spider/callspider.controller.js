@@ -914,14 +914,66 @@
       return deferred.promise;
     }
 
+    function getNewsNone(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/getNewsNone/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function updateByUrl(name, urlId, url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: 'api/spider/' + name + "/" + urlId + "/updateurlByNewsId",
+        data: {
+          "url": url
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     vm.toal = 0;
     var index = 0;
     vm.category = 0;
     vm.totalCategory = 0;
     vm.totalNews = 0;
+    console.log($rootScope.spiderName);
     getUrl($rootScope.urlId).then(urlPath => {
-      vm.totalCategory = urlPath.url.path.length;
-
+      getNewsNone($rootScope.spiderId).then(res => {
+        console.log(res);
+        vm.totalNews = res.news.length;
+        if (vm.totalNews > 0) {
+          vm.havenews = true;
+          res.news.forEach(item => {
+            updateByUrl($rootScope.spiderName, item._id, item.originalLink).then(news => {
+              console.log(item.originalLink);
+              index++;
+              vm.newsIndex = index;
+              if (index === vm.totalNews) {
+                setTimeout(function () {
+                  $uibModalInstance.close();
+                }, 3000);
+              }
+            })
+          })
+        } else {
+          vm.havenews = false;
+          setTimeout(function () {
+            $uibModalInstance.close();
+          }, 3000);
+        }
+      })
     });
   }
 

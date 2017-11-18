@@ -246,3 +246,16 @@
   </section>
 </section>
 
+
+<script type="text/javascript">
+  $(document).ready(function () {
+      var contentHeight = $('#content').height();
+      var sidebar = $('#sidebar').height();
+      if (sidebar < contentHeight) {
+        $('#sidebar').css('height', contentHeight);
+      } else {
+        $('#sidebar').css('height', "100%");
+      }
+  });
+
+</script>

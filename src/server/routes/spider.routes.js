@@ -9,7 +9,7 @@ module.exports = function () {
   router.get('/getNewsCall/:id', getNewsCall);
   router.get('/getNewsCall/:id/:limit', getNewsCallLimit);
   router.get('/getNewsNone/:id', getNewsNone);
-  router.post('/getNewsByDate/:id', getNewsByDate);  
+  router.post('/getNewsByDate/:id', getNewsByDate);
   router.put('/:id', updateSpider);
   router.delete('/:id', deleteSpider);
   router.post('/:crawlingName', callSpider);

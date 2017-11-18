@@ -187,7 +187,8 @@
       <div class="col-lg-12">
         <div class="panel-body">
           <img style="max-width: 100%; height: auto;" src="/assets/css/images/spidercall.gif"></img>
-          <h4>Crawling news: {{vm.newsIndex}}/{{vm.totalNews}}</h4>
+          <h4 ng-show="vm.havenews">Crawling news: {{vm.newsIndex}}/{{vm.totalNews}}</h4>
+          <h4 ng-show="!vm.havenews">No have news to update.</h4>
           <p ng-show="vm.checkShow">Update News Success</p>
         </div>
       </div>
@@ -268,3 +269,25 @@
     </div>
   </section>
 </section>
+
+<!-- <script src="assets/js/jquery.resize.js"></script> -->
+<script type="text/javascript">
+  $(document).ready(function () {
+    var resizeCallback = function () {
+      var contentHeight = $('#content').height();
+      var sidebar = $('#sidebar').height();
+      console.log(contentHeight);
+      console.log(sidebar);
+      if (sidebar < contentHeight) {
+        $('#sidebar').css('height', contentHeight);
+      } else {
+        $('#sidebar').css('height', "100%");
+      }
+    };
+    $('#content').resize(resizeCallback);
+    // setTimeout(function () {
+
+    // }, 2000);
+  });
+
+</script>
