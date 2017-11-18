@@ -292,9 +292,75 @@
     };
 
     vm.searchByKey = function () {
-
+      getSpider().then(function (res) {
+        $rootScope.spiderId = res.spider._id;
+        $rootScope.spiderName = res.spider.crawlingName;
+        var modalInstance = $uibModal.open({
+          animation: vm.animationsEnabled,
+          ariaLabelledBy: 'modal-title',
+          ariaDescribedBy: 'modal-body',
+          templateUrl: 'searchByKey.html',
+          controller: 'searchByKey',
+          controllerAs: 'vm',
+          size: 'md'
+        }).closed.then(function () {
+          getNewsSpider().then(function (res) {
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
+        });
+      });
     };
   }
+
+  angular.module('app.admincallspider')
+    .controller('searchByKey', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', searchByKey]);
+
+  function searchByKey($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal, NgTableParams) {
+    var vm = this;
+
+    function urlInformation(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+  }
+
   angular.module('app.admincallspider')
     .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', callSpiderByPath]);
 

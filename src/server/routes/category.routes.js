@@ -8,6 +8,36 @@ module.exports = function () {
   router.get('/:id', getCategoryById);
   router.put('/:id', updateCategory);
   router.delete('/:id', deleteCategory);
+  router.post('/addKey/:id', addKey);
+  router.post('/removeKey/:id', removeKey);
+
+  function addKey(req, res, next) {
+    var request = {
+      key: req.body.key,
+      id: req.params.id
+    };
+    categoryDao.addKey(request)
+      .then(function (Category) {
+        res.status(200).send(Category).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function removeKey(req, res, next) {
+    var request = {
+      key: req.body.key,
+      id: req.params.id
+    };
+    categoryDao.removeKey(request)
+      .then(function (Category) {
+        res.status(200).send(Category).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function createCategory(req, res, next) {
     var request = {

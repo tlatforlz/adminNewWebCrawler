@@ -88,7 +88,6 @@
   </div>
 </script>
 
-
 <script type="text/ng-template" id="callSpiderByPath.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
@@ -206,7 +205,17 @@
   <div class="modal-footer">
   </div>
 </script>
-
+<script type="text/ng-template" id="searchByKey.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Enter your key : </h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <input ng-model="vm.searchKey" value="" placeholder="Enter your key"/>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" style="padding-left: 15px;padding-right: 15px;">No</button>
+  </div>
+  <div class="modal-footer">
+  </div>
+</script>
 <section id="main-content">
   <section class="wrapper">
     <div class="row">

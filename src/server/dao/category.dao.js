@@ -7,8 +7,40 @@ module.exports = {
   getAllCategory: getAllCategory,
   getCategoryById: getCategoryById,
   updateCategory: updateCategory,
-  deleteCategory: deleteCategory
+  deleteCategory: deleteCategory,
+  addKey: addKey,
+  removeKey: removeKey
 };
+
+function addKey(request) {
+  return Category.findById({
+      _id: request.id
+    }).exec()
+    .then(cate => {
+      cate.keys.push(request.key);
+      return cate.save().then(err => {
+        if (err) {
+          return Promise.reject(err);
+        }
+        return Promise.resolve(true);
+      })
+    })
+}
+
+function removeKey(request) {
+  return Category.findById({
+      _id: request.id
+    }).exec()
+    .then(cate => {
+      cate.keys.pull(request.key);
+      return cate.save().then(err => {
+        if (err) {
+          return Promise.reject(err);
+        }
+        return Promise.resolve(true);
+      })
+    })
+}
 
 function createCategory(request) {
   var newCategory = new Category({
