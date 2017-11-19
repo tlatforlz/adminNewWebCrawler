@@ -14,7 +14,6 @@ module.exports = {
 }
 
 function callSpiderByPath(crawlingName, namePath, catelogyId) {
-  console.log(crawlingName + " " + catelogyId + " " + namePath);
   return new Promise(function (resolve, reject) {
     if (namePath === '' || namePath === undefined) {
       return reject(false);

@@ -665,22 +665,41 @@
       return deferred.promise;
     }
 
+    function getNewsCalled(newsId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + newsId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     vm.loading = true;
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
+        console.log(call);
         if (call.status === true) {
           if (call.total > 0) {
             vm.loading = false;
-            vm.total = call.total;
-            getNewsNeastCall($rootScope.spiderId, call.total).then(news => {
-              vm.listSpider = news.news;
-              vm.tableParams = new NgTableParams({
-                page: 1,
-                count: 15,
-                header: false
-              }, {
-                dataset: vm.listSpider
-              });
+            vm.listNewsId = call.listNewsId;
+            vm.listSpider = [];
+            vm.listNewsId.forEach(newsId => {
+              getNewsCalled(newsId).then(res => {
+                vm.listSpider.push(res.news);
+                if (vm.listSpider.length == call.total - 1) {
+                  vm.tableParams = new NgTableParams({
+                    page: 1,
+                    count: 15,
+                    header: false
+                  }, {
+                    dataset: vm.listSpider
+                  });
+                }
+              })
             })
           } else {
             $window.alert("No news. Please check orginal path.");

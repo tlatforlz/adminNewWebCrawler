@@ -159,44 +159,60 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
             if (!error && response.statusCode === 200) {
               var $ = cheerio.load(body);
               var i = 1;
-              $('.post-listing .post-box-title a').each(function () {
-                //#main-content > div.content > div.post-listing > article:nth-child(1)
-                url = ($(this).attr('href'));
-                image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
-                des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
-                if (image === undefined) {
-                  image = null;
-                } else {
-                  image = image.split('-150x150').join('');
-                }
-                var news = new News({
-                  originalLink: url,
-                  spiderId: spiderId,
-                  categoryId: catelogyId,
-                  image: image,
-                  description: des,
-                  active: false,
-                  updateDate: Date.now()
-                });
-                News.findOne({
-                  originalLink: news.originalLink
-                }, function (err, New) {
-                  if (New === null) {
-                    news.save();
-                    total++;
-                    arrayNews.push(news._id);
+              var length = $('.post-listing .post-box-title a').length;
+              console.log(length);
+              var temp = new Promise(function (resolve, reject) {
+                $('.post-listing .post-box-title a').each(function () {
+                  if (length == 0) {
+                    resolve(true);
+                  }
+                  //#main-content > div.content > div.post-listing > article:nth-child(1)
+                  url = ($(this).attr('href'));
+                  image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
+                  des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
+                  if (image === undefined) {
+                    image = null;
+                  } else {
+                    image = image.split('-150x150').join('');
+                  }
+                  var news = new News({
+                    originalLink: url,
+                    spiderId: spiderId,
+                    categoryId: catelogyId,
+                    image: image,
+                    description: des,
+                    active: false,
+                    updateDate: Date.now()
+                  });
+                  News.findOne({
+                    originalLink: news.originalLink
+                  }, function (err, New) {
+                    if (New === null) {
+                      console.log(news.originalLink + " " + total);
+                      total++;
+                      arrayNews.push(news._id);
+                      news.save().then(function () {
+                        resolve(true);
+                      })
+                    }
+                  });
+                  i++;
+                  if (i == length) {
+                    resolve(true);
                   }
                 });
-                i++;
               });
-              gotoPage = $('#tie-next-page a').attr('href');
-              if (gotoPage === undefined) {
-                return resolve({
-                  'total': total,
-                  'status': true
-                });
-              }
-              callback(null, gotoPage);
+              temp.then(function (res) {
+                gotoPage = $('#tie-next-page a').attr('href');
+                if (gotoPage === undefined) {
+                  return resolve({
+                    'total': total,
+                    'listNewsId': arrayNews,
+                    'status': true
+                  });
+                }
+                callback(null, gotoPage);
+              })
             } else {
               return reject(false);
             }
