@@ -63,7 +63,6 @@
     vm.animationsEnabled = true;
     vm.conform = function (id) {
       $rootScope.id = id;
-      console.log(id);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -75,7 +74,6 @@
       }).closed.then(function () {
         getListCategory().then(
           function (res) {
-            console.log(res);
             vm.listCategory = res.categorys;
           });
       });

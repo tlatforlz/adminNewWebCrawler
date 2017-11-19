@@ -18,7 +18,6 @@
       return deferred.promise;
     }
     NewsCrawler().then(function (res) {
-      console.log(res);
       vm.newscrawler = res.count;
     })
 
@@ -35,7 +34,6 @@
       return deferred.promise;
     }
     NewsActive().then(function (res) {
-      console.log(res);
       vm.newsactive = res.count;
     })
 
@@ -52,7 +50,6 @@
       return deferred.promise;
     }
     Spiders().then(function (res) {
-      console.log(res);
       vm.spiders = res.spider;
     })
 
@@ -69,7 +66,6 @@
       return deferred.promise;
     }
     Views().then(function (res) {
-      console.log(res);
       vm.views = res.count[0].total;
     })
   }

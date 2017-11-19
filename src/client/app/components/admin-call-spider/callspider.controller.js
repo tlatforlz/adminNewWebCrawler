@@ -352,9 +352,7 @@
     }
 
     vm.getKey = function () {
-      console.log(vm.searchKey);
       $uibModalInstance.close();
-      console.log($rootScope.spiderId);
       getSpider($rootScope.spiderId).then(function (res) {
         $rootScope.spiderId = res.spider._id;
         $rootScope.spiderName = res.spider.crawlingName;
@@ -1182,16 +1180,13 @@
     vm.category = 0;
     vm.totalCategory = 0;
     vm.totalNews = 0;
-    console.log($rootScope.spiderName);
     getUrl($rootScope.urlId).then(urlPath => {
       getNewsNone($rootScope.spiderId).then(res => {
-        console.log(res);
         vm.totalNews = res.news.length;
         if (vm.totalNews > 0) {
           vm.havenews = true;
           res.news.forEach(item => {
             updateByUrl($rootScope.spiderName, item._id, item.originalLink).then(news => {
-              console.log(item.originalLink);
               index++;
               vm.newsIndex = index;
               if (index === vm.totalNews) {

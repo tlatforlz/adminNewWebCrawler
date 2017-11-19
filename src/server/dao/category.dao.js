@@ -19,7 +19,6 @@ function checkKey(request) {
       keys: request.key
     }).exec()
     .then(cate => {
-      console.log(cate);
       if (cate) return Promise.resolve(true);
       else return Promise.reject(false);
     })

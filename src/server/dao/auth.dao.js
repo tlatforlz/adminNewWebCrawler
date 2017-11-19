@@ -12,8 +12,6 @@ module.exports = {
 };
 
 function signin(request, callback) {
-  console.log(request);
-
   return user.findOne({
     email: request.email
   }).exec().then(function (user) {

@@ -15,11 +15,9 @@ module.exports = {
 };
 
 function addCategory(request) {
-  console.log(request);
   return Url.findById({
     _id: request.id
   }).then(w => {
-    console.log(w);
     w.path.forEach(item => {
       if (item._id == request.object) {
         item.catelogyId = request.cateId;
@@ -34,11 +32,9 @@ function addCategory(request) {
 }
 
 function removeCategory(request) {
-  console.log(request);
   return Url.findById({
     _id: request.id
   }).then(w => {
-    console.log(w);
     w.path.forEach(item => {
       if (item._id == request.object) {
         item.catelogyId = null;
@@ -53,7 +49,6 @@ function removeCategory(request) {
 }
 
 function removePathInUrl(request) {
-  console.log(request);
   return Url.update({
     _id: request.id
   }, {

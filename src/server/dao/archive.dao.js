@@ -14,7 +14,6 @@ module.exports = {
 
 
 function removeCategory(request) {
-  console.log(request);
   return Archive.findOne({
       _id: request.id,
     }).exec()
@@ -34,13 +33,11 @@ function removeCategory(request) {
 }
 
 function addCategory(request) {
-  console.log(request);
   return Archive.findOne({
       _id: request.id,
       "listCategory": request.CateId
     }).exec()
     .then(function (archive) {
-      console.log(archive);
       if (archive !== null) {
         return Promise.reject({
           message: failMessage.Archive.dupplicate

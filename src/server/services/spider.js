@@ -34,7 +34,6 @@ function spiderCountUpdateAll(crawlingName) {
     .populate('urlId')
     .exec()
     .then(function (spiderN) {
-      console.log('spider ' + spiderN);
       if (spiderN === null) {
         message: failMessage.spider.notFound
       }
@@ -104,7 +103,6 @@ function spiderTinNongNghiep(urlId, spiderId) {
       },
       function (next) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
-        console.log(disUrl);
         getPath_spiderTinNongNghiep(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
           page++;
           next();
@@ -151,6 +149,7 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
       return reject(false);
     }
     var total = 0;
+    var arrayNews = [];
     async.whilst(function () {
       return path !== undefined
     }, function (next) {
@@ -184,13 +183,11 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
                 }, function (err, New) {
                   if (New === null) {
                     news.save();
-                  } else {
-                    New.updateDate = Date.now();
-                    New.save();
+                    total++;
+                    arrayNews.push(news._id);
                   }
                 });
                 i++;
-                total++;
               });
               gotoPage = $('#tie-next-page a').attr('href');
               if (gotoPage === undefined) {
@@ -301,7 +298,6 @@ function spiderTinNongNghiep_path(urlId, spiderId, catelogyId) {
 }
 
 function spiderNongNghiepVietNam_path(urlId, spiderId, catelogyId) {
-  console.log(urlId);
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
@@ -411,16 +407,11 @@ function spiderTinNongNghiep_updateAll() {
                   news[page].createDate = result.createDate;
                   news[page].updateDate = result.updateDate;
                   console.log(news[page].title);
-                  console.log(news[page].createDate);
                   news[page].save(function (err) {
-                    if (err) {
-                      console.log('error');
-                    }
+                    if (err) {}
                   });
                 });
-            } else {
-              console.log('log die');
-            }
+            } else {}
             page++;
             next();
           });
@@ -453,7 +444,6 @@ function spiderNongNghiepVietNam_updateAll() {
   }, function (err, news) {
     var page = 0;
     var lastPage = news.length;
-    console.log(lastPage);
     async.whilst(function () {
         return page < lastPage;
       },
@@ -501,16 +491,11 @@ function spiderNongNghiepVietNam_updateAll() {
                   news[page].createDate = result.createDate;
                   news[page].updateDate = result.updateDate;
                   console.log(news[page].title);
-                  console.log(news[page].createDate);
                   news[page].save(function (err) {
-                    if (err) {
-                      console.log('error');
-                    }
+                    if (err) {}
                   });
                 });
-            } else {
-              console.log('log die');
-            }
+            } else {}
             page++;
             next();
           });
@@ -570,15 +555,12 @@ function spiderTinNongNghiep_updatePath(categoryId) {
                   news[page].createDate = result.createDate;
                   news[page].updateDate = result.updateDate;
                   console.log(news[page].title);
-                  console.log(news[page].createDate);
                   news[page].save(function (err) {
-                    if (err) {
-                      console.log('error');
-                    }
+                    if (err) {}
                   });
                 });
             } else {
-              console.log('log die');
+              s
             }
             page++;
             next();

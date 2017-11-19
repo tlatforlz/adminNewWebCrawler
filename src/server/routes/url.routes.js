@@ -18,7 +18,6 @@ module.exports = function () {
       object: req.params.object,
       cateId: req.params.cateId
     }
-    console.log(request);
     urlDao.addCategory(request)
       .then(function (url) {
         res.status(200).send(url).end();
@@ -34,7 +33,6 @@ module.exports = function () {
       id: req.params.id,
       object: req.params.object
     }
-    console.log(request);
     urlDao.removeCategory(request)
       .then(function (url) {
         res.status(200).send(url).end();
@@ -49,7 +47,6 @@ module.exports = function () {
       id: req.params.id,
       namePath: req.body.namePath
     }
-    console.log(request);
     urlDao.addPathInUrl(request)
       .then(function (url) {
         res.status(200).send(url).end();

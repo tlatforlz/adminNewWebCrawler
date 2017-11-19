@@ -335,8 +335,6 @@
     var resizeCallback = function () {
       var contentHeight = $('#content').height();
       var sidebar = $('#sidebar').height();
-      console.log(contentHeight);
-      console.log(sidebar);
       if (sidebar < contentHeight) {
         $('#sidebar').css('height', contentHeight);
       } else {

@@ -249,12 +249,7 @@ function updateNews(request) {
         $ne: request.id
       }
     }).exec().then(function (New) {
-      // console.log(New);
-      // if (New !== null) {
-      //   return Promise.reject({
-      //     message: failMessage.news.dupplicate
-      //   });
-      // }
+      
       return news.save().then(function (err) {
         return Promise.resolve({
           message: successMessage.news.update,
@@ -515,7 +510,6 @@ function getNewsSearch(request) {
     },
     active: true
   }).exec().then(function (newss) {
-    console.log(newss);
     var res = pagination.pagination(newss.splice(request.pageSize * (request.pageIndex - 1), request.pageSize), newss.length, request.pageIndex, request.pageSize);
     return Promise.resolve(res);
   });

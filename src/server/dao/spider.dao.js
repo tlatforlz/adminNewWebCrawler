@@ -103,7 +103,6 @@ function getNewsNone(request) {
       content: undefined
     }).exec()
     .then(function (res) {
-      console.log(res);
       return Promise.resolve({
         news: res
       })
@@ -126,7 +125,6 @@ function getNewsNone(request) {
 }
 
 function getNewsCallLimit(request) {
-  console.log(request);
   return News.find({
       active: false,
       spiderId: request._id
@@ -146,7 +144,6 @@ function getNewsCall(request) {
       spiderId: request._id
     }).exec()
     .then(function (res) {
-      console.log(res);
       return Promise.resolve({
         news: res
       })
@@ -357,7 +354,6 @@ function updateNewsSpider(request) {
           length: function (callback) {
             ListSpider.spiderCountUpdateAll(request.crawlingName)
               .then(function (result1) {
-                console.log('blabla' + result1.length);
                 callback(null, result1.length);
               });
           }

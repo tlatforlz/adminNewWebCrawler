@@ -38,7 +38,6 @@
           storage.user = jwtHelper.decodeToken(res.data.token);
           deferred.resolve('Login successful');
         }).catch(function (err) {
-          console.log(err);
           deferred.reject(errTransService[err.data.message]);
         });
 

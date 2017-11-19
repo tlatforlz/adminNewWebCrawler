@@ -64,7 +64,6 @@
     vm.animationsEnabled = true;
     vm.conform = function (id) {
       $rootScope.id = id;
-      console.log(id);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -84,7 +83,6 @@
     vm.animationsEnabled = true;
     vm.callSpider = function (id) {
       $rootScope.id = id;
-      console.log(id);
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -179,7 +177,6 @@
       vm.urlTitle = res.url.title;
       vm.urlHostname = res.url.hostname;
       vm.path = res.url.path;
-      console.log(vm.path);
       $rootScope.id = res.url._id;
     });
 
@@ -210,7 +207,6 @@
           vm.urlTitle = res.url.title;
           vm.urlHostname = res.url.hostname;
           vm.path = res.url.path;
-          console.log(vm.path);
         });
       });
     }
@@ -446,7 +442,6 @@
       var data = {
         "namePath": path
       };
-      console.log(data);
       $http({
         method: 'POST',
         url: '/api/url/removePath/' + $rootScope.id,
