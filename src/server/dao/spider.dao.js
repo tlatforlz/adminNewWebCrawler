@@ -27,10 +27,24 @@ module.exports = {
 
   getCategoryByUrl: getCategoryByUrl,
   callSpiderByPath: callSpiderByPath,
+  callSpiderByPathUpdate: callSpiderByPathUpdate,
   getSpiderByCrawlingName: getSpiderByCrawlingName,
   updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId,
   getNewsByDate: getNewsByDate
 };
+
+//callSpiderByPath
+function callSpiderByPathUpdate(request) {
+  return new Promise(function (resolve, reject) {
+    return SpiderCatgory.callSpiderByPathUpdate(request.crawlingName, request.namePath, request.catelogyId)
+      .then(function (res) {
+        return resolve(res);
+      })
+      .catch(function (err) {
+        return reject(err);
+      })
+  });
+}
 
 function getNewsByDate(request) {
   return News.find({

@@ -17,6 +17,7 @@ module.exports = {
   spiderTinNongNghiep_updateUrl: spiderTinNongNghiep_updateUrl,
   spiderTinNongNghiep_updateUrlVersion2: spiderTinNongNghiep_updateUrlVersion2,
   getPath_spiderTinNongNghiep: getPath_spiderTinNongNghiep,
+  getPathUpdate_spiderTinNongNghiep: getPathUpdate_spiderTinNongNghiep,
 
   spiderNongNghiepVietNam: spiderNongNghiepVietNam,
   spiderNongNghiepVietNam_path: spiderNongNghiepVietNam_path,
@@ -142,6 +143,96 @@ function spiderNongNghiepVietNam(urlId, spiderId) {
       });
   });
 }
+
+function getPathUpdate_spiderTinNongNghiep(path, spiderId, catelogyId) {
+  return new Promise(function (resolve, reject) {
+    if (path === undefined) {
+      return reject(false);
+    }
+    var total = 0;
+    var arrayNews = [];
+    async.whilst(function () {
+      return path !== undefined
+    }, function (next) {
+      async.series({
+        gotoPage: function (callback) {
+          request(path, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+              var $ = cheerio.load(body);
+              var i = 1;
+              var length = $('.post-listing .post-box-title a').length;
+              console.log(length);
+              var temp = new Promise(function (resolve, reject) {
+                $('.post-listing .post-box-title a').each(function () {
+                  if (length == 0) {
+                    resolve(true);
+                  }
+                  //#main-content > div.content > div.post-listing > article:nth-child(1)
+                  url = ($(this).attr('href'));
+                  image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
+                  des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
+                  if (image === undefined) {
+                    image = null;
+                  } else {
+                    image = image.split('-150x150').join('');
+                  }
+                  var news = new News({
+                    originalLink: url,
+                    spiderId: spiderId,
+                    categoryId: catelogyId,
+                    image: image,
+                    description: des,
+                    active: false,
+                    updateDate: Date.now()
+                  });
+                  News.findOne({
+                    originalLink: news.originalLink
+                  }, function (err, New) {
+                    if (New === null) {
+                      console.log(news.originalLink + " " + total);
+                      total++;
+                      arrayNews.push(news._id);
+                      news.save();
+                    } else {
+                      console.log(New.originalLink + " " + total);
+                      New.updateDate = Date.now();
+                      total++;
+                      arrayNews.push(New._id);
+                      New.save();
+                    }
+                  });
+                  i++;
+                  if (i == length) {
+                    resolve(true);
+                  }
+                });
+              });
+              temp.then(function (res) {
+                gotoPage = $('#tie-next-page a').attr('href');
+                if (gotoPage === undefined) {
+                  return resolve({
+                    'total': total,
+                    'listNewsId': arrayNews,
+                    'status': true
+                  });
+                }
+                callback(null, gotoPage);
+              })
+            } else {
+              return reject(false);
+            }
+          });
+        }
+      }, function (err, result) {
+        path = result.gotoPage;
+        next();
+      });
+    }, function (err) {
+      return resolve(true);
+    })
+  });
+}
+
 
 function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {

@@ -23,6 +23,23 @@ module.exports = function () {
 
   router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
   router.post('/categorySpider/callSpiderByPath/:crawlingName', callSpiderByPath);
+  router.post('/categorySpider/callSpiderByPathUpdate/:crawlingName', callSpiderByPathUpdate);
+
+
+  function callSpiderByPathUpdate(req, res, next) {
+    var request = {
+      crawlingName: req.params.crawlingName,
+      namePath: req.body.namePath,
+      catelogyId: req.body.catelogyId,
+    };
+    spiderDao.callSpiderByPathUpdate(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
 
   function getNewsByDate(req, res, next) {

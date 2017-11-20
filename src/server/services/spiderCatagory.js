@@ -10,7 +10,47 @@ var SpiderService = require('./spider');
 module.exports = {
   spiderCatagoryGetAll: spiderCatagoryGetAll,
   spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
-  callSpiderByPath: callSpiderByPath
+  callSpiderByPath: callSpiderByPath,
+  callSpiderByPathUpdate: callSpiderByPathUpdate
+}
+
+function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
+  return new Promise(function (resolve, reject) {
+    if (namePath === '' || namePath === undefined) {
+      return reject(false);
+    }
+    return SpiderModel.findOne({
+        crawlingName: crawlingName
+      }).exec()
+      .then(res => {
+        if (crawlingName === 'spiderTinNongNghiep') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var host = url.hostname + namePath;
+            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+                return resolve(res);
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+          })
+        }
+        if (crawlingName === 'spiderTinNongNghiepVietNam') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var host = url.hostname + namePath;
+            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+                return resolve(res);
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+          })
+        }
+      })
+  })
 }
 
 function callSpiderByPath(crawlingName, namePath, catelogyId) {
