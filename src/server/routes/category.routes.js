@@ -11,6 +11,24 @@ module.exports = function () {
   router.post('/addKey/:id', addKey);
   router.post('/removeKey/:id', removeKey);
   router.post('/checkKey/:id', checkKey);
+  router.post('/updateKey/:id/:pos', updateKey);
+
+  function updateKey(req, res, next) {
+    var request = {
+      key: req.body.key,
+      id: req.params.id,
+      pos: req.params.pos
+    };
+    console.log(request);
+    categoryDao.updateKey(request)
+      .then(function (Category) {
+        res.status(200).send(Category).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
 
   function checkKey(req, res, next) {
     var request = {
@@ -33,6 +51,7 @@ module.exports = function () {
     };
     categoryDao.addKey(request)
       .then(function (Category) {
+        console.log('this is :' + Category);
         res.status(200).send(Category).end();
       })
       .catch(function (err) {

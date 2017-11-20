@@ -10,8 +10,42 @@ module.exports = {
   deleteCategory: deleteCategory,
   addKey: addKey,
   removeKey: removeKey,
-  checkKey: checkKey
+  checkKey: checkKey,
+  updateKey: updateKey
 };
+
+function updateKey(request) {
+  return Category.findOne({
+      _id: request.id,
+    }).exec()
+    .then(cate => {
+      return checkKey(request).then(s => {
+        if (!s) {
+          var check = new Promise(function (resolve, reject) {
+            var index = 0;
+            var item = "";
+            cate.keys.forEach(ele => {
+              if (index == parseInt(request.pos)) {
+                item = ele;
+              }
+              index++;
+              if (index === cate.keys.length - 1) {
+                cate.keys.push(request.key);
+                cate.keys.pull(item);
+                cate.save();
+                resolve(true);
+              }
+            });
+          })
+          return check.then(res => {
+            return Promise.resolve(true)
+          })
+        } else {
+          return Promise.resolve(false);
+        }
+      })
+    })
+}
 
 function checkKey(request) {
   return Category.findOne({
@@ -20,7 +54,7 @@ function checkKey(request) {
     }).exec()
     .then(cate => {
       if (cate) return Promise.resolve(true);
-      else return Promise.reject(false);
+      else return Promise.resolve(false);
     })
 }
 
@@ -29,14 +63,33 @@ function addKey(request) {
       _id: request.id
     }).exec()
     .then(cate => {
-      cate.keys.push(request.key);
-      return cate.save().then(err => {
-        if (err) {
-          return Promise.reject(err);
+      var check = new Promise(function (resolve, reject) {
+        var index = 0;
+        cate.keys.forEach(element => {
+          if (element === request.key) {
+            resolve(true);
+          }
+          index++;
+          if (index == cate.keys.length) {
+            resolve(false);
+          }
+        });
+      });
+
+      return check.then(w => {
+        if (!w) {
+          cate.keys.push(request.key);
+          return cate.save().then(err => {
+            if (err) {
+              return Promise.reject(err);
+            }
+            return Promise.resolve(true);
+          });
+        } else {
+          return Promise.resolve(false);
         }
-        return Promise.resolve(true);
-      })
-    })
+      });
+    });
 }
 
 function removeKey(request) {

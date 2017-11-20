@@ -67,8 +67,8 @@
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
         ariaDescribedBy: 'modal-body',
-        templateUrl: 'conformDelete.html',
-        controller: 'conformDelete2',
+        templateUrl: 'conformCateDelete.html',
+        controller: 'conformCateDelete',
         controllerAs: 'vm',
         size: 'sm'
       }).closed.then(function () {
@@ -77,6 +77,207 @@
             vm.listCategory = res.categorys;
           });
       });
+    };
+
+    vm.animationsEnabled = true;
+    vm.addPath = function (id) {
+      $rootScope.cateId = id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'addPath.html',
+        controller: 'addPath',
+        controllerAs: 'vm',
+        size: 'md'
+      }).closed.then(function () {
+        getListCategory().then(
+          function (res) {
+            vm.listCategory = res.categorys;
+          });
+      });
+    };
+
+    vm.animationsEnabled = true;
+    vm.infoKey = function (id) {
+      $rootScope.cateId = id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'infoKey.html',
+        controller: 'infoKey',
+        controllerAs: 'vm',
+        size: 'md'
+      }).closed.then(function () {
+        getListCategory().then(
+          function (res) {
+            vm.listCategory = res.categorys;
+          });
+      });
+    };
+  }
+
+  angular.module('app.admincategory')
+    .controller('infoKey', ['$q', '$http', '$state', '$scope', '$uibModalInstance', '$rootScope', infoKey]);
+
+  function infoKey($q, $http, $state, $scope, $uibModalInstance, $rootScope) {
+    var vm = this;
+
+    function getAll() {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category',
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getCategory(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category/' + id,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function deleteKey(id, data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/removeKey/' + id,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function updateKey(id, pos, data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/updateKey/' + id + '/' + pos,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.isDup = false;
+    vm.editCate = function (id, key) {
+      console.log(id + " " + key);
+      updateKey($rootScope.cateId, id, {
+        "key": key
+      }).then(w => {
+        if (w) {
+          getCategory($rootScope.cateId).then(function (res) {
+            vm.listKeys = res.category.keys;
+          })
+        } else {
+          vm.isDup = true;
+        }
+      })
+    }
+
+    vm.conform = function (key) {
+      console.log(key);
+      deleteKey($rootScope.cateId, {
+        "key": key
+      }).then(w => {
+        $uibModalInstance.close();
+      }).catch(err => {
+        getCategory($rootScope.cateId).then(function (res) {
+          vm.listKeys = res.category.keys;
+        })
+      })
+    }
+    getCategory($rootScope.cateId).then(function (res) {
+      vm.listKeys = res.category.keys;
+    })
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+  }
+
+  angular.module('app.admincategory')
+    .controller('addPath', ['$q', '$http', '$state', '$scope', '$uibModalInstance', '$rootScope', addPath]);
+
+  function addPath($q, $http, $state, $scope, $uibModalInstance, $rootScope) {
+    var vm = this;
+
+    function add(category) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category',
+        data: category
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getAll() {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/category',
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function andPath(category, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/addKey/' + category,
+        data: key
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.ok = function () {
+      var data = {
+        'key': vm.key
+      };
+      andPath($rootScope.cateId, data).then(function (res) {
+        if (res) {
+          vm.isShow = false;
+          $uibModalInstance.close();
+        } else {
+          vm.isShow = true;
+        }
+      });
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
     };
   }
 
@@ -173,10 +374,11 @@
     };
   }
   angular.module('app.admincategory')
-    .controller('conformDelete2', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformDelete2]);
+    .controller('conformCateDelete', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformCateDelete]);
 
-  function conformDelete2($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+  function conformCateDelete($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
     var vm = this;
+    console.log('fuck');
 
     function deleteCategory(category) {
       var deferred = $q.defer();
