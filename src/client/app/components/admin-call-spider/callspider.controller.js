@@ -704,10 +704,10 @@
     vm.loading = true;
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
-        console.log(call);
         if (call.status === true) {
           if (call.total > 0) {
             vm.loading = false;
+            vm.total = call.total;
             vm.listNewsId = call.listNewsId;
             vm.listSpider = [];
             vm.listNewsId.forEach(newsId => {
@@ -1108,6 +1108,7 @@
         if (call.status === true) {
           if (call.total > 0) {
             vm.loading = false;
+            vm.total = call.total;
             vm.listNewsId = call.listNewsId;
             vm.listSpider = [];
             vm.listNewsId.forEach(newsId => {
@@ -1134,11 +1135,10 @@
         }
       });
     });
-    //$rootScope.spiderId
+
     vm.ok = function () {
       $uibModalInstance.close();
     };
-
 
     function callUrl(name, id) {
       var deferred = $q.defer();
@@ -1153,7 +1153,6 @@
       return deferred.promise;
     }
 
-    // router.post('/:crawlingName/:url/updateurl', updateNewsSpiderUrl);
     function updateByUrl(name, urlId, url) {
       var deferred = $q.defer();
       $http({
@@ -1504,7 +1503,7 @@
     vm.category = 1;
     vm.totalCategory = 0;
     vm.totalNews = 0;
-      getUrl($rootScope.urlId).then(urlPath => {
+    getUrl($rootScope.urlId).then(urlPath => {
       vm.totalCategory = urlPath.url.path.length;
       urlPath.url.path.forEach(item => {
         callPath($rootScope.spiderName, item.namePath, item.catelogyId).then(news => {

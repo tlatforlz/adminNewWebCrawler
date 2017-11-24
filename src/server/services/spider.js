@@ -232,7 +232,6 @@ function getPathUpdate_spiderTinNongNghiep(path, spiderId, catelogyId) {
 
 
 function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
-  console.log(path + " " + " spiderId : " + spiderId + " catelogyId : " + catelogyId);
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return reject(false);

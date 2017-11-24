@@ -112,7 +112,6 @@ function countSpider(request) {
 
 function getNewsNone(request) {
   return News.find({
-      active: false,
       spiderId: request._id,
       content: undefined
     }).exec()
@@ -127,7 +126,6 @@ function getNewsNone(request) {
 //getNewsNone
 function getNewsNone(request) {
   return News.find({
-      active: false,
       spiderId: request._id,
       content: undefined
     }).exec()
@@ -140,7 +138,6 @@ function getNewsNone(request) {
 
 function getNewsCallLimit(request) {
   return News.find({
-      active: false,
       spiderId: request._id
     })
     .limit(parseInt(request.limit))
@@ -157,7 +154,6 @@ function getNewsCallLimit(request) {
 
 function getNewsCall(request) {
   return News.find({
-      active: false,
       spiderId: request._id
     })
     .sort({
