@@ -11,8 +11,17 @@ module.exports = {
   spiderCatagoryGetAll: spiderCatagoryGetAll,
   spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
   callSpiderByPath: callSpiderByPath,
-  callSpiderByPathUpdate: callSpiderByPathUpdate
+  callSpiderByPathUpdate: callSpiderByPathUpdate,
+
+  searchByKey: searchByKey
 }
+
+function searchByKey(crawlingName, searchKey) {
+  console.log(crawlingName + " " + searchKey);
+
+}
+
+
 
 function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
   return new Promise(function (resolve, reject) {
@@ -41,7 +50,7 @@ function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-          return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {

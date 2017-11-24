@@ -24,6 +24,22 @@ module.exports = function () {
   router.get('/callSpiderCategory/:urlId', getCategoryByUrl);
   router.post('/categorySpider/callSpiderByPath/:crawlingName', callSpiderByPath);
   router.post('/categorySpider/callSpiderByPathUpdate/:crawlingName', callSpiderByPathUpdate);
+  router.post('/search/:crawlingName/searchByKey', searchByKey);
+
+
+  function searchByKey(req, res, next) {
+    var request = {
+      crawlingName: req.params.crawlingName,
+      searchKey: req.body.searchKey
+    };
+    spiderDao.searchByKey(request)
+      .then(function (spider) {
+        res.status(200).send(spider).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
 
   function callSpiderByPathUpdate(req, res, next) {

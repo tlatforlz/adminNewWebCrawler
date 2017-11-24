@@ -30,8 +30,23 @@ module.exports = {
   callSpiderByPathUpdate: callSpiderByPathUpdate,
   getSpiderByCrawlingName: getSpiderByCrawlingName,
   updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId,
-  getNewsByDate: getNewsByDate
+  getNewsByDate: getNewsByDate,
+
+
+  searchByKey: searchByKey
 };
+
+function searchByKey(request) {
+  return new Promise(function (resolve, reject) {
+    return SpiderCatgory.searchByKey(request.crawlingName, request.searchKey)
+      .then(function (res) {
+        return resolve(res);
+      })
+      .catch(function (err) {
+        return reject(err);
+      })
+  });
+}
 
 //callSpiderByPath
 function callSpiderByPathUpdate(request) {

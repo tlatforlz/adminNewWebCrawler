@@ -505,6 +505,21 @@
       return deferred.promise;
     }
 
+    function searchByKey(spiderName, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/searchByKey/' + spiderName,
+        data: {
+          'searchKey': key
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      })
+      return deferred.promise;
+    }
     vm.path = [];
     vm.spiderName = $rootScope.spideName;
     vm.isSearchButton = false;
@@ -602,7 +617,12 @@
     }
 
     vm.SearchKey = function () {
-
+      console.log($rootScope.spiderId);
+      getSpider($rootScope.spiderId).then(spider => {
+        searchByKey(spider.spider.crawlingName, $rootScope.searchKey).then(result => {
+          console.log(result);
+        })
+      })
     }
     vm.ok = function () {
       $uibModalInstance.close();
