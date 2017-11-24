@@ -124,47 +124,31 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 0;
+            var index = 1;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
                 var host = url.hostname + element.namePath;
                 searchByKeyTinNongNghiep(host, res._id, element.catelogyId, searchKey).then(res => {
                   var y = 0;
-                  var p = new Promise(function (resolve, reject) {
-                    res.listNewsId.forEach(news => {
-                      listNewsId.push(news);
-                      y++;
-                      if (y == res.listNewsId.length) {
-                        resolve(true);
-                      }
-                    });
-                  })
-                  p.then(res => {
-                    total += res.total;
-                    index++;
-                    console.log(index);
-                    console.log(url.path.length);
-                  }).catch(err => {
-                    index++;
-                    console.log(index);
-                  })
-                });
-                if (index === url.path.length - 1) {
-                  console.log('hihiiihhihihihihi');
-                  resolve(true);
-                }
+                  res.listNewsId.forEach(news => {
+                    listNewsId.push(news);
+                  });
+                  total += res.total;
+                  index++;
+                  if (index === url.path.length - 1) {
+                    resolve(true);
+                  }
+                })
               });
-
             });
             t.then(s => {
-              console.log('hihiiih');
               return resolve({
                 total: total,
                 listNewsId: listNewsId
               });
             }).catch(s => {
-              console.log('asdsadsadsa');
+              console.log('err ' + s);
             })
           });
         }
