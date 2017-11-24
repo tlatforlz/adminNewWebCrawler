@@ -509,7 +509,7 @@
       var deferred = $q.defer();
       $http({
         method: 'POST',
-        url: '/api/spider/searchByKey/' + spiderName,
+        url: '/api/spider/search/' + spiderName + "/searchByKey",
         data: {
           'searchKey': key
         }
@@ -617,10 +617,21 @@
     }
 
     vm.SearchKey = function () {
-      console.log($rootScope.spiderId);
       getSpider($rootScope.spiderId).then(spider => {
         searchByKey(spider.spider.crawlingName, $rootScope.searchKey).then(result => {
           console.log(result);
+          $uibModalInstance.close();
+          $rootScope.listNewsId = result.listNewsId;
+          $rootScope.total = result.total;
+          var modalInstance = $uibModal.open({
+            animation: vm.animationsEnabled,
+            ariaLabelledBy: 'modal-title',
+            ariaDescribedBy: 'modal-body',
+            templateUrl: 'showNewsSearchBykey.html',
+            controller: 'showNewsSearchBykey',
+            controllerAs: 'vm',
+            size: 'lg'
+          })
         })
       })
     }
@@ -669,7 +680,62 @@
     };
   }
 
+  angular.module('app.admincallspider')
+    .controller('showNewsSearchBykey', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', showNewsSearchBykey]);
 
+  function showNewsSearchBykey($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal, NgTableParams) {
+    var vm = this;
+
+
+    function urlInformation(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/url/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
+    };
+
+    function getNewsSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/getNewsCall/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+  }
   angular.module('app.admincallspider')
     .controller('updateNewsByCategory', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', updateNewsByCategory]);
 
