@@ -19,7 +19,6 @@ module.exports = function () {
       id: req.params.id,
       pos: req.params.pos
     };
-    console.log(request);
     categoryDao.updateKey(request)
       .then(function (Category) {
         res.status(200).send(Category).end();
@@ -51,7 +50,6 @@ module.exports = function () {
     };
     categoryDao.addKey(request)
       .then(function (Category) {
-        console.log('this is :' + Category);
         res.status(200).send(Category).end();
       })
       .catch(function (err) {

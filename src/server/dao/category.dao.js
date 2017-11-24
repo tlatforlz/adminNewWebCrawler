@@ -77,14 +77,11 @@ function addKey(request) {
       });
 
       return check.then(w => {
-        if (!w) {
+        console.log(w);
+        if (!w && request.key !== null && request.key !== undefined) {
           cate.keys.push(request.key);
-          return cate.save().then(err => {
-            if (err) {
-              return Promise.reject(err);
-            }
-            return Promise.resolve(true);
-          });
+          cate.save();
+          return Promise.resolve(true);
         } else {
           return Promise.resolve(false);
         }
@@ -98,12 +95,8 @@ function removeKey(request) {
     }).exec()
     .then(cate => {
       cate.keys.pull(request.key);
-      return cate.save().then(err => {
-        if (err) {
-          return Promise.reject(err);
-        }
-        return Promise.resolve(true);
-      })
+      cate.save();
+      return Promise.resolve(true);
     })
 }
 

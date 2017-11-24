@@ -19,7 +19,7 @@
     display: inline-block;
     text-align: left;
     vertical-align: middle;
-}
+  }
 
   .modal-body img {
     height: 400px;
@@ -275,10 +275,9 @@
     </div>
     <button class="btn btn-warning" type="button" ng-click="vm.getKey()" style="padding-left: 15px;padding-right: 15px;">Search</button>
   </div>
-  <div class="modal-footer">z
+  <div class="modal-footer">
   </div>
 </script>
-
 <script type="text/ng-template" id="addSearchKeyInCategory.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
@@ -306,10 +305,10 @@
                 <td>{{cate.keys}}</td>
                 <td>
                   <div class="btn-group">
-                    <a ng-show="cate.add" class="btn btn-primary" ng-click="vm.add(cate.value)">
+                    <a ng-show="cate.add" class="btn btn-primary" ng-click="vm.add(cate._id)">
                       <i class="fa fa-plus"></i>
                     </a>
-                    <a ng-show="cate.remove" style="background-color: indianred;" class="btn btn-primary" ng-click="vm.remove(cate.value)">
+                    <a ng-show="cate.remove" style="background-color: indianred;" class="btn btn-primary" ng-click="vm.remove(cate._id)">
                       <i class="fa fa-minus"></i>
                     </a>
                   </div>
@@ -322,11 +321,9 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button class="btn btn-primary" type="button" ng-disabled="!vm.isSearchButton" ng-click="vm.SearchKey()">Search</button>
   </div>
 </script>
-
-
 <script type="text/ng-template" id="updateNewsByCategory.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>

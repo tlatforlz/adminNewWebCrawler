@@ -472,8 +472,42 @@
       });
       return deferred.promise;
     }
+
+    function addKey(id, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/addKey/' + id,
+        data: {
+          'key': key
+        }
+      }).then(function sucesssCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function removeKey(id, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/category/removeKey/' + id,
+        data: {
+          'key': key
+        }
+      }).then(function sucesssCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     vm.path = [];
     vm.spiderName = $rootScope.spideName;
+    vm.isSearchButton = false;
     getCategory().then(cate => {
       cate.categorys.forEach(item => {
         checkKey(item._id, $rootScope.searchKey).then(check => {
@@ -486,26 +520,92 @@
               'remove': true
             }
             vm.path.push(cateItem);
+            vm.isSearchButton = true;
+          } else {
+            var cateItem = {
+              '_id': item._id,
+              'name': item.name,
+              'keys': item.keys,
+              'add': true,
+              'remove': false
+            }
+            vm.path.push(cateItem);
           }
-        }).catch(err => {
-          var cateItem = {
-            '_id': item._id,
-            'name': item.name,
-            'keys': item.keys,
-            'add': true,
-            'remove': false
-          }
-          vm.path.push(cateItem);
         });
-      })
-    })
+      });
+    });
 
-    vm.ok = function () {
-      $uibModalInstance.close();
+    vm.add = function (id) {
+      vm.path = [];
+      vm.isSearchButton = false;
+      addKey(id, $rootScope.searchKey).then(w => {
+        getCategory().then(cate => {
+          cate.categorys.forEach(item => {
+            checkKey(item._id, $rootScope.searchKey).then(check => {
+              if (check === true) {
+                var cateItem = {
+                  '_id': item._id,
+                  'name': item.name,
+                  'keys': item.keys,
+                  'add': false,
+                  'remove': true
+                }
+                vm.path.push(cateItem);
+                vm.isSearchButton = true;
+              } else {
+                var cateItem = {
+                  '_id': item._id,
+                  'name': item.name,
+                  'keys': item.keys,
+                  'add': true,
+                  'remove': false
+                }
+                vm.path.push(cateItem);
+              }
+            });
+          });
+        });
+      });
     };
 
-    vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
+    vm.remove = function (id) {
+      vm.path = [];
+      vm.isSearchButton = false;
+      removeKey(id, $rootScope.searchKey).then(w => {
+        getCategory().then(cate => {
+          cate.categorys.forEach(item => {
+            checkKey(item._id, $rootScope.searchKey).then(check => {
+              if (check === true) {
+                var cateItem = {
+                  '_id': item._id,
+                  'name': item.name,
+                  'keys': item.keys,
+                  'add': false,
+                  'remove': true
+                }
+                vm.path.push(cateItem);
+                vm.isSearchButton = true;
+              } else {
+                var cateItem = {
+                  '_id': item._id,
+                  'name': item.name,
+                  'keys': item.keys,
+                  'add': true,
+                  'remove': false
+                }
+                vm.path.push(cateItem);
+              }
+            });
+          });
+        });
+      });
+    }
+
+    vm.SearchKey = function () {
+
+    }
+    vm.ok = function () {
+      $uibModalInstance.close();
     };
 
     function getNewsSpider(id) {
