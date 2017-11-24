@@ -477,7 +477,6 @@ function spiderTinNongNghiep_updateAll() {
                   },
                   content: function (callback) {
                     let content = $('#main-content > div.content > article > div').html();
-
                     //console.log('log content + ' + content);
                     //#main-content > div.content > article > div
                     let remove = $('#main-content > div.content > article > div > p').html();

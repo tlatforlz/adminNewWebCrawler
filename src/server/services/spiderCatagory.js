@@ -13,12 +13,163 @@ module.exports = {
   callSpiderByPath: callSpiderByPath,
   callSpiderByPathUpdate: callSpiderByPathUpdate,
 
-  searchByKey: searchByKey
+  searchByKey: searchByKey,
+
+
+  searchByKeyTinNongNghiep: searchByKeyTinNongNghiep
+}
+
+function searchByKeyTinNongNghiep(path, spiderId, categoryId, searchKey) {
+  return new Promise(function (resolve, reject) {
+    if (path === undefined) {
+      return reject(false);
+    }
+    var total = 0;
+    var arrayNews = [];
+    async.whilst(function () {
+      return path !== undefined
+    }, function (next) {
+      async.series({
+        gotoPage: function (callback) {
+          request(path, function (error, response, body) {
+            if (!error && response.statusCode === 200) {
+              var $ = cheerio.load(body);
+              var i = 1;
+              var length = $('.post-listing .post-box-title a').length;
+              var temp = new Promise(function (resolve, reject) {
+                $('.post-listing .post-box-title a').each(function () {
+                  if (length == 0 || length == undefined) {
+                    resolve(true);
+                  }
+                  url = ($(this).attr('href'));
+                  image = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
+                  des = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > div.entry > p').text();
+                  title = $('#main-content > div.content > div.post-listing > article:nth-child(' + i + ') > h2 > a').text().toLowerCase();
+                  if (image === undefined) {
+                    image = null;
+                  } else {
+                    image = image.split('-150x150').join('');
+                  }
+                  var news = new News({
+                    originalLink: url,
+                    spiderId: spiderId,
+                    categoryId: categoryId,
+                    image: image,
+                    description: des,
+                    active: false,
+                    updateDate: Date.now()
+                  });
+
+                  if (title.indexOf(searchKey.toLowerCase()) > -1) {
+                    console.log(title);
+                    News.findOne({
+                      originalLink: news.originalLink
+                    }, function (err, New) {
+                      if (New === null) {
+                        total++;
+                        arrayNews.push(news._id);
+                        news.save().then(function () {
+                          resolve(true);
+                        });
+                      } else {
+                        total++;
+                        New.updateDate = Date.now();
+                        New.save();
+                        arrayNews.push(New._id);
+                        resolve(true);
+                      }
+                    });
+                  }
+                  i++;
+                  if (i == length) {
+                    resolve(true);
+                  }
+                });
+              });
+              temp.then(function (res) {
+                gotoPage = $('#tie-next-page a').attr('href');
+                if (gotoPage === undefined) {
+                  return resolve({
+                    'total': total,
+                    'listNewsId': arrayNews,
+                    'status': true
+                  });
+                }
+                callback(null, gotoPage);
+              })
+            } else {
+              return reject(false);
+            }
+          });
+        }
+      }, function (err, result) {
+        path = result.gotoPage;
+        next();
+      });
+    }, function (err) {
+      return resolve(true);
+    })
+  });
 }
 
 function searchByKey(crawlingName, searchKey) {
-  console.log(crawlingName + " " + searchKey);
+  return new Promise(function (resolve, reject) {
+    return SpiderModel.findOne({
+        crawlingName: crawlingName
+      })
+      .exec()
+      .then(res => {
+        if (crawlingName === 'spiderTinNongNghiep') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var total = 0;
+            var index = 0;
+            var listNewsId = [];
+            var t = new Promise(function (resolve, reject) {
+              url.path.forEach(element => {
+                var host = url.hostname + element.namePath;
+                searchByKeyTinNongNghiep(host, res._id, element.catelogyId, searchKey).then(res => {
+                  var y = 0;
+                  var p = new Promise(function (resolve, reject) {
+                    res.listNewsId.forEach(news => {
+                      listNewsId.push(news);
+                      y++;
+                      if (y == res.listNewsId.length) {
+                        resolve(true);
+                      }
+                    });
+                  })
+                  p.then(res => {
+                    total += res.total;
+                    index++;
+                    console.log(index);
+                    console.log(url.path.length);
+                  }).catch(err => {
+                    index++;
+                    console.log(index);
+                  })
+                });
+                if (index === url.path.length - 1) {
+                  console.log('hihiiihhihihihihi');
+                  resolve(true);
+                }
+              });
 
+            });
+            t.then(s => {
+              console.log('hihiiih');
+              return resolve({
+                total: total,
+                listNewsId: listNewsId
+              });
+            }).catch(s => {
+              console.log('asdsadsadsa');
+            })
+          });
+        }
+      });
+  });
 }
 
 
