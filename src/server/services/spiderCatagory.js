@@ -41,7 +41,7 @@ function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+          return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {

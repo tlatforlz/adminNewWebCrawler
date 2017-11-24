@@ -144,6 +144,9 @@ function getNewsCallLimit(request) {
       spiderId: request._id
     })
     .limit(parseInt(request.limit))
+    .sort({
+      'updateDate': -1
+    })
     .exec()
     .then(function (res) {
       return Promise.resolve({
@@ -156,12 +159,16 @@ function getNewsCall(request) {
   return News.find({
       active: false,
       spiderId: request._id
-    }).exec()
+    })
+    .sort({
+      'updateDate': -1
+    })
+    .exec()
     .then(function (res) {
       return Promise.resolve({
         news: res
-      })
-    })
+      });
+    });
 }
 
 function testSpider(request) {

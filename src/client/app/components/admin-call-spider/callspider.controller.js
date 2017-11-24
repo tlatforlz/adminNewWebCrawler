@@ -327,16 +327,16 @@
           controllerAs: 'vm',
           size: 'md'
         }).closed.then(function () {
-          // getNewsSpider().then(function (res) {
-          //   vm.listSpider = res.news;
-          //   vm.tableParams = new NgTableParams({
-          //     page: 1,
-          //     count: 15,
-          //     header: false
-          //   }, {
-          //     dataset: vm.listSpider
-          //   });
-          // });
+          getNewsSpider().then(function (res) {
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
         });
       });
     };
@@ -1500,21 +1500,21 @@
     }
 
     vm.toal = 0;
-    var index = 0;
-    vm.category = 0;
+    var index = 1;
+    vm.category = 1;
     vm.totalCategory = 0;
     vm.totalNews = 0;
-    getUrl($rootScope.urlId).then(urlPath => {
+      getUrl($rootScope.urlId).then(urlPath => {
       vm.totalCategory = urlPath.url.path.length;
       urlPath.url.path.forEach(item => {
-        callPath($rootScope.spiderName, item.namePath, item.categoryId).then(news => {
+        callPath($rootScope.spiderName, item.namePath, item.catelogyId).then(news => {
           index++;
           vm.category = index;
           vm.totalNews += news.total;
           if (index == urlPath.url.path.length) {
             setTimeout(function () {
               $uibModalInstance.close();
-            }, 3000);
+            }, 2000);
           }
         });
       });

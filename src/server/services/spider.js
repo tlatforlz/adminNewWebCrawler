@@ -161,7 +161,6 @@ function getPathUpdate_spiderTinNongNghiep(path, spiderId, catelogyId) {
               var $ = cheerio.load(body);
               var i = 1;
               var length = $('.post-listing .post-box-title a').length;
-              console.log(length);
               var temp = new Promise(function (resolve, reject) {
                 $('.post-listing .post-box-title a').each(function () {
                   if (length == 0) {
@@ -189,12 +188,10 @@ function getPathUpdate_spiderTinNongNghiep(path, spiderId, catelogyId) {
                     originalLink: news.originalLink
                   }, function (err, New) {
                     if (New === null) {
-                      console.log(news.originalLink + " " + total);
                       total++;
                       arrayNews.push(news._id);
                       news.save();
                     } else {
-                      console.log(New.originalLink + " " + total);
                       New.updateDate = Date.now();
                       total++;
                       arrayNews.push(New._id);
@@ -235,6 +232,7 @@ function getPathUpdate_spiderTinNongNghiep(path, spiderId, catelogyId) {
 
 
 function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
+  console.log(path + " " + " spiderId : " + spiderId + " catelogyId : " + catelogyId);
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return reject(false);
@@ -251,10 +249,9 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
               var $ = cheerio.load(body);
               var i = 1;
               var length = $('.post-listing .post-box-title a').length;
-              console.log(length);
               var temp = new Promise(function (resolve, reject) {
                 $('.post-listing .post-box-title a').each(function () {
-                  if (length == 0) {
+                  if (length == 0 || length == undefined) {
                     resolve(true);
                   }
                   //#main-content > div.content > div.post-listing > article:nth-child(1)
@@ -572,7 +569,8 @@ function spiderNongNghiepVietNam_updateAll() {
                     let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
                     let remove_review_overview = $('#the-post > div > div.entry > h2').html();
                     let remove_link = $('#the-post > div > div.entry > ul').html();
-                    callback(null, content.split(remove).join('').split(remove_review_overview).join('').split(remove_link).join(''));
+                    // callback(null, content.split(remove).join('').split(remove_review_overview).join('').split(remove_link).join(''));
+                    callback(null, content);
                   },
                   author: function (callback) {
                     let author = $('#the-post > div > p > span.post-meta-author > a').text();
