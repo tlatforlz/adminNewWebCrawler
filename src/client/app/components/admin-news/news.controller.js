@@ -73,6 +73,33 @@
         size: 'lg'
       });
     };
+
+    vm.animationsEnabled = true;
+    vm.editCate = function (_id) {
+      $rootScope._id = _id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'editNews.html',
+        controller: 'editNews',
+        controllerAs: 'vm',
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
+      }).closed.then(function () {
+        getListNews().then(function (res) {
+          vm.listNews = res.news;
+          vm.tableParams = new NgTableParams({
+            page: 1,
+            count: 15,
+            header: false
+          }, {
+            dataset: vm.listNews
+          });
+        });
+      });
+    }
     //conform
     vm.animationsEnabled = true;
     vm.conform = function (_id) {
@@ -98,6 +125,44 @@
           });
         });
       });
+    };
+  }
+
+  angular.module('app.adminnews')
+    .controller('editNews', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', editNews]);
+
+  function editNews($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+    var vm = this;
+
+    function find(_id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + _id,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    find($rootScope._id).then(function (res) {
+      vm.title = res.news.title;
+      vm.originalLink = res.news.originalLink;
+      vm.author = res.news.author;
+      vm.createDate = moment(res.news.createDate).format('DD-MM-YYYY');
+
+      vm.spiderId = res.news.spiderId;
+      vm.categoryId = res.news.categoryId;
+      vm.content = res.news.content;
+
+    });
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+
+    vm.cancel = function () {
+      $uibModalInstance.dismiss('cancel');
     };
   }
 
