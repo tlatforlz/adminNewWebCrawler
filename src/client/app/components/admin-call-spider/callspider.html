@@ -489,23 +489,3 @@
     </div>
   </section>
 </section>
-
-<!-- <script src="assets/js/jquery.resize.js"></script> -->
-<script type="text/javascript">
-  $(document).ready(function () {
-    var resizeCallback = function () {
-      var contentHeight = $('#content').height();
-      var sidebar = $('#sidebar').height();
-      if (sidebar < contentHeight) {
-        $('#sidebar').css('height', contentHeight);
-      } else {
-        $('#sidebar').css('height', "100%");
-      }
-    };
-    $('#content').resize(resizeCallback);
-    // setTimeout(function () {
-
-    // }, 2000);
-  });
-
-</script>

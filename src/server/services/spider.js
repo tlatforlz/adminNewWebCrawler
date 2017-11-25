@@ -8,7 +8,6 @@ var async = require('async');
 
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
-
   spiderTinNongNghiep: spiderTinNongNghiep,
   spiderTinNongNghiep_updateAll: spiderTinNongNghiep_updateAll,
   spiderTinNongNghiep_path: spiderTinNongNghiep_path,
