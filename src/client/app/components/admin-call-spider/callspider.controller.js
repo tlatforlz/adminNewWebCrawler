@@ -374,12 +374,25 @@
       return deferred.promise;
     }
 
+    function getNewsSpider(id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/getNewsCall/' + id
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     vm.getKey = function () {
-      $uibModalInstance.close();
       getSpider($rootScope.spiderId).then(function (res) {
         $rootScope.spiderId = res.spider._id;
         $rootScope.spiderName = res.spider.crawlingName;
         $rootScope.searchKey = vm.searchKey;
+        $uibModalInstance.close();
         var modalInstance = $uibModal.open({
           animation: vm.animationsEnabled,
           ariaLabelledBy: 'modal-title',
@@ -389,16 +402,16 @@
           controllerAs: 'vm',
           size: 'lg'
         }).closed.then(function () {
-          // getNewsSpider().then(function (res) {
-          //   vm.listSpider = res.news;
-          //   vm.tableParams = new NgTableParams({
-          //     page: 1,
-          //     count: 15,
-          //     header: false
-          //   }, {
-          //     dataset: vm.listSpider
-          //   });
-          // });
+          getNewsSpider($rootScope.spiderId).then(function (res) {
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
         });
       });
     }
@@ -505,21 +518,7 @@
       return deferred.promise;
     }
 
-    function searchByKey(spiderName, key) {
-      var deferred = $q.defer();
-      $http({
-        method: 'POST',
-        url: '/api/spider/search/' + spiderName + "/searchByKey",
-        data: {
-          'searchKey': key
-        }
-      }).then(function successCallback(res) {
-        deferred.resolve(res.data);
-      }, function () {
-        deferred.reject(null);
-      })
-      return deferred.promise;
-    }
+
     vm.path = [];
     vm.spiderName = $rootScope.spideName;
     vm.isSearchButton = false;
@@ -617,22 +616,30 @@
     }
 
     vm.SearchKey = function () {
+      $uibModalInstance.close();
       getSpider($rootScope.spiderId).then(spider => {
-        searchByKey(spider.spider.crawlingName, $rootScope.searchKey).then(result => {
-          console.log(result);
-          $uibModalInstance.close();
-          $rootScope.listNewsId = result.listNewsId;
-          $rootScope.total = result.total;
-          var modalInstance = $uibModal.open({
-            animation: vm.animationsEnabled,
-            ariaLabelledBy: 'modal-title',
-            ariaDescribedBy: 'modal-body',
-            templateUrl: 'showNewsSearchBykey.html',
-            controller: 'showNewsSearchBykey',
-            controllerAs: 'vm',
-            size: 'lg'
-          })
-        })
+        $rootScope.spiderName = spider.spider.crawlingName;
+        var modalInstance = $uibModal.open({
+          animation: vm.animationsEnabled,
+          ariaLabelledBy: 'modal-title',
+          ariaDescribedBy: 'modal-body',
+          templateUrl: 'showNewsSearchBykey.html',
+          controller: 'showNewsSearchBykey',
+          controllerAs: 'vm',
+          size: 'lg'
+        }).closed.then(function () {
+          getNewsSpider($rootScope.spiderId).then(function (res) {
+            console.log(res);
+            vm.listSpider = res.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          });
+        });
       })
     }
     vm.ok = function () {
@@ -686,6 +693,282 @@
   function showNewsSearchBykey($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal, NgTableParams) {
     var vm = this;
 
+    function updateNews(id, data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'PUT',
+        url: '/api/news/' + id,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.checkAction = function (active, _id) {
+      var data = {
+        'active': !active
+      };
+      updateNews(_id, data).then(function (res) {
+        setTimeout(function () {
+          vm.loadingNews = false;
+          getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+            vm.listSpider = news.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          })
+        }, 3000);
+      });
+    };
+
+    function searchByKey(spiderName, key) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/search/' + spiderName + "/searchByKey",
+        data: {
+          'searchKey': key
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      })
+      return deferred.promise;
+    }
+
+    function getNewsCalled(newsId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + newsId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function getNewsNeastCall(spiderId, limit) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/spider/getNewsCall/' + spiderId + "/" + limit
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+
+    vm.loading = true;
+    vm.loadingNews = true;
+    searchByKey($rootScope.spiderName, $rootScope.searchKey).then(result => {
+      vm.loading = false;
+      vm.loadingNews = false;
+      vm.total = result.total;
+      $rootScope.listNewsId = result.listNewsId;
+      $rootScope.total = result.total;
+      vm.listSpider = [];
+      $rootScope.listNewsId.forEach(newsId => {
+        getNewsCalled(newsId).then(res => {
+          vm.listSpider.push(res.news);
+          if (vm.listSpider.length == result.total) {
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          }
+        })
+      })
+    })
+
+    vm.animationsEnabled = true;
+    vm.newsDetail = function (_id) {
+      $rootScope._id = _id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'newsDetail.html',
+        controller: 'newsDetail',
+        controllerAs: 'vm',
+        size: 'lg'
+      });
+    };
+
+
+    vm.animationsEnabled = true;
+    vm.conform = function (_id) {
+      $rootScope._id = _id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'conformDelete.html',
+        controller: 'conformDelete',
+        controllerAs: 'vm',
+        size: 'sm'
+      }).closed.then(function () {
+        setTimeout(function () {
+          getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+            vm.listSpider = news.news;
+            vm.tableParams = new NgTableParams({
+              page: 1,
+              count: 15,
+              header: false
+            }, {
+              dataset: vm.listSpider
+            });
+          })
+        }, 3000);
+      });
+    };
+
+    vm.callOneUrl = function (_id) {
+      getSpider($rootScope.spiderId).then(function (res) {
+        callUrl(res.spider.crawlingName, _id).then(function (ress) {
+          vm.showCallUrl = new String(_id);
+          var temp_VM = '';
+          for (var index = 0; index < vm.showCallUrl.length; index++) {
+            temp_VM += vm.showCallUrl.charAt(index);
+          }
+          vm.showCallUrl = temp_VM;
+          if (ress.messsage === 'CALL_SUCCESS') {
+            setTimeout(function () {
+              vm.showCallUrl = false;
+              getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+                vm.listSpider = news.news;
+                vm.tableParams = new NgTableParams({
+                  page: 1,
+                  count: 15,
+                  header: false
+                }, {
+                  dataset: vm.listSpider
+                });
+              })
+            }, 3000);
+          }
+        })
+      })
+    };
+
+    function updateByUrl(name, urlId, url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: 'api/spider/' + name + "/" + urlId + "/updateurlByNewsId",
+        data: {
+          "url": url
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.loadingNews = false;
+    vm.updatePathAll = function () {
+      getSpider($rootScope.spiderId).then(function (res) {
+        getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+          vm.listSpider = news.news;
+          var index = 0;
+          vm.listSpider.forEach(element => {
+            //originalLink
+            vm.loadingNews = true;
+            updateByUrl(res.spider.crawlingName, element._id, element.originalLink).then(news => {
+              index++;
+              vm.index = index;
+              console.log(index);
+              console.log(vm.total - 1);
+              if (index === vm.total) {
+                setTimeout(function () {
+                  vm.loadingNews = false;
+                  getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+                    vm.listSpider = news.news;
+                    vm.tableParams = new NgTableParams({
+                      page: 1,
+                      count: 15,
+                      header: false
+                    }, {
+                      dataset: vm.listSpider
+                    });
+                  })
+                }, 3000);
+              }
+            })
+          });
+        })
+      });
+    }
+
+
+    function callUrl(name, id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/spider/' + name + '/' + id + '/updateurl'
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.index = 0;
+    vm.loadingNews = false;
+    vm.activePathAll = function () {
+      vm.loadingNewsActive = true;
+      getSpider($rootScope.spiderId).then(function (res) {
+        getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+          vm.total = news.news.length;
+          vm.listSpider = news.news;
+          var index = 0;
+          vm.listSpider.forEach(element => {
+            //originalLink
+            vm.loadingNews = true;
+            updateNews(element._id, {
+              'active': true
+            }).then(news => {
+              index++;
+              vm.index = index;
+              if (index == vm.total - 1) {
+                vm.loadingNews = false;
+                setTimeout(function () {
+                  vm.loadingNews = false;
+                  getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+                    vm.listSpider = news.news;
+                    vm.tableParams = new NgTableParams({
+                      page: 1,
+                      count: 15,
+                      header: false
+                    }, {
+                      dataset: vm.listSpider
+                    });
+                  })
+                }, 3000);
+              }
+            })
+          });
+        })
+      });
+    }
 
     function urlInformation(id) {
       var deferred = $q.defer();

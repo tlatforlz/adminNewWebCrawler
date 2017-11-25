@@ -74,6 +74,7 @@ function searchByKeyTinNongNghiep(path, spiderId, categoryId, searchKey) {
                       } else {
                         total++;
                         New.updateDate = Date.now();
+                        New.active = false;
                         New.save();
                         arrayNews.push(New._id);
                         resolve(true);
