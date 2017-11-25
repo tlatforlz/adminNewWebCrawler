@@ -128,6 +128,7 @@
     };
   }
 
+
   angular.module('app.adminnews')
     .controller('editNews', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', editNews]);
 
@@ -157,8 +158,10 @@
       vm.content = res.news.content;
 
     });
-    vm.ok = function () {
-      $uibModalInstance.close();
+
+    vm.Save = function () {
+      console.log(vm.title);
+      console.log(vm.contentCkEditor);
     };
 
     vm.cancel = function () {

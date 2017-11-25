@@ -45,14 +45,14 @@
             <h5>spiderId : {{vm.spiderId}}</h5>
             <h5>categoryId : {{vm.categoryId}}</h5>
             <h5>Content : </h5>
-            <textarea id='article_content' ng-bind-html="vm.content"></textarea>
+            <textarea ckeditor name="editor" id='article_content' ng-model="vm.contentCkEditor" ng-bind-html="vm.content"></textarea>
           </div>
         </div>
       </div>
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button class="btn btn-primary" type="button" ng-click="vm.Save()">Save</button>
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
   </div>
   <script>
