@@ -28,6 +28,8 @@ app.use(config.BASE_URL + '/news', require('./routes/news.routes')());
 app.use(config.BASE_URL + '/archive', require('./routes/archive.routes')());
 app.use(config.BASE_URL + '/user', require('./routes/user.routes')());
 app.use(config.BASE_URL + '/auth', require('./routes/auth.routes')());
+app.use(config.BASE_URL + '/upload', require('./routes/upload.routes')());
+
 console.log('About to crank up node');
 console.log('PORT=' + port);
 console.log('NODE_ENV=' + environment);
