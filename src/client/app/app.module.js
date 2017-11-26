@@ -11,6 +11,7 @@
     'app.adminspider',
     'app.adminurls',
     'app.admincallspider',
+    'app.adminrestricted',
 
     'ui.router',
     'angular-jwt',
