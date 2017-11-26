@@ -159,9 +159,27 @@
 
     });
 
+    function updateNews(id, data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'PUT',
+        url: 'api/news/' + id,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
     vm.Save = function () {
-      console.log(vm.title);
-      console.log(vm.contentCkEditor);
+      updateNews($rootScope._id, {
+          title: vm.title,
+          content: vm.contentCkEditor
+        })
+        .then(res => {
+          $uibModalInstance.close();
+        })
     };
 
     vm.cancel = function () {
