@@ -1,17 +1,29 @@
-<link rel="stylesheet" href="/src/client/assets/css/styles-admin.css">
+<h1>
+  News Crawler Webiste - Admin Page</h1>
 
-
-<div class="container ">
-
+<div class="" style="    padding-top: 8px;
+padding-bottom: 150px;
+background: url(https://www.healthline.com/hlcmsresource/images/spider-bites/642x361_Spider_Bites_Black_Widow.jpg) no-repeat fixed center;
+height: 100%;
+background-position: center;
+background-repeat: no-repeat;
+background-size: cover;
+">
   <form class="login-form" ng-submit="vm.login()">
     <div class="login-wrap">
-      <p class="login-img"><i class="icon_lock_alt"></i></p>
+      <p class="login-img">
+        <i class="icon_lock_alt"></i>
+      </p>
       <div class="input-group">
-        <span class="input-group-addon"><i class="icon_profile"></i></span>
+        <span class="input-group-addon">
+          <i class="icon_profile"></i>
+        </span>
         <input type="text" class="form-control" placeholder="Username" autofocus ng-model="vm.email">
       </div>
       <div class="input-group">
-        <span class="input-group-addon"><i class="icon_key_alt"></i></span>
+        <span class="input-group-addon">
+          <i class="icon_key_alt"></i>
+        </span>
         <input type="password" class="form-control" placeholder="Password" ng-model="vm.password">
       </div>
       <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>

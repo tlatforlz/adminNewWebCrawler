@@ -11,7 +11,7 @@
       };
       return authService.login(request, vm.remember === true ? 1 : 0).then(function (res) {
         toastr.success(res);
-        $state.go('adminpage');
+        $state.go('layout.dashboard');
       }, function (err) {
         toastr.error(err);
       });

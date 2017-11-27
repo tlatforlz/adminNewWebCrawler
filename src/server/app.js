@@ -29,6 +29,7 @@ app.use(config.BASE_URL + '/archive', require('./routes/archive.routes')());
 app.use(config.BASE_URL + '/user', require('./routes/user.routes')());
 app.use(config.BASE_URL + '/auth', require('./routes/auth.routes')());
 app.use(config.BASE_URL + '/upload', require('./routes/upload.routes')());
+app.use(config.BASE_URL + '/restrict', require('./routes/restrict.routes')());
 
 console.log('About to crank up node');
 console.log('PORT=' + port);

@@ -4,9 +4,9 @@ angular.module('app.adminlogin')
 function adminloginConfig($stateProvider) {
   $stateProvider
     .state('adminlogin', {
-      url: '/adminlogin',
+      url: '/',
       views: {
-        'layout@content': {
+        'main': {
           templateUrl: 'app/components/admin-login/adminlogin.html',
           controller: 'AdminLoginController',
           controllerAs: 'vm'

@@ -19,7 +19,7 @@
     var otherwise = '/404';
     routerHelper.configureStates(getStates(), otherwise);
     $rootScope.$on('$stateChangeStart', function (event, toState, fromState) {
-
+      console.log(toState);
     });
   }
 
