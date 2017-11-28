@@ -11,6 +11,9 @@ var newsSchema = new Schema({
   content: {
     type: String
   },
+  contentText: {
+    type: String
+  },
   image: {
     type: String
   },

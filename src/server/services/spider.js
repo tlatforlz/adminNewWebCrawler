@@ -5,6 +5,7 @@ var newsDao = require('../dao/news.dao');
 var News = require('./../model/news.model');
 var SpiderModel = require('./../model/spider.model');
 var async = require('async');
+var restrictDao = require('./../dao/restrict.dao');
 
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
@@ -24,7 +25,53 @@ module.exports = {
   spiderNongNghiepVietNam_updateAll: spiderNongNghiepVietNam_updateAll,
   spiderNongNghiepVietNam_updateUrl: spiderNongNghiepVietNam_updateUrl,
   spiderNongNghiepVietNam_updatePath: spiderNongNghiepVietNam_updatePath,
-  getPath_spiderNongNghiepVietNam: getPath_spiderNongNghiepVietNam
+  getPath_spiderNongNghiepVietNam: getPath_spiderNongNghiepVietNam,
+
+
+  checkRestrictedKey: checkRestrictedKey
+}
+
+function checkRestrictedKey(id, value) {
+  return new Promise(function (resolve, reject) {
+    return News.findById({
+      _id: id
+    }).exec().then(news => {
+      news.restrictedKey = [];
+      return restrictDao.getAllRestrict().then(list => {
+        console.log(list);
+        var index = 0;
+        var temp = value;
+        list.forEach(item => {
+          var count = 0;
+          var t = new Promise(function (resolve, reject) {
+            while (true) {
+              if (temp.indexOf(item.name) === -1) {
+                resolve(count);
+                break;
+              } else {
+                count++;
+                console.log(temp.indexOf(item.name) + " " + item.name);
+                temp = temp.substring(temp.indexOf(item.name) + item.name.length);
+              }
+            }
+          });
+          t.then(res => {
+            temp = value;
+            news.restrictedKey.push({
+              restrict: item.name,
+              duplicate: res
+            });
+            console.log(item.name + " " + res);
+            news.save();
+            index++;
+            if (index === list.length) {
+              return resolve(true);
+            }
+          })
+        });
+      });
+    });
+  });
 }
 
 function spiderCountUpdateAll(crawlingName) {
@@ -656,7 +703,8 @@ function spiderTinNongNghiep_updatePath(categoryId) {
                   news[page].author = result.author;
                   news[page].createDate = result.createDate;
                   news[page].updateDate = result.updateDate;
-                  console.log(news[page].title);
+                  console.log(news[page].title + " hihiihih");
+                  checkRestrictedKey(news[page]._id, result.content);
                   news[page].save(function (err) {
                     if (err) {}
                   });
@@ -766,6 +814,10 @@ function spiderTinNongNghiep_updateUrl(url) {
                 let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
                 callback(null, content.split(remove).join(''));
               },
+              contentText: function (callback) {
+                let content = $('#main-content > div.content > article > div > div.entry').text();
+                callback(null, content);
+              },
               author: function (callback) {
                 upNews.author = $('#main-content > div.content > article > div > p > span:nth-child(1) > a').text();
                 callback(null, upNews.author);
@@ -789,10 +841,12 @@ function spiderTinNongNghiep_updateUrl(url) {
               upNews.createDate = result.createDate;
               upNews.updateDate = result.updateDate;
               console.log(upNews.originalLink);
-              upNews.save(function (err) {
-                if (err) {
-                  console.log('error');
-                }
+              checkRestrictedKey(url, result.contentText).then(res => {
+                upNews.save(function (err) {
+                  if (err) {
+                    console.log('error');
+                  }
+                });
               });
             });
         } else {
@@ -878,6 +932,10 @@ function spiderTinNongNghiep_updateUrlVersion2(url) {
                   let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
                   callback(null, content.split(remove).join(''));
                 },
+                contentText: function (callback) {
+                  let content = $('#main-content > div.content > article > div > div.entry').text();
+                  callback(null, content);
+                },
                 author: function (callback) {
                   upNews.author = $('#main-content > div.content > article > div > p > span:nth-child(1) > a').text();
                   callback(null, upNews.author);
@@ -900,6 +958,7 @@ function spiderTinNongNghiep_updateUrlVersion2(url) {
                 upNews.author = result.author;
                 upNews.createDate = result.createDate;
                 upNews.updateDate = result.updateDate;
+                upNews.contentText = result.contentText;
                 console.log(upNews.originalLink);
                 return upNews.save(function (err) {
                   if (err) {
