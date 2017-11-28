@@ -41,7 +41,14 @@ var newsSchema = new Schema({
   active: {
     type: Boolean,
     default: false
-  }
+  },
+  restrictedKey: [{
+    restrict: String,
+    duplicate: {
+      type: Number,
+      default: 0
+    }
+  }]
 });
 
 newsSchema.index({
