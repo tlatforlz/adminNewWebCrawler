@@ -1,0 +1,122 @@
+<script type="text/ng-template" id="addNewRestrict.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Add New Restricted Key</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="cname" class="control-label col-lg-2">Name
+              <span class="required">*</span>
+            </label>
+            <div class="col-lg-10">
+              <input class="form-control" id="cname" name="name" type="text" ng-model="vm.name" required />
+              <h5 ng-show="vm.isShow" style="color:red"> Not valid </h5>
+            </div>
+          </div>
+          <div class="" style="margin-top:55px !important">
+            <label for="ckey" class="control-label col-lg-2">Level
+              <span class="required">*</span>
+            </label>
+            <div class="col-lg-10">
+              <input class="form-control" id="ckey" name="key" mtype="text" ng-model="vm.level" required />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="conformCateDelete.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Are you sure ?</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()" style="margin-left: 60px;margin-right: 20px;padding-left: 15px;padding-right: 15px;">Yes</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()" style="padding-left: 15px;padding-right: 15px;">No</button>
+  </div>
+  <div class="modal-footer">
+  </div>
+</script>
+
+<script type="text/ng-template" id="editRestrict.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">Edit Restricted Key</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="panel-body">
+          <div class="form-group">
+            <label for="cname" class="control-label col-lg-2">Name
+              <span class="required">*</span>
+            </label>
+            <div class="col-lg-10">
+              <input class="form-control" id="cname" name="name" type="text" ng-model="vm.name" required />
+              <h5 ng-show="vm.isShow" style="color:red"> Not valid </h5>
+            </div>
+          </div>
+          <div class="" style="margin-top:55px !important">
+            <label for="ckey" class="control-label col-lg-2">Level
+              <span class="required">*</span>
+            </label>
+            <div class="col-lg-10">
+              <input class="form-control" id="ckey" name="key" mtype="text" ng-model="vm.level" required />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">Submit</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+  </div>
+</script>
+<section id="main-content">
+  <section class="wrapper">
+    <div class="row">
+      <div class="col-lg-12">
+        <h3 class="page-header">
+          <i class="fa fa-table"></i> Restricted List</h3>
+      </div>
+
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <section class="panel">
+          <button class="btn btn-primary" style="margin-left:10px;margin-top:10px;margin-bottom:10px" ng-click="vm.addNew()">Add Key</button>
+        </section>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-12">
+        <section class="panel">
+          <table show-filter="true" class="table table-condensed table-bordered table-striped" ng-table="vm.tableParams">
+            <tr ng-repeat="row in $data">
+              <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
+              <td data-title="'name'" filter="{name: 'text'}">{{row.name}}</td>
+              <td data-title="'level'">{{row.level}}</td>
+              <td data-title="'action'">
+                <div class="btn-group">
+                  <a class="btn btn-success" ng-click="vm.edit(row._id)">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                  <a class="btn btn-danger" ng-click="vm.conform(row._id)">
+                    <i class="fa fa-trash"></i>
+                  </a>
+                </div>
+              </td>
+            </tr>
+          </table>
+        </section>
+      </div>
+    </div>
+  </section>
+</section>
