@@ -8,7 +8,6 @@ var async = require('async');
 var UrlModel = require('./../model/url.model');
 var SpiderService = require('./spider');
 module.exports = {
-  spiderCatagoryGetAll: spiderCatagoryGetAll,
   spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
   callSpiderByPath: callSpiderByPath,
   callSpiderByPathUpdate: callSpiderByPathUpdate,
@@ -157,8 +156,6 @@ function searchByKey(crawlingName, searchKey) {
   });
 }
 
-
-
 function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (namePath === '' || namePath === undefined) {
@@ -297,10 +294,6 @@ function getPath_spiderTinNongNghiep(path, spiderId, catelogyId) {
       return resolve(true);
     })
   });
-}
-
-function spiderCatagoryGetAll() {
-
 }
 
 
