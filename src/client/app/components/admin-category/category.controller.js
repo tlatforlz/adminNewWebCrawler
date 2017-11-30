@@ -378,7 +378,6 @@
 
   function conformCateDelete($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
     var vm = this;
-    console.log('fuck');
 
     function deleteCategory(category) {
       var deferred = $q.defer();

@@ -90,7 +90,7 @@
         ariaLabelledBy: 'modal-title',
         ariaDescribedBy: 'modal-body',
         templateUrl: 'conformCateDelete.html',
-        controller: 'conformCateDelete',
+        controller: 'conformReDelete',
         controllerAs: 'vm',
         size: 'sm'
       }).closed.then(function () {
@@ -160,11 +160,11 @@
 
 
   angular.module('app.adminrestricted')
-    .controller('conformCateDelete', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformCateDelete]);
+    .controller('conformReDelete', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', conformReDelete]);
 
-  function conformCateDelete($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
+  function conformReDelete($q, $http, $state, $scope, $rootScope, $uibModalInstance) {
     var vm = this;
-    console.log('fuck');
+    console.log('fuck sdsads');
 
     function deleteCategory(category) {
       var deferred = $q.defer();

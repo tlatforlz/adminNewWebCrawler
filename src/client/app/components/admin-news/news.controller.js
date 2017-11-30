@@ -15,7 +15,9 @@
         templateUrl: 'restrictedList.html',
         controller: 'restrictedList',
         controllerAs: 'vm',
-        size: 'md'
+        size: 'md',
+        backdrop: 'static',
+        keyboard: false
       });
     }
 
@@ -83,7 +85,9 @@
         templateUrl: 'newsDetail.html',
         controller: 'newsDetail',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       });
     };
 
@@ -125,7 +129,9 @@
         templateUrl: 'conformDelete.html',
         controller: 'conformDelete',
         controllerAs: 'vm',
-        size: 'sm'
+        size: 'sm',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getListNews().then(function (res) {
           vm.listNews = res.news;

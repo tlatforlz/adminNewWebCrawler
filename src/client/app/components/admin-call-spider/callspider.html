@@ -330,10 +330,12 @@
     <h3 class="modal-title" id="modal-title">Enter your key </h3>
   </div>
   <div class="modal-body" id="modal-body">
-    <div class="col-lg-10">
+    <div class="col-lg-8">
       <input class="form-control" id="ckey" name="key" mtype="text" ng-model="vm.searchKey" required />
     </div>
     <button class="btn btn-warning" type="button" ng-click="vm.getKey()" style="padding-left: 15px;padding-right: 15px;">Search</button>
+    <button class="btn btn-danger" type="button" ng-click="vm.cancel()" style="padding-left: 15px;padding-right: 15px;">Cancel</button>
+
   </div>
   <div class="modal-footer">
   </div>
@@ -382,6 +384,8 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-disabled="!vm.isSearchButton" ng-click="vm.SearchKey()">Search</button>
+    <button class="btn btn-danger" type="button" ng-click="vm.ok()" style="padding-left: 15px;padding-right: 15px;">Cancel</button>
+
   </div>
 </script>
 <script type="text/ng-template" id="updateNewsByCategory.html">
@@ -447,7 +451,6 @@
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
-    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
   </div>
 </script>
 <section id="main-content">

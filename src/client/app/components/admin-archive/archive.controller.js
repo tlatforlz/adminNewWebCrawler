@@ -34,7 +34,9 @@
         templateUrl: 'addCategory2.html',
         controller: 'addCategoryInArchive',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getListArchive().then(
           function (res) {
@@ -53,7 +55,9 @@
         templateUrl: 'detailArchive.html',
         controller: 'detailArchive',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getListArchive().then(
           function (res) {

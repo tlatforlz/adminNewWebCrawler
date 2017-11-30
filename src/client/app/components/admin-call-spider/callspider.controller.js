@@ -142,7 +142,9 @@
         templateUrl: 'restrictedList.html',
         controller: 'restrictedList',
         controllerAs: 'vm',
-        size: 'md'
+        size: 'md',
+        backdrop: 'static',
+        keyboard: false
       });
     }
 
@@ -208,7 +210,9 @@
           templateUrl: 'updateSpider.html',
           controller: 'updateSpider',
           controllerAs: 'vm',
-          size: 'sm'
+          size: 'sm',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
@@ -246,7 +250,9 @@
         templateUrl: 'newsDetail.html',
         controller: 'newsDetail',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       });
     };
 
@@ -260,7 +266,9 @@
         templateUrl: 'conformDelete.html',
         controller: 'conformDelete',
         controllerAs: 'vm',
-        size: 'sm'
+        size: 'sm',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getNewsSpider().then(function (res) {
           vm.listSpider = res.news;
@@ -287,7 +295,9 @@
           templateUrl: 'callSpider.html',
           controller: 'callSpider',
           controllerAs: 'vm',
-          size: 'sm'
+          size: 'sm',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
@@ -314,7 +324,9 @@
           templateUrl: 'callSpiderByPath.html',
           controller: 'callSpiderByPath',
           controllerAs: 'vm',
-          size: 'lg'
+          size: 'lg',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
@@ -341,7 +353,9 @@
           templateUrl: 'updateNewsByCategory.html',
           controller: 'updateNewsByCategory',
           controllerAs: 'vm',
-          size: 'lg'
+          size: 'lg',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
@@ -368,7 +382,9 @@
           templateUrl: 'searchByKey.html',
           controller: 'searchByKey',
           controllerAs: 'vm',
-          size: 'md'
+          size: 'md',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
@@ -427,6 +443,10 @@
   function searchByKey($q, $http, $state, $scope, $rootScope, $uibModalInstance, $uibModal, NgTableParams) {
     var vm = this;
 
+    vm.cancel = function () {
+      $uibModalInstance.close();
+    }
+
     function urlInformation(id) {
       var deferred = $q.defer();
       $http({
@@ -479,7 +499,9 @@
           templateUrl: 'addSearchKeyInCategory.html',
           controller: 'addSearchKeyInCategory',
           controllerAs: 'vm',
-          size: 'lg'
+          size: 'lg',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider($rootScope.spiderId).then(function (res) {
             vm.listSpider = res.news;
@@ -496,10 +518,6 @@
     }
     vm.ok = function () {
       $uibModalInstance.close();
-    };
-
-    vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
     };
   }
 
@@ -705,7 +723,9 @@
           templateUrl: 'showNewsSearchBykey.html',
           controller: 'showNewsSearchBykey',
           controllerAs: 'vm',
-          size: 'lg'
+          size: 'lg',
+          backdrop: 'static',
+          keyboard: false
         }).closed.then(function () {
           getNewsSpider($rootScope.spiderId).then(function (res) {
             console.log(res);
@@ -750,7 +770,9 @@
         templateUrl: 'showNewsCallPath.html',
         controller: 'showNewsCallPath',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getNewsSpider($rootScope.spiderId).then(function (res) {
           vm.listSpider = res.news;
@@ -885,7 +907,9 @@
         templateUrl: 'newsDetail.html',
         controller: 'newsDetail',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       });
     };
 
@@ -900,7 +924,9 @@
         templateUrl: 'conformDelete.html',
         controller: 'conformDelete',
         controllerAs: 'vm',
-        size: 'sm'
+        size: 'sm',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         setTimeout(function () {
           getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
@@ -973,8 +999,6 @@
             updateByUrl(res.spider.crawlingName, element._id, element.originalLink).then(news => {
               index++;
               vm.index = index;
-              console.log(index);
-              console.log(vm.total - 1);
               if (index === vm.total) {
                 setTimeout(function () {
                   vm.loadingNews = false;
@@ -1163,7 +1187,6 @@
       $rootScope.urlId = urlId;
       $rootScope.cateId = cateId;
       $rootScope.namePath = namePath;
-      $uibModalInstance.close();
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -1171,18 +1194,11 @@
         templateUrl: 'showNewsUpdatePath.html',
         controller: 'showNewsUpdatePath',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
-        getNewsSpider($rootScope.spiderId).then(function (res) {
-          vm.listSpider = res.news;
-          vm.tableParams = new NgTableParams({
-            page: 1,
-            count: 15,
-            header: false
-          }, {
-            dataset: vm.listSpider
-          });
-        });
+        $uibModalInstance.close();
       });
     };
   }
@@ -1437,7 +1453,9 @@
         templateUrl: 'newsDetail.html',
         controller: 'newsDetail',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       });
     };
 
@@ -1479,7 +1497,9 @@
         templateUrl: 'conformDelete.html',
         controller: 'conformDelete',
         controllerAs: 'vm',
-        size: 'sm'
+        size: 'sm',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         setTimeout(function () {
           getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
@@ -1571,7 +1591,9 @@
         templateUrl: 'showNewsCallPath.html',
         controller: 'showNewsCallPath',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         getNewsSpider($rootScope.spiderId).then(function (res) {
           vm.listSpider = res.news;
@@ -1836,7 +1858,9 @@
         templateUrl: 'newsDetail.html',
         controller: 'newsDetail',
         controllerAs: 'vm',
-        size: 'lg'
+        size: 'lg',
+        backdrop: 'static',
+        keyboard: false
       });
     };
 
@@ -1878,7 +1902,9 @@
         templateUrl: 'conformDelete.html',
         controller: 'conformDelete',
         controllerAs: 'vm',
-        size: 'sm'
+        size: 'sm',
+        backdrop: 'static',
+        keyboard: false
       }).closed.then(function () {
         setTimeout(function () {
           getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {

@@ -992,14 +992,16 @@ function spiderTinNongNghiep_updateUrlVersion2(url) {
                 upNews.updateDate = result.updateDate;
                 upNews.contentText = result.contentText;
                 console.log(upNews.originalLink);
-                return upNews.save(function (err) {
-                  if (err) {
-                    return reject({
-                      'message': false
+                checkRestrictedKey(url, result.contentText).then(res => {
+                  return upNews.save(function (err) {
+                    if (err) {
+                      return reject({
+                        'message': false
+                      });
+                    }
+                    return resolve({
+                      'message': true
                     });
-                  }
-                  return resolve({
-                    'message': true
                   });
                 });
               });
