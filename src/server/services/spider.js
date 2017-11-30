@@ -36,7 +36,6 @@ function checkRestrictedKey(id, value) {
     return News.findById({
       _id: id
     }).exec().then(news => {
-
       return restrictDao.getAllRestrict().then(list => {
         var index = 0;
         news.restrictedKey = [];
@@ -77,12 +76,20 @@ function checkRestrictedKey(id, value) {
                 if (check == false) {
                   if (res !== 0) {
                     temp = value;
-                    news.restrictedKey.push({
-                      restrict: item.name,
-                      duplicate: res
-                    });
-                    news.save();
-                    console.log('fucking dupppp');
+                    var request = {
+                      id: news._id,
+                      name: item.name,
+                      count: res
+                    };
+                    News.findById({
+                      _id: request.id
+                    }).exec().then(news => {
+                      news.restrictedKey.push({
+                        restrict: request.name,
+                        duplicate: request.count
+                      });
+                      news.save();
+                    })
                   }
                 }
                 index++;

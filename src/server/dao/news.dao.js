@@ -26,9 +26,23 @@ module.exports = {
   countNews: countNews,
   countNewsActive: countNewsActive,
   totalView: totalView,
-  activeAll: activeAll
+  activeAll: activeAll,
+  pushRestrictKey: pushRestrictKey
 };
 
+function pushRestrictKey(request) {
+  console.log(request);
+  return News.findById({
+    _id: request.id
+  }).exec().then(news => {
+    news.restrictedKey.push({
+      restrict: request.name,
+      duplicate: request.count
+    });
+    news.save();
+    return Promise.resolve(true);
+  })
+}
 
 function activeAll() {
   return News.find({}).exec().then(function (listNews) {
