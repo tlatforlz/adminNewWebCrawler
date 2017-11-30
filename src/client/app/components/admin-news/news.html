@@ -141,6 +141,29 @@
   </div>
 </script>
 
+<script type="text/ng-template" id="restrictedList.html">
+  <div class="modal-header">
+    <h3 class="modal-title" id="modal-title">restrictedList</h3>
+  </div>
+  <div class="modal-body" id="modal-body">
+    <div class="row">
+      <div class="col-lg-12">
+        <table show-filter="true" class="table table-condensed table-bordered table-striped" ng-table="vm.tableParams">
+          <tr ng-repeat="row in $data">
+            <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
+            <td data-title="'name'" filter="{name: 'text'}">{{row.restrict}}</td>
+            <td data-title="'duplicate'">{{row.duplicate}}</td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
+  </div>
+</script>
+
 <section id="main-content">
   <section class="wrapper">
     <div class="row">
@@ -174,6 +197,10 @@
                   </a>
                   <a class="btn btn-danger" ng-click="vm.conform(row._id)">
                     <i class="fa fa-trash"></i>
+                  </a>
+                  <a style="margin-left:10px;padding-left:20px;padding-right:20px;border-top-left-radius:4px;border-bottom-left-radius: 4px"
+                    class="btn btn-warning" ng-show="row.restrictedKey.length > 0 ? true : false" ng-click="vm.bandList(row._id)">
+                    <i class="fa fa-ban"></i>
                   </a>
                 </div>
               </td>

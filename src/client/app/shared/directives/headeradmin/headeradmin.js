@@ -41,7 +41,7 @@
 
         // update ngModel on change
         ckeditor.editor.on('change', function () {
-          ngModel.$setViewValue(this.getData());
+          ngModel.$setViewValue(this);
         });
       }
     };

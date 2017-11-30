@@ -36,38 +36,63 @@ function checkRestrictedKey(id, value) {
     return News.findById({
       _id: id
     }).exec().then(news => {
-      news.restrictedKey = [];
+
       return restrictDao.getAllRestrict().then(list => {
-        console.log(list);
         var index = 0;
-        var temp = value;
-        list.forEach(item => {
-          var count = 0;
-          var t = new Promise(function (resolve, reject) {
-            while (true) {
-              if (temp.indexOf(item.name) === -1) {
-                resolve(count);
-                break;
-              } else {
-                count++;
-                console.log(temp.indexOf(item.name) + " " + item.name);
-                temp = temp.substring(temp.indexOf(item.name) + item.name.length);
+        news.restrictedKey = [];
+        news.save().then(x => {
+          list.forEach(item => {
+            var temp = value;
+            var count = 0;
+            var t = new Promise(function (resolve, reject) {
+              while (true) {
+                if (temp.toLowerCase().indexOf(item.name.toLowerCase()) === -1) {
+                  resolve(count);
+                  break;
+                } else {
+                  count++;
+                  temp = temp.substring(temp.toLowerCase().indexOf(item.name.toLowerCase()) + item.name.length);
+                }
               }
-            }
-          });
-          t.then(res => {
-            temp = value;
-            news.restrictedKey.push({
-              restrict: item.name,
-              duplicate: res
             });
-            console.log(item.name + " " + res);
-            news.save();
-            index++;
-            if (index === list.length) {
-              return resolve(true);
-            }
-          })
+            t.then(res => {
+              console.log(item.name + " " + res);
+              var p = new Promise(function (resolve, reject) {
+                var j = 0;
+                news.restrictedKey.forEach(x => {
+                  console.log(x);
+                  if (x.name == item.name) {
+                    resolve(true);
+                  }
+                  j++;
+                  if (j == news.restrictedKey.length - 1) {
+                    resolve(false);
+                  }
+                });
+                if (news.restrictedKey.length === 0) {
+                  resolve(false);
+                }
+              });
+              p.then(check => {
+                if (check == false) {
+                  if (res !== 0) {
+                    temp = value;
+                    news.restrictedKey.push({
+                      restrict: item.name,
+                      duplicate: res
+                    });
+                    news.save();
+                    console.log('fucking dupppp');
+                  }
+                }
+                index++;
+                if (index === list.length) {
+                  return resolve(true);
+                }
+              })
+            });
+
+          });
         });
       });
     });

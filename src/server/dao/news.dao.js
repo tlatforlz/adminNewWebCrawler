@@ -5,6 +5,7 @@ var Archive = require('./../model/archive.model');
 var Category = require('./../model/category.model');
 var async = require('async');
 var pagination = require('../services/pagination');
+var spider = require('../services/spider')
 
 module.exports = {
   createNews: createNews,
@@ -249,7 +250,7 @@ function updateNews(request) {
         $ne: request.id
       }
     }).exec().then(function (New) {
-      
+      spider.checkRestrictedKey(news._id, news.content);
       return news.save().then(function (err) {
         return Promise.resolve({
           message: successMessage.news.update,

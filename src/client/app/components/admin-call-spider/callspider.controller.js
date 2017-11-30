@@ -103,6 +103,49 @@
       return deferred.promise;
     }
 
+    function getNewsCalled(newsId) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + newsId
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.checkShowRestricted = function (restrictKey) {
+      var index = 0;
+      var t = new Promise(function (resolve, reject) {
+        restrictKey.forEach(item => {
+          if (item.duplicate != 0) {
+            resolve(true);
+          }
+          index++;
+          if (index === restrictKey.length - 1) {
+            resolve(false);
+          }
+        });
+      });
+      t.then(res => {
+        return res;
+      });
+    }
+    vm.bandList = function (id) {
+      $rootScope._id = id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'restrictedList.html',
+        controller: 'restrictedList',
+        controllerAs: 'vm',
+        size: 'md'
+      });
+    }
+
     vm.checkAction = function (active, _id) {
       var data = {
         'active': !active
@@ -341,6 +384,42 @@
       });
     };
   }
+
+  angular.module('app.admincallspider')
+    .controller('restrictedList', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', 'NgTableParams', restrictedList]);
+
+  function restrictedList($q, $http, $state, $scope, $rootScope, $uibModalInstance, NgTableParams) {
+    var vm = this;
+
+    function find(_id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + _id,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    find($rootScope._id).then(function (res) {
+      vm.listRestrict = res.news.restrictedKey;
+      vm.tableParams = new NgTableParams({
+        page: 1,
+        count: 15,
+        header: false,
+        noPager: true,
+        counts: []
+      }, {
+        dataset: vm.listRestrict
+      });
+    });
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+  }
+
 
   angular.module('app.admincallspider')
     .controller('searchByKey', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', searchByKey]);

@@ -6,6 +6,19 @@
     var vm = this;
     vm.listNews = [];
 
+    vm.bandList = function (id) {
+      $rootScope._id = id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'restrictedList.html',
+        controller: 'restrictedList',
+        controllerAs: 'vm',
+        size: 'md'
+      });
+    }
+
     function getListNews() {
       var deferred = $q.defer();
       $http({
@@ -173,13 +186,19 @@
       return deferred.promise;
     }
     vm.Save = function () {
-      updateNews($rootScope._id, {
-          title: vm.title,
-          content: vm.contentCkEditor
-        })
-        .then(res => {
-          $uibModalInstance.close();
-        })
+      if (vm.contentCkEditor !== undefined) {
+        updateNews($rootScope._id, {
+            title: vm.title,
+            content: vm.contentCkEditor.getData(),
+            contentText: vm.contentCkEditor.document.getBody().getText()
+          })
+          .then(res => {
+            $uibModalInstance.close();
+          })
+      } else {
+        $uibModalInstance.close();
+
+      }
     };
 
     vm.cancel = function () {
@@ -270,4 +289,39 @@
       $uibModalInstance.dismiss('cancel');
     };
   }
+  angular.module('app.adminnews')
+    .controller('restrictedList', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', 'NgTableParams', restrictedList]);
+
+  function restrictedList($q, $http, $state, $scope, $rootScope, $uibModalInstance, NgTableParams) {
+    var vm = this;
+
+    function find(_id) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/news/' + _id,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+    find($rootScope._id).then(function (res) {
+      vm.listRestrict = res.news.restrictedKey;
+      vm.tableParams = new NgTableParams({
+        page: 1,
+        count: 15,
+        header: false,
+        noPager: true,
+        counts: []
+      }, {
+        dataset: vm.listRestrict
+      });
+    });
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+  }
+
 })();

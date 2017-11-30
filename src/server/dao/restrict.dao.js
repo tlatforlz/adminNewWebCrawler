@@ -1,12 +1,15 @@
 var Restrict = require('./../model/restrict.model');
+var News = require('./../model/news.model');
+
 
 module.exports = {
   createRestrict: createRestrict,
   getAllRestrict: getAllRestrict,
   getByIdRestrict: getByIdRestrict,
   updateRestrict: updateRestrict,
-  deleteRestrict: deleteRestrict
+  deleteRestrict: deleteRestrict,
 }
+
 
 function createRestrict(request) {
   var newRestrict = new Restrict({
