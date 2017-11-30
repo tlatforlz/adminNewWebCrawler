@@ -26,7 +26,84 @@ module.exports = {
   spiderNongNghiepVietNam_updateAll: spiderNongNghiepVietNam_updateAll,
   spiderNongNghiepVietNam_updateUrl: spiderNongNghiepVietNam_updateUrl,
   spiderNongNghiepVietNam_updatePath: spiderNongNghiepVietNam_updatePath,
-  getPath_spiderNongNghiepVietNam: getPath_spiderNongNghiepVietNam
+  getPath_spiderNongNghiepVietNam: getPath_spiderNongNghiepVietNam,
+
+
+  checkRestrictedKey: checkRestrictedKey
+}
+
+function checkRestrictedKey(id, value) {
+  return new Promise(function (resolve, reject) {
+    return News.findById({
+      _id: id
+    }).exec().then(news => {
+      return restrictDao.getAllRestrict().then(list => {
+        var index = 0;
+        news.restrictedKey = [];
+        news.save().then(x => {
+          list.forEach(item => {
+            var temp = value;
+            var count = 0;
+            var t = new Promise(function (resolve, reject) {
+              while (true) {
+                if (temp.toLowerCase().indexOf(item.name.toLowerCase()) === -1) {
+                  resolve(count);
+                  break;
+                } else {
+                  count++;
+                  temp = temp.substring(temp.toLowerCase().indexOf(item.name.toLowerCase()) + item.name.length);
+                }
+              }
+            });
+            t.then(res => {
+              console.log(item.name + " " + res);
+              var p = new Promise(function (resolve, reject) {
+                var j = 0;
+                news.restrictedKey.forEach(x => {
+                  console.log(x);
+                  if (x.name == item.name) {
+                    resolve(true);
+                  }
+                  j++;
+                  if (j == news.restrictedKey.length - 1) {
+                    resolve(false);
+                  }
+                });
+                if (news.restrictedKey.length === 0) {
+                  resolve(false);
+                }
+              });
+              p.then(check => {
+                if (check == false) {
+                  if (res !== 0) {
+                    temp = value;
+                    var request = {
+                      id: news._id,
+                      name: item.name,
+                      count: res
+                    };
+                    News.findById({
+                      _id: request.id
+                    }).exec().then(news => {
+                      news.restrictedKey.push({
+                        restrict: request.name,
+                        duplicate: request.count
+                      });
+                      news.save();
+                    })
+                  }
+                }
+                index++;
+                if (index === list.length) {
+                  return resolve(true);
+                }
+              })
+            });
+          });
+        });
+      });
+    });
+  });
 }
 
 function spiderCountUpdateAll(crawlingName) {
