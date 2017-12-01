@@ -1671,6 +1671,22 @@
       return deferred.promise;
     }
 
+    vm.bandList = function (id) {
+      $rootScope._id = id;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'restrictedList.html',
+        controller: 'restrictedList',
+        controllerAs: 'vm',
+        size: 'md',
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+
+    vm.Error = 0;
     vm.loading = true;
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
@@ -1683,6 +1699,9 @@
             vm.listSpider = [];
             vm.listNewsId.forEach(newsId => {
               getNewsCalled(newsId).then(res => {
+                if (res.news.restrictedKey.length > 0) {
+                  vm.Error++;
+                }
                 vm.listSpider.push(res.news);
                 if (vm.listSpider.length == call.total - 1) {
                   vm.tableParams = new NgTableParams({

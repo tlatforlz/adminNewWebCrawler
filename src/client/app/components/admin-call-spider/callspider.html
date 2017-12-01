@@ -100,6 +100,7 @@
       <div class="col-lg-12" ng-show='!vm.loading'>
         <div class="action" style="margin-bottom:50px">
           <h4 style="margin-left:20px;float:left">Total : {{vm.total}} News</h4>
+          <h4 style="margin-left:20px;float:left">Total news have restrict words : {{vm.Error}} News</h4>
           <div class="button-action" style="float:right">
             <button class="btn btn-primary" ng-click="vm.activePathAll()">Active All</button>
             <button class="btn btn-danger" ng-click="vm.updatePathAll()">Update All</button>
@@ -109,7 +110,7 @@
           <table show-filter="true" class="table table-condensed table-bordered table-striped" ng-table="vm.tableParams">
             <tr ng-repeat="row in $data">
               <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
-              <td data-title="'title'" filter="{title: 'text'}">{{row.title.substring(0, 40) + '...'}}</td>
+              <td data-title="'title'" filter="{title: 'text'}">{{row.title.substring(0, 30) + '...'}}</td>
               <td data-title="'date call'">{{row.updateDate | date: "yyyy-MM-dd HH:mm:ss"}}</td>
               <td data-title="'active'">
                 <input type="checkbox" name="myTextEditBox" ng-checked={{row.active}} ng-click="vm.checkAction(row.active,row._id)" />
@@ -125,7 +126,9 @@
                   <a class="btn btn-danger" ng-click="vm.conform(row._id)">
                     <i class="fa fa-trash"></i>
                   </a>
-
+                  <a class="btn btn-warning" ng-show="row.restrictedKey.length > 0 ? true : false" ng-click="vm.bandList(row._id)">
+                    <i class="fa fa-ban"></i>
+                  </a>
                 </div>
                 <div class="btn-group" ng-show='vm.showCallUrl === row._id'>
                   <a>
@@ -147,7 +150,6 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
-
 <script type="text/ng-template" id="showNewsCallPath.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
@@ -207,7 +209,6 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
-
 <script type="text/ng-template" id="callSpiderByPath.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
@@ -250,7 +251,6 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
-
 <script type="text/ng-template" id="newsDetail.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">News Details</h3>
@@ -385,7 +385,6 @@
   <div class="modal-footer">
     <button class="btn btn-primary" type="button" ng-disabled="!vm.isSearchButton" ng-click="vm.SearchKey()">Search</button>
     <button class="btn btn-danger" type="button" ng-click="vm.ok()" style="padding-left: 15px;padding-right: 15px;">Cancel</button>
-
   </div>
 </script>
 <script type="text/ng-template" id="updateNewsByCategory.html">
@@ -430,10 +429,9 @@
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
-
 <script type="text/ng-template" id="restrictedList.html">
   <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">restrictedList</h3>
+    <h3 class="modal-title" id="modal-title">restricted List</h3>
   </div>
   <div class="modal-body" id="modal-body">
     <div class="row">
@@ -443,7 +441,6 @@
             <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
             <td data-title="'name'" filter="{name: 'text'}">{{row.restrict}}</td>
             <td data-title="'duplicate'">{{row.duplicate}}</td>
-
           </tr>
         </table>
       </div>
@@ -460,7 +457,6 @@
         <h3 class="page-header">
           <i class="fa fa-table"></i> Spider</h3>
       </div>
-
     </div>
     <div class="row">
       <div class="col-lg-12">
