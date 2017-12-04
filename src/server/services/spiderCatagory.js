@@ -7,6 +7,8 @@ var SpiderModel = require('./../model/spider.model');
 var async = require('async');
 var UrlModel = require('./../model/url.model');
 var SpiderService = require('./spider');
+var SpiderServiceNongNghiepVietNam = require('./spiderNongNghiepVietNam');
+
 module.exports = {
   spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
   callSpiderByPath: callSpiderByPath,
@@ -15,7 +17,109 @@ module.exports = {
   searchByKey: searchByKey,
 
 
-  searchByKeyTinNongNghiep: searchByKeyTinNongNghiep
+  searchByKeyTinNongNghiep: searchByKeyTinNongNghiep,
+  searchByKeyNongNghiepVietNam: searchByKeyNongNghiepVietNam
+}
+
+
+function searchByKeyNongNghiepVietNam(path, spiderId, categoryId, searchKey) {
+  console.log('hihihihi ' + path);
+  return new Promise(function (resolve, reject) {
+    if (path === undefined) {
+      return reject(false);
+    }
+    var total = 0;
+    var arrayNews = [];
+    async.whilst(function () {
+        return path !== undefined
+      }, function (next) {
+        async.series({
+            gotoPage: function (callback) {
+              request(path, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                  var $ = cheerio.load(body);
+                  var i = 1;
+                  var length = $('.post-listing .post-box-title a').length;
+                  var temp = new Promise(function (resolve, reject) {
+                    $('.post-listing .post-box-title a').each(function () {
+                      if (length == 0 || length == undefined) {
+                        resolve(true);
+                      }
+                      url = ($('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').attr('href'));
+                      console.log(url);
+                      image = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
+                      console.log(image);
+                      des = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.entry > p').text();
+                      title = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').text().toLowerCase();
+                      console.log(title);
+
+                      if (image === undefined) {
+                        image = null;
+                      } else {
+                        image = image.split('-310x165').join('');
+                      }
+                      var news =  new News({
+                        originalLink: url,
+                        spiderId: spiderId,
+                        categoryId: categoryId,
+                        image: image,
+                        description: des,
+                        active: false,
+                        updateDate: Date.now()
+                      });
+
+                      if (title.indexOf(searchKey.toLowerCase()) > -1) {
+                        News.findOne({
+                          originalLink: news.originalLink
+                        }, function (err, New) {
+                          if (New === null) {
+                            total++;
+                            arrayNews.push(news._id);
+                            news.save().then(function () {
+                              resolve(true);
+                            });
+                          } else {
+                            total++;
+                            New.updateDate = Date.now();
+                            New.active = false;
+                            New.save();
+                            arrayNews.push(New._id);
+                            resolve(true);
+                          }
+                        });
+                      }
+                      i++;
+                      if (i == length) {
+                        resolve(true);
+                      }
+                    });
+                  });
+                  temp.then(function (res) {
+                    gotoPage = $('#tie-next-page a').attr('href');
+                    if (gotoPage === undefined) {
+                      return resolve({
+                        'total': total,
+                        'listNewsId': arrayNews,
+                        'status': true
+                      });
+                    }
+                    callback(null, gotoPage);
+                  })
+                } else {
+                  return reject(false);
+                }
+              });
+            }
+          },
+          function (err, result) {
+            path = result.gotoPage;
+            next();
+          });
+      },
+      function (err) {
+        return resolve(true);
+      })
+  });
 }
 
 function searchByKeyTinNongNghiep(path, spiderId, categoryId, searchKey) {
@@ -119,6 +223,7 @@ function searchByKey(crawlingName, searchKey) {
       })
       .exec()
       .then(res => {
+        console.log(crawlingName);
         if (crawlingName === 'spiderTinNongNghiep') {
           return UrlModel.findById({
             _id: res.urlId
@@ -130,6 +235,39 @@ function searchByKey(crawlingName, searchKey) {
               url.path.forEach(element => {
                 var host = url.hostname + element.namePath;
                 searchByKeyTinNongNghiep(host, res._id, element.catelogyId, searchKey).then(res => {
+                  var y = 0;
+                  res.listNewsId.forEach(news => {
+                    listNewsId.push(news);
+                  });
+                  total += res.total;
+                  index++;
+                  if (index === url.path.length - 1) {
+                    resolve(true);
+                  }
+                })
+              });
+            });
+            t.then(s => {
+              return resolve({
+                total: total,
+                listNewsId: listNewsId
+              });
+            }).catch(s => {
+              console.log('err ' + s);
+            })
+          });
+        }
+        if (crawlingName === 'spiderTinNongNghiepVietNam') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var total = 0;
+            var index = 1;
+            var listNewsId = [];
+            var t = new Promise(function (resolve, reject) {
+              url.path.forEach(element => {
+                var host = url.hostname + element.namePath;
+                searchByKeyNongNghiepVietNam(host, res._id, element.catelogyId, searchKey).then(res => {
                   var y = 0;
                   res.listNewsId.forEach(news => {
                     listNewsId.push(news);
@@ -170,7 +308,7 @@ function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+            return SpiderService.getPathUpdateSpiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {
@@ -183,7 +321,7 @@ function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-            return SpiderService.getPathUpdate_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+            return SpiderServiceNongNghiepVietNam.getPathUpdateNongNghiepVietNam(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {
@@ -209,7 +347,7 @@ function callSpiderByPath(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-            return SpiderService.getPath_spiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
+            return SpiderService.getPathspiderTinNongNghiep(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {
@@ -222,7 +360,7 @@ function callSpiderByPath(crawlingName, namePath, catelogyId) {
             _id: res.urlId
           }).then(url => {
             var host = url.hostname + namePath;
-            return SpiderService.getPath_spiderNongNghiepVietNam(host, res._id, catelogyId).then(function (res) {
+            return SpiderServiceNongNghiepVietNam.getPathNongNghiepVietNam(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {

@@ -2,7 +2,8 @@
 var NewsDao = require('./news.dao.js');
 var successMessage = require('./../services/successMessage');
 var failMessage = require('./../services/failMessage');
-var ListSpider = require('./../services/spider');
+var SpiderTinNongNghiep = require('./../services/spider');
+var SpiderNongNghiepVietNam = require('./../services/spiderNongNghiepVietNam');
 var SpiderCatgory = require('./../services/spiderCatagory');
 var News = require('./../model/news.model');
 var async = require('async');
@@ -184,7 +185,7 @@ function getNewsCall(request) {
 
 function testSpider(request) {
   return new Promise(function (resolve, reject) {
-    ListSpider.spiderCountUpdateAll(request.crawlingName)
+    SpiderTinNongNghiep.spiderCountUpdateAll(request.crawlingName)
       .then(function (spider) {
         return resolve({
           messsage: successMessage.spider.callSpider,
@@ -341,12 +342,12 @@ function callSpider(request) {
           length: function (callback) {
             switch (request.crawlingName) {
               case "spiderTinNongNghiep":
-                ListSpider.spiderTinNongNghiep(spider.urlId, spider._id).then(function (res) {
+                SpiderTinNongNghiep.spiderTinNongNghiep(spider.urlId, spider._id).then(function (res) {
                   callback(null, res);
                 });;
 
               case "spiderTinNongNghiepVietNam":
-                ListSpider.spiderNongNghiepVietNam(spider.urlId, spider._id).then(function (res) {
+                SpiderNongNghiepVietNam.spiderNongNghiepVietNam(spider.urlId, spider._id).then(function (res) {
                   callback(null, res);
                 });
             }
@@ -375,19 +376,30 @@ function updateNewsSpider(request) {
       return new Promise(function (resolve, reject) {
         switch (request.crawlingName) {
           case "spiderTinNongNghiep":
-            ListSpider.spiderTinNongNghiep_updateAll();
+            SpiderTinNongNghiep.spiderTinNongNghiepUpdateAll();
             break;
           case "spiderTinNongNghiepVietNam":
-            ListSpider.spiderNongNghiepVietNam_updateAll();
+            SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateAll();
             break;
         }
 
         async.series({
           length: function (callback) {
-            ListSpider.spiderCountUpdateAll(request.crawlingName)
-              .then(function (result1) {
-                callback(null, result1.length);
-              });
+            switch (request.crawlingName) {
+              case "spiderTinNongNghiep":
+                SpiderTinNongNghiep.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+              case "spiderTinNongNghiepVietNam":
+                SpiderNongNghiepVietNam.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+            }
+
           }
         }, function (err, result) {
           return resolve({
@@ -413,10 +425,10 @@ function callSpiderPath(request) {
       }
       switch (request.crawlingName) {
         case "spiderTinNongNghiep":
-          ListSpider.spiderTinNongNghiep_path(spider.urlId, spider._id, request.catelogyId);
+          SpiderTinNongNghiep.spiderTinNongNghiepPath(spider.urlId, spider._id, request.catelogyId);
           break;
         case "spiderTinNongNghiepVietNam":
-          ListSpider.spiderNongNghiepVietNam_path(spider.urlId, spider._id, request.catelogyId);
+          SpiderNongNghiepVietNam.spiderNongNghiepPath(spider.urlId, spider._id, request.catelogyId);
           break;
       }
       return Promise.resolve({
@@ -439,10 +451,10 @@ function updateNewsSpiderPath(request) {
       }
       switch (request.crawlingName) {
         case "spiderTinNongNghiep":
-          ListSpider.spiderTinNongNghiep_updatePath(request.catelogyId);
+          SpiderTinNongNghiep.spiderTinNongNghiepUpdatePath(request.catelogyId);
           break;
         case "spiderTinNongNghiepVietNam":
-          ListSpider.spiderNongNghiepVietNam_updatePath(request.catelogyId);
+          SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdatePath(request.catelogyId);
           break;
       }
       return Promise.resolve({
@@ -475,10 +487,10 @@ function callSpiderUrl(request) {
         }
         switch (request.crawlingName) {
           case "spiderTinNongNghiep":
-            ListSpider.spiderTinNongNghiep_Url(spider.urlId, spider._id, request.url);
+            SpiderTinNongNghiep.spiderTinNongNghiepUrl(spider.urlId, spider._id, request.url);
             break;
           case "spiderTinNongNghiepVietNam":
-            ListSpider.spiderNongNghiepVietNam_Url(spider.urlId, spdier._id, request.url);
+            SpiderNongNghiepVietNam.spiderNongNghiepVietNamUrl(spider.urlId, spdier._id, request.url);
             break;
         }
         return Promise.resolve({
@@ -504,10 +516,10 @@ function updateNewsSpiderUrl(request) {
       }
       switch (request.crawlingName) {
         case "spiderTinNongNghiep":
-          ListSpider.spiderTinNongNghiep_updateUrl(request.url);
+          SpiderTinNongNghiep.spiderTinNongNghiepUpdateUrl(request.url);
           break;
         case "spiderTinNongNghiepVietNam":
-          ListSpider.spiderNongNghiepVietNam_updateUrl(request.url);
+          SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateUrl(request.url);
           break;
       }
       return Promise.resolve({
@@ -530,7 +542,7 @@ function updateNewsSpiderUrlByNewsId(request) {
       }
       switch (request.crawlingName) {
         case "spiderTinNongNghiep":
-          return ListSpider.spiderTinNongNghiep_updateUrlVersion2(request.url)
+          return SpiderTinNongNghiep.spiderTinNongNghiepUpdateUrlVersion2(request.url)
             .then(res => {
               return Promise.resolve({
                 message: true
@@ -543,7 +555,17 @@ function updateNewsSpiderUrlByNewsId(request) {
             })
           break;
         case "spiderTinNongNghiepVietNam":
-          ListSpider.spiderNongNghiepVietNam_updateUrl(request.url);
+          return SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
           break;
       }
     });
