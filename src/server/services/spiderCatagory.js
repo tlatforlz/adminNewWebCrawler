@@ -604,13 +604,19 @@ function spiderCatagoryGetByUrl(urlId) {
         request(Url.hostname, function (error, response, body) {
           if (!error && response.statusCode === 200) {
             var $ = cheerio.load(body);
-
-            var lengthHeader = $('header, nav, .mainMenu, .header').find('a').length;
+            console.log(Url.hostname);
+            var lengthHeader = $('header, nav, .mainMenu, .header, .nav, #nav').find('a').length;
             var FirstPromise = new Promise(function (resolve, reject) {
-              $('header, nav, .mainMenu, .header').find('a').each(function () {
+              $('header, nav, .mainMenu, .header, .nav, #nav').find('a').each(function () {
                 var url = $(this).attr('href');
+                console.log(url);
                 if (url.indexOf(Url.hostname) !== -1 && url.split(Url.hostname)[1] !== '/') {
-                  arrayPath.push(url);
+                  if (url.trim() !== "http://www.thuysanvietnam.com.vn") {
+                    arrayPath.push(url);
+                  }
+                }
+                if (url.indexOf(url.hostname) === -1 && url.trim() !== "http://www.thuysanvietnam.com.vn") {
+                  arrayPath.push(Url.hostname + url);
                 }
                 lengthHeader--;
               });
