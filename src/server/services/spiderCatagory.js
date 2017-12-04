@@ -23,6 +23,12 @@ module.exports = {
   searchByKeyBaoDanSinh: searchByKeyBaoDanSinh
 }
 
+// http://baodansinh.vn/tin-tuc-su-kien-d1/ 
+// http://www.thuysanvietnam.com.vn/ky-thuat-c16-5.tsvn
+// https://kythuatnuoitrong.edu.vn/trong-trot
+// http://www.khuyennongvn.gov.vn/ky-thuat-trong-trot_t113c105
+// http://khoahoc.tv/s/k%E1%BB%B9+thu%E1%BA%ADt+tr%E1%BB%93ng+tr%E1%BB%8Dt?p=2
+
 function searchByKeyBaoDanSinh(path, spiderId, categoryId, searchKey) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
