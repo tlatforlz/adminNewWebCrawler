@@ -40,9 +40,9 @@ function searchByKeyBaoDanSinh(path, spiderId, categoryId, searchKey) {
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   var i = 1;
-                  var length = $('.post-listing .post-box-title a').length;
+                  var length = $('.list_news_cate li').length;
                   var temp = new Promise(function (resolve, reject) {
-                    $('.post-listing .post-box-title a').each(function () {
+                    $('.list_news_cate li').each(function () {
                       if (length == 0 || length == undefined) {
                         resolve(true);
                       }
