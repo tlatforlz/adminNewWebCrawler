@@ -4,6 +4,7 @@ var successMessage = require('./../services/successMessage');
 var failMessage = require('./../services/failMessage');
 var SpiderTinNongNghiep = require('./../services/spider');
 var SpiderNongNghiepVietNam = require('./../services/spiderNongNghiepVietNam');
+var SpiderBaoDanSinh = require('./../services/spiderBaoDanSinh');
 var SpiderCatgory = require('./../services/spiderCatagory');
 var News = require('./../model/news.model');
 var async = require('async');
@@ -341,13 +342,17 @@ function callSpider(request) {
         async.series({
           length: function (callback) {
             switch (request.crawlingName) {
-              case "spiderTinNongNghiep":
+              case 'spiderTinNongNghiep':
                 SpiderTinNongNghiep.spiderTinNongNghiep(spider.urlId, spider._id).then(function (res) {
                   callback(null, res);
                 });;
 
-              case "spiderTinNongNghiepVietNam":
+              case 'spiderTinNongNghiepVietNam':
                 SpiderNongNghiepVietNam.spiderNongNghiepVietNam(spider.urlId, spider._id).then(function (res) {
+                  callback(null, res);
+                });
+              case 'spiderBaoDanSinh':
+                SpiderBaoDanSinh.getPathBaoDanSinh(spider.urlId, spider._id).then(function (res) {
                   callback(null, res);
                 });
             }
@@ -375,25 +380,34 @@ function updateNewsSpider(request) {
       }
       return new Promise(function (resolve, reject) {
         switch (request.crawlingName) {
-          case "spiderTinNongNghiep":
+          case 'spiderTinNongNghiep':
             SpiderTinNongNghiep.spiderTinNongNghiepUpdateAll();
             break;
-          case "spiderTinNongNghiepVietNam":
+          case 'spiderTinNongNghiepVietNam':
             SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateAll();
+            break;
+          case 'spiderBaoDanSinh':
+            SpiderBaoDanSinh.spiderBaoDanSinhUpdateAll();
             break;
         }
 
         async.series({
           length: function (callback) {
             switch (request.crawlingName) {
-              case "spiderTinNongNghiep":
+              case 'spiderTinNongNghiep':
                 SpiderTinNongNghiep.spiderCountUpdateAll(request.crawlingName)
                   .then(function (result1) {
                     callback(null, result1.length);
                   });
                 break;
-              case "spiderTinNongNghiepVietNam":
+              case 'spiderTinNongNghiepVietNam':
                 SpiderNongNghiepVietNam.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+              case 'spiderBaoDanSinh':
+                SpiderBaoDanSinh.spiderCountUpdateAll(request.crawlingName)
                   .then(function (result1) {
                     callback(null, result1.length);
                   });
@@ -424,11 +438,14 @@ function callSpiderPath(request) {
         });
       }
       switch (request.crawlingName) {
-        case "spiderTinNongNghiep":
+        case 'spiderTinNongNghiep':
           SpiderTinNongNghiep.spiderTinNongNghiepPath(spider.urlId, spider._id, request.catelogyId);
           break;
-        case "spiderTinNongNghiepVietNam":
+        case 'spiderTinNongNghiepVietNam':
           SpiderNongNghiepVietNam.spiderNongNghiepPath(spider.urlId, spider._id, request.catelogyId);
+          break;
+        case 'spiderBaoDanSinh':
+          SpiderBaoDanSinh.spiderBaoDanSinhPath(spider.urlId, spider._id, request.catelogyId);
           break;
       }
       return Promise.resolve({
@@ -450,11 +467,14 @@ function updateNewsSpiderPath(request) {
         });
       }
       switch (request.crawlingName) {
-        case "spiderTinNongNghiep":
+        case 'spiderTinNongNghiep':
           SpiderTinNongNghiep.spiderTinNongNghiepUpdatePath(request.catelogyId);
           break;
-        case "spiderTinNongNghiepVietNam":
+        case 'spiderTinNongNghiepVietNam':
           SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdatePath(request.catelogyId);
+          break;
+        case 'spiderBaoDanSinh':
+          SpiderBaoDanSinh.spiderBaoDanSinhUpdatePath(request.catelogyId);
           break;
       }
       return Promise.resolve({
@@ -486,11 +506,14 @@ function callSpiderUrl(request) {
           });
         }
         switch (request.crawlingName) {
-          case "spiderTinNongNghiep":
+          case 'spiderTinNongNghiep':
             SpiderTinNongNghiep.spiderTinNongNghiepUrl(spider.urlId, spider._id, request.url);
             break;
-          case "spiderTinNongNghiepVietNam":
+          case 'spiderTinNongNghiepVietNam':
             SpiderNongNghiepVietNam.spiderNongNghiepVietNamUrl(spider.urlId, spdier._id, request.url);
+            break;
+          case 'spiderBaoDanSinh':
+            SpiderBaoDanSinh.spiderBaoDanSinhUrl(spider.urlId, spdier._id, request.url);
             break;
         }
         return Promise.resolve({
@@ -515,11 +538,14 @@ function updateNewsSpiderUrl(request) {
         })
       }
       switch (request.crawlingName) {
-        case "spiderTinNongNghiep":
+        case 'spiderTinNongNghiep':
           SpiderTinNongNghiep.spiderTinNongNghiepUpdateUrl(request.url);
           break;
-        case "spiderTinNongNghiepVietNam":
+        case 'spiderTinNongNghiepVietNam':
           SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateUrl(request.url);
+          break;
+        case 'spiderBaoDanSinh':
+          SpiderBaoDanSinh.spiderBaoDanSinhUpdateUrl(request.url);
           break;
       }
       return Promise.resolve({
@@ -541,7 +567,7 @@ function updateNewsSpiderUrlByNewsId(request) {
         });
       }
       switch (request.crawlingName) {
-        case "spiderTinNongNghiep":
+        case 'spiderTinNongNghiep':
           return SpiderTinNongNghiep.spiderTinNongNghiepUpdateUrlVersion2(request.url)
             .then(res => {
               return Promise.resolve({
@@ -554,8 +580,21 @@ function updateNewsSpiderUrlByNewsId(request) {
               })
             })
           break;
-        case "spiderTinNongNghiepVietNam":
+        case 'spiderTinNongNghiepVietNam':
           return SpiderNongNghiepVietNam.spiderNongNghiepVietNamUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case 'spiderBaoDanSinh':
+          return SpiderBaoDanSinh.spiderBaoDanSinhUpdateUrlVersion2(request.url)
             .then(res => {
               return Promise.resolve({
                 message: true

@@ -10,15 +10,15 @@ var restrictDao = require('./../dao/restrict.dao');
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
 
-  spiderNongNghiepVietNam: spiderNongNghiepVietNam,
-  spiderNongNghiepVietNamUpdateAll: spiderNongNghiepVietNamUpdateAll,
-  spiderNongNghiepPath: spiderNongNghiepPath,
-  spiderNongNghiepVietNamUpdatePath: spiderNongNghiepVietNamUpdatePath,
-  spiderNongNghiepVietNamUrl: spiderNongNghiepVietNamUrl,
-  spiderNongNghiepVietNamUpdateUrl: spiderNongNghiepVietNamUpdateUrl,
-  spiderNongNghiepVietNamUpdateUrlVersion2: spiderNongNghiepVietNamUpdateUrlVersion2,
-  getPathNongNghiepVietNam: getPathNongNghiepVietNam,
-  getPathUpdateNongNghiepVietNam: getPathUpdateNongNghiepVietNam,
+  spiderBaoDanSinh: spiderBaoDanSinh,
+  spiderBaoDanSinhUpdateAll: spiderBaoDanSinhUpdateAll,
+  spiderBaoDanSinhPath: spiderBaoDanSinhPath,
+  spiderBaoDanSinhUpdatePath: spiderBaoDanSinhUpdatePath,
+  spiderBaoDanSinhUrl: spiderBaoDanSinhUrl,
+  spiderBaoDanSinhUpdateUrl: spiderBaoDanSinhUpdateUrl,
+  spiderBaoDanSinhUpdateUrlVersion2: spiderBaoDanSinhUpdateUrlVersion2,
+  getPathBaoDanSinh: getPathBaoDanSinh,
+  getPathUpdateBaoDanSinh: getPathUpdateBaoDanSinh,
 
   checkRestrictedKey: checkRestrictedKey
 }
@@ -165,9 +165,8 @@ function checkRestrictedKey(id, value) {
   });
 }
 
-// ---------------Tin Nong Nghiep Viet Nam
-//spiderNongNghiepVietNam
-function spiderNongNghiepVietNam(urlId, spiderId) {
+//spiderBaoDanSinh
+function spiderBaoDanSinh(urlId, spiderId) {
   return new Promise(function (resolve, reject) {
     var page = 0;
 
@@ -178,8 +177,7 @@ function spiderNongNghiepVietNam(urlId, spiderId) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
         console.log(disUrl);
         console.log(urlId.path[page]);
-        getPathNongNghiepVietNam(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
-          console.log('log' + res);
+        getPathBaoDanSinh(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
           page++;
           console.log(page);
           next();
@@ -194,14 +192,15 @@ function spiderNongNghiepVietNam(urlId, spiderId) {
   });
 }
 
-//getPathNongNghiepVietNam
-function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
+//getPathBaoDanSinh
+function getPathBaoDanSinh(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);
     }
     var total = 0;
     var arrayNews = [];
+    var orgi = path;
     async.whilst(function () {
         return path !== undefined
       }, function (next) {
@@ -211,19 +210,20 @@ function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   let i = 1;
-                  var length = $('.post-listing .post-box-title a').length;
+                  var length = $('.list_news_cate li').length;
+                  if (length === 0) {
+                    resolve(true);
+                  }
                   var temp = new Promise(function (resolve, reject) {
-                    $('.post-listing .post-box-title a').each(function () {
+                    $('.list_news_cate li').each(function () {
                       if (length == 0 || length == undefined) {
                         resolve(true);
                       }
-                      url = ($('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
-                      des = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.entry > p').text();
+                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
+                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
+                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
                       if (image === undefined) {
                         image = null;
-                      } else {
-                        image = image.split('-310x165').join('');
                       }
                       var news = new News({
                         originalLink: url,
@@ -239,7 +239,13 @@ function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
                       }, function (err, New) {
                         if (New === null) {
                           console.log(news.originalLink + " " + total);
+                          if (news.originalLink === undefined || news.originalLink === '') {
+                            resolve(true);
+                          }
                           total++;
+                          if (total === 500) {
+                            resolve(true);
+                          }
                           arrayNews.push(news._id);
                           news.save().then(function () {
                             resolve(true);
@@ -253,8 +259,16 @@ function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
                     });
                   });
                   temp.then(function (res) {
-                    gotoPage = $('#tie-next-page a').attr('href');
+                    var x = $('.paging a').length;
+                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
                     if (gotoPage === undefined) {
+                      return resolve({
+                        'total': total,
+                        'listNewsId': arrayNews,
+                        'status': true
+                      });
+                    }
+                    if (total >= 500) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -270,7 +284,7 @@ function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
             }
           },
           function (err, result) {
-            path = result.gotoPage;
+            path = orgi + result.gotoPage;
             next();
           });
       },
@@ -281,17 +295,17 @@ function getPathNongNghiepVietNam(path, spiderId, catelogyId) {
 }
 
 //spiderNongNghiepPath
-function spiderNongNghiepPath(urlId, spiderId, catelogyId) {
+function spiderBaoDanSinhPath(urlId, spiderId, catelogyId) {
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
-      getPathNongNghiepVietNam(disUrl, spiderId, url.catelogyId);
+      getPathBaoDanSinh(disUrl, spiderId, url.catelogyId);
     }
   });
 }
 
-//spiderNongNghiepVietNamUrl
-function spiderNongNghiepVietNamUrl(urlId, spiderId, url) {
+//spiderBaoDanSinhUrl
+function spiderBaoDanSinhUrl(urlId, spiderId, url) {
   News.findOne({
     originalLink: url
   }, function (err, tNews) {
@@ -307,8 +321,8 @@ function spiderNongNghiepVietNamUrl(urlId, spiderId, url) {
   });
 }
 
-//spiderNongNghiepVietNamUpdateAll
-function spiderNongNghiepVietNamUpdateAll() {
+//spiderBaoDanSinhUpdateAll
+function spiderBaoDanSinhUpdateAll() {
   News.find({
     $or: [{
       title: undefined
@@ -338,28 +352,23 @@ function spiderNongNghiepVietNamUpdateAll() {
               var $ = cheerio.load(body);
               async.series({
                   title: function (callback) {
-                    news[page].title = $('#the-post > div > h1 > span').text();
+                    news[page].title = $('.title_detail').text();
                     callback(null, news[page].title);
                   },
                   content: function (callback) {
                     //#the-post > div
-                    let content = $('#the-post > div > div.entry').html();
+                    let content = $('#content_detail_news').html();
                     //#post-ratings-2150
-                    //#the-post > div > div.entry > div
-                    let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
-                    let remove_review_overview = $('#the-post > div > div.entry > h2').html();
-                    let remove_link = $('#the-post > div > div.entry > ul').html();
-                    // callback(null, content.split(remove).join('').split(remove_review_overview).join('').split(remove_link).join(''));
                     callback(null, content);
                   },
                   author: function (callback) {
-                    let author = $('#the-post > div > p > span.post-meta-author > a').text();
+                    let author = "Báo Dân Sinh";
                     news[page].author = author;
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
                     var date = new Date();
-                    var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
+                    var dateF = $('.date').text().split('/');
                     date.setDate(dateF[0]);
                     date.setMonth(dateF[1]);
                     date.setFullYear(dateF[2]);
@@ -393,8 +402,8 @@ function spiderNongNghiepVietNamUpdateAll() {
   });
 }
 
-//spiderNongNghiepVietNamUpdatePath
-function spiderNongNghiepVietNamUpdatePath(categoryId) {
+//spiderBaoDanSinhUpdatePath
+function spiderBaoDanSinhUpdatePath(categoryId) {
   News.find({
     categoryId: categoryId
   }, function (err, news) {
@@ -410,24 +419,21 @@ function spiderNongNghiepVietNamUpdatePath(categoryId) {
               var $ = cheerio.load(body);
               async.series({
                   title: function (callback) {
-                    news[page].title = $('#the-post > div > h1 > span').text();
+                    news[page].title = $('.title_detail').text();
                     callback(null, news[page].title);
                   },
                   content: function (callback) {
-                    let content = $('#the-post > div > div.entry').html();
-                    let remove = $('#main-content > div.content > article > div > div.entry > div.share-post').html();
-                    let remove_review_overview = $('#the-post > div > div.entry > h2').html();
-                    let remove_link = $('#the-post > div > div.entry > ul').html();
-                    callback(null, content.split(remove).join('').split(remove_review_overview).join('').split(remove_link).join(''));
+                    let content = $('#content_detail_news').html();
+                    callback(null, content);
                   },
                   author: function (callback) {
-                    let author = $('#the-post > div > p > span.post-meta-author > a').text();
+                    let author = "Báo Dân Sinh";
                     news[page].author = author;
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
                     var date = new Date();
-                    var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
+                    var dateF = $('.date').text().split('/');
                     date.setDate(dateF[0]);
                     date.setMonth(dateF[1]);
                     date.setFullYear(dateF[2]);
@@ -466,8 +472,8 @@ function spiderNongNghiepVietNamUpdatePath(categoryId) {
   });
 }
 
-//spiderNongNghiepVietNamUpdateUrl
-function spiderNongNghiepVietNamUpdateUrl(url) {
+//spiderBaoDanSinhUpdateUrl
+function spiderBaoDanSinhUpdateUrl(url) {
   News.findById({
     _id: url
   }, function (err, news) {
@@ -477,28 +483,27 @@ function spiderNongNghiepVietNamUpdateUrl(url) {
           var $ = cheerio.load(body);
           async.series({
               title: function (callback) {
-                news.title = $('#the-post > div > h1 > span').text();
+                news.title = $('.title_detail').text();
                 callback(null, news.title);
               },
               content: function (callback) {
-                let content = $('#the-post > div > div.entry').html();
-                let remove = $('#the-post > div > div.entry > div').html();
+                let content = $('#content_detail_news').html();
                 //#the-post > div > div.entry > div
                 // let remove_review_overview = $('#main-content > div.content > article > div > div.entry > div.review-box.review-top.review-stars').html();
-                callback(null, content.split(remove).join(''));
+                callback(null, content);
               },
               contentText: function (callback) {
-                let content = $('#the-post > div > div.entry').text();
+                let content = $('#content_detail_news').text();
                 callback(null, content);
               },
               author: function (callback) {
-                let author = $('#the-post > div > p > span.post-meta-author > a').text();
+                let author = "Báo Dân Sinh";
                 news.author = author;
                 callback(null, news.author);
               },
               createDate: function (callback) {
                 var date = new Date();
-                var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
+                var dateF = $('.date').text().split('/');
                 date.setDate(dateF[0]);
                 date.setMonth(dateF[1]);
                 date.setFullYear(dateF[2]);
@@ -529,7 +534,7 @@ function spiderNongNghiepVietNamUpdateUrl(url) {
   });
 }
 
-function spiderNongNghiepVietNamUpdateUrlVersion2(url) {
+function spiderBaoDanSinhUpdateUrlVersion2(url) {
   return new Promise(function (resolve, reject) {
     return News.findById({
       _id: url
@@ -540,29 +545,27 @@ function spiderNongNghiepVietNamUpdateUrlVersion2(url) {
             var $ = cheerio.load(body);
             async.series({
                 title: function (callback) {
-                  upNews.title = $('#the-post > div > h1 > span').text();
+                  upNews.title = $('.title_detail').text();
                   callback(null, upNews.title);
                 },
                 content: function (callback) {
-                  let content = $('#the-post > div > div.entry').html();
-                  let remove = $('#the-post > div > div.entry > div').html();
-                  callback(null, content.split(remove).join(''));
+                  let content = $('#content_detail_news').html();
+                  callback(null, content);
                 },
                 contentText: function (callback) {
-                  let content = $('#the-post > div > div.entry').text();
+                  let content = $('#content_detail_news').text();
                   callback(null, content);
                 },
                 author: function (callback) {
-                  upNews.author = $('#the-post > div > p > span.post-meta-author > a').text();
+                  upNews.author = "Báo Dân Sinh";
                   callback(null, upNews.author);
                 },
                 createDate: function (callback) {
                   var date = new Date();
-                  var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
-                  console.log(dateF);
-                  //   date.setDate(dateF[0]);
-                  //   date.setMonth(dateF[1]);
-                  //   date.setFullYear(dateF[2]);
+                  var dateF = $('.date').text().split('/');
+                  date.setDate(dateF[0]);
+                  date.setMonth(dateF[1]);
+                  date.setFullYear(dateF[2]);
                   callback(null, Date.now());
                 },
                 updateDate: function (callback) {
@@ -601,13 +604,14 @@ function spiderNongNghiepVietNamUpdateUrlVersion2(url) {
   })
 }
 
-function getPathUpdateNongNghiepVietNam(path, spiderId, catelogyId) {
+function getPathUpdateBaoDanSinh(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);
     }
     var total = 0;
     var arrayNews = [];
+    var orgi = path;
     async.whilst(function () {
         return path !== undefined
       }, function (next) {
@@ -617,19 +621,20 @@ function getPathUpdateNongNghiepVietNam(path, spiderId, catelogyId) {
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   let i = 1;
-                  var length = $('.post-listing .post-box-title a').length;
+                  var length = $('.list_news_cate li').length;
+                  if (length === 0) {
+                    resolve(true);
+                  }
                   var temp = new Promise(function (resolve, reject) {
-                    $('.post-listing .post-box-title a').each(function () {
+                    $('.list_news_cate li').each(function () {
                       if (length == 0 || length == undefined) {
                         resolve(true);
                       }
-                      url = ($('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
-                      des = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.entry > p').text();
+                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
+                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
+                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
                       if (image === undefined) {
                         image = null;
-                      } else {
-                        image = image.split('-310x165').join('');
                       }
                       var news = new News({
                         originalLink: url,
@@ -644,14 +649,16 @@ function getPathUpdateNongNghiepVietNam(path, spiderId, catelogyId) {
                         originalLink: news.originalLink
                       }, function (err, New) {
                         if (New === null) {
-                          total++;
                           arrayNews.push(news._id);
                           news.save();
                         } else {
                           New.updateDate = Date.now();
-                          total++;
                           arrayNews.push(New._id);
                           New.save();
+                        }
+                        total++;
+                        if (total === 500) {
+                          resolve(true);
                         }
                       });
                       i++;
@@ -661,8 +668,16 @@ function getPathUpdateNongNghiepVietNam(path, spiderId, catelogyId) {
                     });
                   });
                   temp.then(function (res) {
-                    gotoPage = $('#tie-next-page a').attr('href');
+                    var x = $('.paging a').length;
+                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
                     if (gotoPage === undefined) {
+                      return resolve({
+                        'total': total,
+                        'listNewsId': arrayNews,
+                        'status': true
+                      });
+                    }
+                    if (total >= 500) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -678,7 +693,7 @@ function getPathUpdateNongNghiepVietNam(path, spiderId, catelogyId) {
             }
           },
           function (err, result) {
-            path = result.gotoPage;
+            path = orgi + result.gotoPage;
             next();
           });
       },

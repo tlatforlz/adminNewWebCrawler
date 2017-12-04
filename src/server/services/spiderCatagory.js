@@ -8,6 +8,7 @@ var async = require('async');
 var UrlModel = require('./../model/url.model');
 var SpiderService = require('./spider');
 var SpiderServiceNongNghiepVietNam = require('./spiderNongNghiepVietNam');
+var SpiderServiceBaoDanSinh = require('./spiderBaoDanSinh');
 
 module.exports = {
   spiderCatagoryGetByUrl: spiderCatagoryGetByUrl,
@@ -18,12 +19,114 @@ module.exports = {
 
 
   searchByKeyTinNongNghiep: searchByKeyTinNongNghiep,
-  searchByKeyNongNghiepVietNam: searchByKeyNongNghiepVietNam
+  searchByKeyNongNghiepVietNam: searchByKeyNongNghiepVietNam,
+  searchByKeyBaoDanSinh: searchByKeyBaoDanSinh
 }
 
+function searchByKeyBaoDanSinh(path, spiderId, categoryId, searchKey) {
+  return new Promise(function (resolve, reject) {
+    if (path === undefined) {
+      return reject(false);
+    }
+    var total = 0;
+    var arrayNews = [];
+    var orgi = path;
+    async.whilst(function () {
+        return path !== undefined
+      }, function (next) {
+        async.series({
+            gotoPage: function (callback) {
+              request(path, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                  var $ = cheerio.load(body);
+                  var i = 1;
+                  var length = $('.post-listing .post-box-title a').length;
+                  var temp = new Promise(function (resolve, reject) {
+                    $('.post-listing .post-box-title a').each(function () {
+                      if (length == 0 || length == undefined) {
+                        resolve(true);
+                      }
+                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
+                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
+                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
+                      title = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').text();
+                      console.log(title);
+                      if (image === undefined) {
+                        image = null;
+                      }
+                      var news = new News({
+                        originalLink: url,
+                        spiderId: spiderId,
+                        categoryId: categoryId,
+                        image: image,
+                        description: des,
+                        active: false,
+                        updateDate: Date.now()
+                      });
+
+                      if (title.indexOf(searchKey.toLowerCase()) > -1) {
+                        News.findOne({
+                          originalLink: news.originalLink
+                        }, function (err, New) {
+                          if (New === null) {
+                            total++;
+                            arrayNews.push(news._id);
+                            news.save().then(function () {
+                              resolve(true);
+                            });
+                          } else {
+                            total++;
+                            New.updateDate = Date.now();
+                            New.active = false;
+                            New.save();
+                            arrayNews.push(New._id);
+                            resolve(true);
+                          }
+                        });
+                      }
+                      i++;
+                      if (i == length) {
+                        resolve(true);
+                      }
+                    });
+                  });
+                  temp.then(function (res) {
+                    var x = $('.paging a').length;
+                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
+                    if (gotoPage === undefined) {
+                      return resolve({
+                        'total': total,
+                        'listNewsId': arrayNews,
+                        'status': true
+                      });
+                    }
+                    if (total >= 200) {
+                      return resolve({
+                        'total': total,
+                        'listNewsId': arrayNews,
+                        'status': true
+                      });
+                    }
+                    callback(null, gotoPage);
+                  })
+                } else {
+                  return reject(false);
+                }
+              });
+            }
+          },
+          function (err, result) {
+            path = orgi + result.gotoPage;
+            next();
+          });
+      },
+      function (err) {
+        return resolve(true);
+      })
+  });
+}
 
 function searchByKeyNongNghiepVietNam(path, spiderId, categoryId, searchKey) {
-  console.log('hihihihi ' + path);
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return reject(false);
@@ -46,19 +149,16 @@ function searchByKeyNongNghiepVietNam(path, spiderId, categoryId, searchKey) {
                         resolve(true);
                       }
                       url = ($('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').attr('href'));
-                      console.log(url);
                       image = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.post-thumbnail > a > img').attr('src');
-                      console.log(image);
                       des = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > div.entry > p').text();
                       title = $('#wrapper > div > div.content > div.post-listing.archive-box > article:nth-child(' + i + ') > h2 > a').text().toLowerCase();
-                      console.log(title);
 
                       if (image === undefined) {
                         image = null;
                       } else {
                         image = image.split('-310x165').join('');
                       }
-                      var news =  new News({
+                      var news = new News({
                         originalLink: url,
                         spiderId: spiderId,
                         categoryId: categoryId,
@@ -290,6 +390,39 @@ function searchByKey(crawlingName, searchKey) {
             })
           });
         }
+        if (crawlingName === 'spiderBaoDanSinh') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var total = 0;
+            var index = 1;
+            var listNewsId = [];
+            var t = new Promise(function (resolve, reject) {
+              url.path.forEach(element => {
+                var host = url.hostname + element.namePath;
+                searchByKeyBaoDanSinh(host, res._id, element.catelogyId, searchKey).then(res => {
+                  var y = 0;
+                  res.listNewsId.forEach(news => {
+                    listNewsId.push(news);
+                  });
+                  total += res.total;
+                  index++;
+                  if (index === url.path.length - 1) {
+                    resolve(true);
+                  }
+                })
+              });
+            });
+            t.then(s => {
+              return resolve({
+                total: total,
+                listNewsId: listNewsId
+              });
+            }).catch(s => {
+              console.log('err ' + s);
+            })
+          });
+        }
       });
   });
 }
@@ -329,6 +462,19 @@ function callSpiderByPathUpdate(crawlingName, namePath, catelogyId) {
               });
           })
         }
+        if (crawlingName === 'spiderBaoDanSinh') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var host = url.hostname + namePath;
+            return SpiderServiceBaoDanSinh.getPathUpdateBaoDanSinh(host, res._id, catelogyId).then(function (res) {
+                return resolve(res);
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+          })
+        }
       })
   })
 }
@@ -361,6 +507,19 @@ function callSpiderByPath(crawlingName, namePath, catelogyId) {
           }).then(url => {
             var host = url.hostname + namePath;
             return SpiderServiceNongNghiepVietNam.getPathNongNghiepVietNam(host, res._id, catelogyId).then(function (res) {
+                return resolve(res);
+              })
+              .catch(function (err) {
+                console.log(err);
+              });
+          })
+        }
+        if (crawlingName === 'spiderBaoDanSinh') {
+          return UrlModel.findById({
+            _id: res.urlId
+          }).then(url => {
+            var host = url.hostname + namePath;
+            return SpiderServiceBaoDanSinh.getPathBaoDanSinh(host, res._id, catelogyId).then(function (res) {
                 return resolve(res);
               })
               .catch(function (err) {
@@ -446,9 +605,9 @@ function spiderCatagoryGetByUrl(urlId) {
           if (!error && response.statusCode === 200) {
             var $ = cheerio.load(body);
 
-            var lengthHeader = $('header').find('a').length;
+            var lengthHeader = $('header, nav, .mainMenu, .header').find('a').length;
             var FirstPromise = new Promise(function (resolve, reject) {
-              $('header, nav, .mainMenu').find('a').each(function () {
+              $('header, nav, .mainMenu, .header').find('a').each(function () {
                 var url = $(this).attr('href');
                 if (url.indexOf(Url.hostname) !== -1 && url.split(Url.hostname)[1] !== '/') {
                   arrayPath.push(url);
