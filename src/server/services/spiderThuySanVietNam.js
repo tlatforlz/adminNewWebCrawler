@@ -10,15 +10,15 @@ var restrictDao = require('./../dao/restrict.dao');
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
 
-  spiderBaoDanSinh: spiderBaoDanSinh,
-  spiderBaoDanSinphUpdateAll: spiderBaoDanSinhUpdateAll,
-  spiderBaoDanSinhPath: spiderBaoDanSinhPath,
-  spiderBaoDanSinhUpdatePath: spiderBaoDanSinhUpdatePath,
-  spiderBaoDanSinhUrl: spiderBaoDanSinhUrl,
-  spiderBaoDanSinhUpdateUrl: spiderBaoDanSinhUpdateUrl,
-  spiderBaoDanSinhUpdateUrlVersion2: spiderBaoDanSinhUpdateUrlVersion2,
-  getPathBaoDanSinh: getPathBaoDanSinh,
-  getPathUpdateBaoDanSinh: getPathUpdateBaoDanSinh,
+  spiderThuySanVietNam: spiderThuySanVietNam,
+  spiderThuySanVietNamUpdateAll: spiderThuySanVietNamUpdateAll,
+  spiderThuySanVietNamPath: spiderThuySanVietNamPath,
+  spiderThuySanVietNamUpdatePath: spiderThuySanVietNamUpdatePath,
+  spiderThuySanVietNamUrl: spiderThuySanVietNamUrl,
+  spiderThuySanVietNamUpdateUrl: spiderThuySanVietNamUpdateUrl,
+  spiderThuySanVietNamUpdateUrlVersion2: spiderThuySanVietNamUpdateUrlVersion2,
+  getPathThuySanVietNam: getPathThuySanVietNam,
+  getPathUpdateThuySanVietNam: getPathUpdateThuySanVietNam,
 
   checkRestrictedKey: checkRestrictedKey
 }
@@ -165,8 +165,8 @@ function checkRestrictedKey(id, value) {
   });
 }
 
-//spiderBaoDanSinh
-function spiderBaoDanSinh(urlId, spiderId) {
+//spiderThuySanVietNam
+function spiderThuySanVietNam(urlId, spiderId) {
   return new Promise(function (resolve, reject) {
     var page = 0;
 
@@ -177,7 +177,7 @@ function spiderBaoDanSinh(urlId, spiderId) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
         console.log(disUrl);
         console.log(urlId.path[page]);
-        getPathBaoDanSinh(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
+        getPathThuySanVietNam(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
           page++;
           console.log(page);
           next();
@@ -192,8 +192,8 @@ function spiderBaoDanSinh(urlId, spiderId) {
   });
 }
 
-//getPathBaoDanSinh
-function getPathBaoDanSinh(path, spiderId, catelogyId) {
+//getPathThuySanVietNam
+function getPathThuySanVietNam(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);
@@ -295,17 +295,17 @@ function getPathBaoDanSinh(path, spiderId, catelogyId) {
 }
 
 //spiderNongNghiepPath
-function spiderBaoDanSinhPath(urlId, spiderId, catelogyId) {
+function spiderThuySanVietNamPath(urlId, spiderId, catelogyId) {
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
-      getPathBaoDanSinh(disUrl, spiderId, url.catelogyId);
+      getPathThuySanVietNam(disUrl, spiderId, url.catelogyId);
     }
   });
 }
 
-//spiderBaoDanSinhUrl
-function spiderBaoDanSinhUrl(urlId, spiderId, url) {
+//spiderThuySanVietNamUrl
+function spiderThuySanVietNamUrl(urlId, spiderId, url) {
   News.findOne({
     originalLink: url
   }, function (err, tNews) {
@@ -321,8 +321,8 @@ function spiderBaoDanSinhUrl(urlId, spiderId, url) {
   });
 }
 
-//spiderBaoDanSinhUpdateAll
-function spiderBaoDanSinhUpdateAll() {
+//spiderThuySanVietNamUpdateAll
+function spiderThuySanVietNamUpdateAll() {
   News.find({
     $or: [{
       title: undefined
@@ -402,8 +402,8 @@ function spiderBaoDanSinhUpdateAll() {
   });
 }
 
-//spiderBaoDanSinhUpdatePath
-function spiderBaoDanSinhUpdatePath(categoryId) {
+//spiderThuySanVietNamUpdatePath
+function spiderThuySanVietNamUpdatePath(categoryId) {
   News.find({
     categoryId: categoryId
   }, function (err, news) {
@@ -472,8 +472,8 @@ function spiderBaoDanSinhUpdatePath(categoryId) {
   });
 }
 
-//spiderBaoDanSinhUpdateUrl
-function spiderBaoDanSinhUpdateUrl(url) {
+//spiderThuySanVietNamUpdateUrl
+function spiderThuySanVietNamUpdateUrl(url) {
   News.findById({
     _id: url
   }, function (err, news) {
@@ -534,7 +534,7 @@ function spiderBaoDanSinhUpdateUrl(url) {
   });
 }
 
-function spiderBaoDanSinhUpdateUrlVersion2(url) {
+function spiderThuySanVietNamUpdateUrlVersion2(url) {
   return new Promise(function (resolve, reject) {
     return News.findById({
       _id: url
@@ -604,7 +604,7 @@ function spiderBaoDanSinhUpdateUrlVersion2(url) {
   })
 }
 
-function getPathUpdateBaoDanSinh(path, spiderId, catelogyId) {
+function getPathUpdateThuySanVietNam(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);

@@ -120,7 +120,7 @@
               <td data-title="'urlId'" filter="{urlId: 'text'}">{{row.urlId}}</td>
               <td data-title="'name'" filter="{name: 'text'}">{{row.name}}</td>
               <td data-title="'crawlingName'" filter="{crawlingName: 'text'}">{{row.crawlingName}}</td>
-              <td data-title="'createDate'">{{row.createDate}}</td>
+              <td data-title="'createDate'">{{row.createDate | date: "yyyy-MM-dd HH:mm:ss"  }}</td>
               <td data-title="'action'">
                 <div class="btn-group">
                   <a class="btn btn-primary" href="admincallspider/{{row._id}}">

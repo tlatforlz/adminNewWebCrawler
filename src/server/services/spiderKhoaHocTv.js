@@ -10,15 +10,15 @@ var restrictDao = require('./../dao/restrict.dao');
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
 
-  spiderBaoDanSinh: spiderBaoDanSinh,
-  spiderBaoDanSinphUpdateAll: spiderBaoDanSinhUpdateAll,
-  spiderBaoDanSinhPath: spiderBaoDanSinhPath,
-  spiderBaoDanSinhUpdatePath: spiderBaoDanSinhUpdatePath,
-  spiderBaoDanSinhUrl: spiderBaoDanSinhUrl,
-  spiderBaoDanSinhUpdateUrl: spiderBaoDanSinhUpdateUrl,
-  spiderBaoDanSinhUpdateUrlVersion2: spiderBaoDanSinhUpdateUrlVersion2,
-  getPathBaoDanSinh: getPathBaoDanSinh,
-  getPathUpdateBaoDanSinh: getPathUpdateBaoDanSinh,
+  spiderKhoaHocTv: spiderKhoaHocTv,
+  spiderKhoaHocTvUpdateAll: spiderKhoaHocTvUpdateAll,
+  spiderKhoaHocTvPath: spiderKhoaHocTvPath,
+  spiderKhoaHocTvUpdatePath: spiderKhoaHocTvUpdatePath,
+  spiderKhoaHocTvUrl: spiderKhoaHocTvUrl,
+  spiderKhoaHocTvUpdateUrl: spiderKhoaHocTvUpdateUrl,
+  spiderKhoaHocTvUpdateUrlVersion2: spiderKhoaHocTvUpdateUrlVersion2,
+  getPathKhoaHocTv: getPathKhoaHocTv,
+  getPathUpdateKhoaHocTv: getPathUpdateKhoaHocTv,
 
   checkRestrictedKey: checkRestrictedKey
 }
@@ -165,8 +165,8 @@ function checkRestrictedKey(id, value) {
   });
 }
 
-//spiderBaoDanSinh
-function spiderBaoDanSinh(urlId, spiderId) {
+//spiderKhoaHocTv
+function spiderKhoaHocTv(urlId, spiderId) {
   return new Promise(function (resolve, reject) {
     var page = 0;
 
@@ -177,7 +177,7 @@ function spiderBaoDanSinh(urlId, spiderId) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
         console.log(disUrl);
         console.log(urlId.path[page]);
-        getPathBaoDanSinh(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
+        getPathKhoaHocTv(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
           page++;
           console.log(page);
           next();
@@ -192,8 +192,8 @@ function spiderBaoDanSinh(urlId, spiderId) {
   });
 }
 
-//getPathBaoDanSinh
-function getPathBaoDanSinh(path, spiderId, catelogyId) {
+//getPathKhoaHocTv
+function getPathKhoaHocTv(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);
@@ -295,17 +295,17 @@ function getPathBaoDanSinh(path, spiderId, catelogyId) {
 }
 
 //spiderNongNghiepPath
-function spiderBaoDanSinhPath(urlId, spiderId, catelogyId) {
+function spiderKhoaHocTvPath(urlId, spiderId, catelogyId) {
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
-      getPathBaoDanSinh(disUrl, spiderId, url.catelogyId);
+      getPathKhoaHocTv(disUrl, spiderId, url.catelogyId);
     }
   });
 }
 
-//spiderBaoDanSinhUrl
-function spiderBaoDanSinhUrl(urlId, spiderId, url) {
+//spiderKhoaHocTvUrl
+function spiderKhoaHocTvUrl(urlId, spiderId, url) {
   News.findOne({
     originalLink: url
   }, function (err, tNews) {
@@ -321,8 +321,8 @@ function spiderBaoDanSinhUrl(urlId, spiderId, url) {
   });
 }
 
-//spiderBaoDanSinhUpdateAll
-function spiderBaoDanSinhUpdateAll() {
+//spiderKhoaHocTvUpdateAll
+function spiderKhoaHocTvUpdateAll() {
   News.find({
     $or: [{
       title: undefined
@@ -402,8 +402,8 @@ function spiderBaoDanSinhUpdateAll() {
   });
 }
 
-//spiderBaoDanSinhUpdatePath
-function spiderBaoDanSinhUpdatePath(categoryId) {
+//spiderKhoaHocTvUpdatePath
+function spiderKhoaHocTvUpdatePath(categoryId) {
   News.find({
     categoryId: categoryId
   }, function (err, news) {
@@ -472,8 +472,8 @@ function spiderBaoDanSinhUpdatePath(categoryId) {
   });
 }
 
-//spiderBaoDanSinhUpdateUrl
-function spiderBaoDanSinhUpdateUrl(url) {
+//spiderKhoaHocTvUpdateUrl
+function spiderKhoaHocTvUpdateUrl(url) {
   News.findById({
     _id: url
   }, function (err, news) {
@@ -534,7 +534,7 @@ function spiderBaoDanSinhUpdateUrl(url) {
   });
 }
 
-function spiderBaoDanSinhUpdateUrlVersion2(url) {
+function spiderKhoaHocTvUpdateUrlVersion2(url) {
   return new Promise(function (resolve, reject) {
     return News.findById({
       _id: url
@@ -604,7 +604,7 @@ function spiderBaoDanSinhUpdateUrlVersion2(url) {
   })
 }
 
-function getPathUpdateBaoDanSinh(path, spiderId, catelogyId) {
+function getPathUpdateKhoaHocTv(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);

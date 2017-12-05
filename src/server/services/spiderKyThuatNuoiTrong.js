@@ -10,15 +10,15 @@ var restrictDao = require('./../dao/restrict.dao');
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
 
-  spiderBaoDanSinh: spiderBaoDanSinh,
-  spiderBaoDanSinphUpdateAll: spiderBaoDanSinhUpdateAll,
-  spiderBaoDanSinhPath: spiderBaoDanSinhPath,
-  spiderBaoDanSinhUpdatePath: spiderBaoDanSinhUpdatePath,
-  spiderBaoDanSinhUrl: spiderBaoDanSinhUrl,
-  spiderBaoDanSinhUpdateUrl: spiderBaoDanSinhUpdateUrl,
-  spiderBaoDanSinhUpdateUrlVersion2: spiderBaoDanSinhUpdateUrlVersion2,
-  getPathBaoDanSinh: getPathBaoDanSinh,
-  getPathUpdateBaoDanSinh: getPathUpdateBaoDanSinh,
+  spiderKyThuatNuoiTrong: spiderKyThuatNuoiTrong,
+  spiderKyThuatNuoiTrongUpdateAll: spiderKyThuatNuoiTrongUpdateAll,
+  spiderKyThuatNuoiTrongPath: spiderKyThuatNuoiTrongPath,
+  spiderKyThuatNuoiTrongUpdatePath: spiderKyThuatNuoiTrongUpdatePath,
+  spiderKyThuatNuoiTrongUrl: spiderKyThuatNuoiTrongUrl,
+  spiderKyThuatNuoiTrongUpdateUrl: spiderKyThuatNuoiTrongUpdateUrl,
+  spiderKyThuatNuoiTrongUpdateUrlVersion2: spiderKyThuatNuoiTrongUpdateUrlVersion2,
+  getPathKyThuatNuoiTrong: getPathKyThuatNuoiTrong,
+  getPathUpdateKyThuatNuoiTrong: getPathUpdateKyThuatNuoiTrong,
 
   checkRestrictedKey: checkRestrictedKey
 }
@@ -165,8 +165,8 @@ function checkRestrictedKey(id, value) {
   });
 }
 
-//spiderBaoDanSinh
-function spiderBaoDanSinh(urlId, spiderId) {
+//spiderKyThuatNuoiTrong
+function spiderKyThuatNuoiTrong(urlId, spiderId) {
   return new Promise(function (resolve, reject) {
     var page = 0;
 
@@ -177,7 +177,7 @@ function spiderBaoDanSinh(urlId, spiderId) {
         var disUrl = urlId.hostname + urlId.path[page].namePath;
         console.log(disUrl);
         console.log(urlId.path[page]);
-        getPathBaoDanSinh(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
+        getPathKyThuatNuoiTrong(disUrl, spiderId, urlId.path[page].catelogyId).then(function (res) {
           page++;
           console.log(page);
           next();
@@ -192,8 +192,8 @@ function spiderBaoDanSinh(urlId, spiderId) {
   });
 }
 
-//getPathBaoDanSinh
-function getPathBaoDanSinh(path, spiderId, catelogyId) {
+//getPathKyThuatNuoiTrong
+function getPathKyThuatNuoiTrong(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);
@@ -295,17 +295,17 @@ function getPathBaoDanSinh(path, spiderId, catelogyId) {
 }
 
 //spiderNongNghiepPath
-function spiderBaoDanSinhPath(urlId, spiderId, catelogyId) {
+function spiderKyThuatNuoiTrongPath(urlId, spiderId, catelogyId) {
   urlId.path.forEach(url => {
     if (url.catelogyId.equals(catelogyId)) {
       var disUrl = urlId.hostname + url.namePath;
-      getPathBaoDanSinh(disUrl, spiderId, url.catelogyId);
+      getPathKyThuatNuoiTrong(disUrl, spiderId, url.catelogyId);
     }
   });
 }
 
-//spiderBaoDanSinhUrl
-function spiderBaoDanSinhUrl(urlId, spiderId, url) {
+//spiderKyThuatNuoiTrongUrl
+function spiderKyThuatNuoiTrongUrl(urlId, spiderId, url) {
   News.findOne({
     originalLink: url
   }, function (err, tNews) {
@@ -321,8 +321,8 @@ function spiderBaoDanSinhUrl(urlId, spiderId, url) {
   });
 }
 
-//spiderBaoDanSinhUpdateAll
-function spiderBaoDanSinhUpdateAll() {
+//spiderKyThuatNuoiTrongUpdateAll
+function spiderKyThuatNuoiTrongUpdateAll() {
   News.find({
     $or: [{
       title: undefined
@@ -402,8 +402,8 @@ function spiderBaoDanSinhUpdateAll() {
   });
 }
 
-//spiderBaoDanSinhUpdatePath
-function spiderBaoDanSinhUpdatePath(categoryId) {
+//spiderKyThuatNuoiTrongUpdatePath
+function spiderKyThuatNuoiTrongUpdatePath(categoryId) {
   News.find({
     categoryId: categoryId
   }, function (err, news) {
@@ -472,8 +472,8 @@ function spiderBaoDanSinhUpdatePath(categoryId) {
   });
 }
 
-//spiderBaoDanSinhUpdateUrl
-function spiderBaoDanSinhUpdateUrl(url) {
+//spiderKyThuatNuoiTrongUpdateUrl
+function spiderKyThuatNuoiTrongUpdateUrl(url) {
   News.findById({
     _id: url
   }, function (err, news) {
@@ -534,7 +534,7 @@ function spiderBaoDanSinhUpdateUrl(url) {
   });
 }
 
-function spiderBaoDanSinhUpdateUrlVersion2(url) {
+function spiderKyThuatNuoiTrongUpdateUrlVersion2(url) {
   return new Promise(function (resolve, reject) {
     return News.findById({
       _id: url
@@ -604,7 +604,7 @@ function spiderBaoDanSinhUpdateUrlVersion2(url) {
   })
 }
 
-function getPathUpdateBaoDanSinh(path, spiderId, catelogyId) {
+function getPathUpdateKyThuatNuoiTrong(path, spiderId, catelogyId) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return resolve(true);

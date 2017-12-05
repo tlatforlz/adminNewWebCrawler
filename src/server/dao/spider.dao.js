@@ -6,6 +6,12 @@ var SpiderTinNongNghiep = require('./../services/spider');
 var SpiderNongNghiepVietNam = require('./../services/spiderNongNghiepVietNam');
 var SpiderBaoDanSinh = require('./../services/spiderBaoDanSinh');
 var SpiderCatgory = require('./../services/spiderCatagory');
+var SpiderKhoaHocTv = require('./../services/spiderKhoaHocTv');
+var SpiderKhuyenNong = require('./../services/spiderKhuyenNong');
+var SpiderKyThuatNuoiTrong = require('./../services/spiderKyThuatNuoiTrong');
+var SpiderThuySanVietNam = require('./../services/spiderThuySanVietNam');
+
+
 var News = require('./../model/news.model');
 var async = require('async');
 
@@ -355,6 +361,22 @@ function callSpider(request) {
                 SpiderBaoDanSinh.getPathBaoDanSinh(spider.urlId, spider._id).then(function (res) {
                   callback(null, res);
                 });
+              case 'spiderKhoaHocTv':
+                SpiderKhoaHocTv.getPathKhoaHocTv(spider.urlId, spider._id).then(function (res) {
+                  callback(null, res);
+                });
+              case 'spiderKhuyenNong':
+                SpiderKhuyenNong.getPathKhuyenNong(spider.urlId, spider._id).then(function (res) {
+                  callback(null, res);
+                });
+              case 'spiderKyThuatNuoiTrong':
+                SpiderKyThuatNuoiTrong.getPathKyThuatNuoiTrong(spider.urlId, spider._id).then(function (res) {
+                  callback(null, res);
+                });
+              case 'spiderThuySanVietNam':
+                SpiderThuySanVietNam.getPathThuySanVietNam(spider.urlId, spider._id).then(function (res) {
+                  callback(null, res);
+                });
             }
           }
         }, function (err, result) {
@@ -389,6 +411,18 @@ function updateNewsSpider(request) {
           case 'spiderBaoDanSinh':
             SpiderBaoDanSinh.spiderBaoDanSinhUpdateAll();
             break;
+          case 'spiderKhoaHocTv':
+            SpiderKhoaHocTv.spiderKhoaHocTvUpdateAll();
+            break;
+          case 'spiderKhuyenNong':
+            SpiderKhuyenNong.spiderKhuyenNongUpdateAll();
+            break;
+          case 'spiderKyThuatNuoiTrong':
+            SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongUpdateAll();
+            break;
+          case 'spiderThuySanVietNam':
+            SpiderThuySanVietNam.spiderThuySanVietNamUpdateAll();
+            break;
         }
 
         async.series({
@@ -412,6 +446,31 @@ function updateNewsSpider(request) {
                     callback(null, result1.length);
                   });
                 break;
+              case 'spiderKhoaHocTv':
+                SpiderKhoaHocTv.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+              case 'spiderKhuyenNong':
+                SpiderKhuyenNong.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+              case 'spiderKyThuatNuoiTrong':
+                SpiderKyThuatNuoiTrong.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+              case 'spiderThuySanVietNam':
+                SpiderThuySanVietNam.spiderCountUpdateAll(request.crawlingName)
+                  .then(function (result1) {
+                    callback(null, result1.length);
+                  });
+                break;
+
             }
 
           }
@@ -447,6 +506,18 @@ function callSpiderPath(request) {
         case 'spiderBaoDanSinh':
           SpiderBaoDanSinh.spiderBaoDanSinhPath(spider.urlId, spider._id, request.catelogyId);
           break;
+        case 'spiderKhoaHocTv':
+          SpiderKhoaHocTv.spiderKhoaHocTvPath(spider.urlId, spider._id, request.catelogyId);
+          break;
+        case 'spiderKhuyenNong':
+          SpiderKhuyenNong.spiderKhuyenNongPath(spider.urlId, spider._id, request.catelogyId);
+          break;
+        case 'spiderKyThuatNuoiTrong':
+          SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongPath(spider.urlId, spider._id, request.catelogyId);
+          break;
+        case 'spiderThuySanVietNam':
+          SpiderThuySanVietNam.spiderThuySanVietNamPath(spider.urlId, spider._id, request.catelogyId);
+          break;
       }
       return Promise.resolve({
         messsage: successMessage.spider.callSpider,
@@ -475,6 +546,18 @@ function updateNewsSpiderPath(request) {
           break;
         case 'spiderBaoDanSinh':
           SpiderBaoDanSinh.spiderBaoDanSinhUpdatePath(request.catelogyId);
+          break;
+        case 'spiderKhoaHocTv':
+          SpiderKhoaHocTv.spiderKhoaHocTvUpdatePath(request.catelogyId);
+          break;
+        case 'spiderKhuyenNong':
+          SpiderKhuyenNong.spiderKhuyenNongUpdatePath(request.catelogyId);
+          break;
+        case 'spiderKyThuatNuoiTrong':
+          SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongUpdatePath(request.catelogyId);
+          break;
+        case 'spiderThuySanVietNam':
+          SpiderThuySanVietNam.spiderThuySanVietNamUpdatePath(request.catelogyId);
           break;
       }
       return Promise.resolve({
@@ -515,6 +598,18 @@ function callSpiderUrl(request) {
           case 'spiderBaoDanSinh':
             SpiderBaoDanSinh.spiderBaoDanSinhUrl(spider.urlId, spdier._id, request.url);
             break;
+          case 'spiderKhoaHocTv':
+            SpiderKhoaHocTv.spiderKhoaHocTvUrl(spider.urlId, spdier._id, request.url);
+            break;
+          case 'spiderKhuyenNong':
+            SpiderKhuyenNong.spiderKhuyenNongUrl(spider.urlId, spdier._id, request.url);
+            break;
+          case 'spiderKyThuatNuoiTrong':
+            SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongUrl(spider.urlId, spdier._id, request.url);
+            break;
+          case 'spiderThuySanVietNam':
+            SpiderThuySanVietNam.spiderThuySanVietNamUrl(spider.urlId, spdier._id, request.url);
+            break;
         }
         return Promise.resolve({
           messsage: successMessage.spider.callSpider,
@@ -547,6 +642,19 @@ function updateNewsSpiderUrl(request) {
         case 'spiderBaoDanSinh':
           SpiderBaoDanSinh.spiderBaoDanSinhUpdateUrl(request.url);
           break;
+        case 'spiderKhoaHocTv':
+          SpiderKhoaHocTv.spiderKhoaHocTvUpdateUrl(request.url);
+          break;
+        case 'spiderKhuyenNong':
+          SpiderKhuyenNong.spiderKhuyenNongUpdateUrl(request.url);
+          break;
+        case 'spiderKyThuatNuoiTrong':
+          SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongUpdateUrl(request.url);
+          break;
+        case 'spiderThuySanVietNam':
+          SpiderThuySanVietNam.spiderThuySanVietNamUpdateUrl(request.url);
+          break;
+
       }
       return Promise.resolve({
         messsage: successMessage.spider.callSpider,
@@ -595,6 +703,58 @@ function updateNewsSpiderUrlByNewsId(request) {
           break;
         case 'spiderBaoDanSinh':
           return SpiderBaoDanSinh.spiderBaoDanSinhUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case 'spiderKhoaHocTv':
+          return SpiderKhoaHocTv.spiderKhoaHocTvUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case 'spiderKhuyenNong':
+          return SpiderKhuyenNong.spiderKhuyenNongUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case 'spiderKyThuatNuoiTrong':
+          return SpiderKyThuatNuoiTrong.spiderKyThuatNuoiTrongUpdateUrlVersion2(request.url)
+            .then(res => {
+              return Promise.resolve({
+                message: true
+              })
+            })
+            .catch(err => {
+              return Promise.reject({
+                message: false
+              })
+            })
+          break;
+        case 'spiderThuySanVietNam':
+          return SpiderThuySanVietNam.spiderThuySanVietNamUpdateUrlVersion2(request.url)
             .then(res => {
               return Promise.resolve({
                 message: true
