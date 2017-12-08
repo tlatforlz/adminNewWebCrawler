@@ -55,16 +55,16 @@ function searchByKeyThuySanVietNam(path, spiderId, categoryId, searchKey) {
                 if (!error && response.statusCode === 200) {
                   var $ = cheerio.load(body);
                   var i = 1;
-                  var length = $('.list_news_cate li').length;
+                  var length = $('.main-cat-contentleft li').length;
                   var temp = new Promise(function (resolve, reject) {
-                    $('.list_news_cate li').each(function () {
+                    $('.main-cat-contentleft li').each(function () {
                       if (length == 0 || length == undefined) {
                         resolve(true);
                       }
-                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
-                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
-                      title = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').text();
+                      url = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').attr('href');
+                      image = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a > img').attr('src');
+                      des = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > p').text();
+                      title = $('#main-box-content > div.main-cat-contentleft > div > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').text();
                       console.log(title);
                       if (image === undefined) {
                         image = null;
@@ -106,8 +106,11 @@ function searchByKeyThuySanVietNam(path, spiderId, categoryId, searchKey) {
                     });
                   });
                   temp.then(function (res) {
-                    var x = $('.paging a').length;
-                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
+                    var page = $('#main-box-content > div.main-cat-contentleft > div.view-all > a');
+                    var gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a').attr('href');
+                    if (page.length != 1) {
+                      gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a:nth-child(2)').attr('href');
+                    }
                     if (gotoPage === undefined) {
                       return resolve({
                         'total': total,
@@ -125,13 +128,17 @@ function searchByKeyThuySanVietNam(path, spiderId, categoryId, searchKey) {
                     callback(null, gotoPage);
                   })
                 } else {
-                  return reject(false);
+                  return resolve({
+                    'total': total,
+                    'listNewsId': arrayNews,
+                    'status': true
+                  });
                 }
               });
             }
           },
           function (err, result) {
-            path = orgi + result.gotoPage;
+            path = result.gotoPage;
             next();
           });
       },
@@ -1183,6 +1190,7 @@ function callSpiderByPath(crawlingName, namePath, catelogyId) {
           }).then(url => {
             var host = url.hostname + namePath;
             return SpiderServiceThuySanVietNam.getPathThuySanVietNam(host, res._id, catelogyId).then(function (res) {
+                console.log('hihih ' + res);
                 return resolve(res);
               })
               .catch(function (err) {
