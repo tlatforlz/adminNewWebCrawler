@@ -50,7 +50,7 @@
         ariaLabelledBy: 'modal-title',
         ariaDescribedBy: 'modal-body',
         templateUrl: 'editCategory.html',
-        controller: 'editCategory',
+        controller: 'editCategoryCate',
         controllerAs: 'vm'
       }).closed.then(function () {
         getListCategory().then(
@@ -316,11 +316,11 @@
     };
 
     vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
+      $uibModalInstance.close();
     };
   }
   angular.module('app.admincategory')
-    .controller('editCategory', ['$q', '$http', '$state', '$stateParams', '$scope', '$rootScope', '$uibModalInstance', editCategory]);
+    .controller('editCategoryCate', ['$q', '$http', '$state', '$stateParams', '$scope', '$rootScope', '$uibModalInstance', editCategory]);
 
   function editCategory($q, $http, $state, $stateParams, $scope, $rootScope, $uibModalInstance) {
     var vm = this;
@@ -344,8 +344,7 @@
 
     function conformEdit() {
       var data = {
-        'name': vm.name,
-        'key': [vm.keys]
+        'name': vm.name
       };
       var deferred = $q.defer();
       $http({
@@ -370,7 +369,7 @@
     };
 
     vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
+      $uibModalInstance.close();
     };
   }
   angular.module('app.admincategory')

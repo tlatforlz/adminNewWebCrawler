@@ -136,6 +136,7 @@
     <button class="btn btn-warning" type="button" ng-click="vm.cancel()">Cancel</button>
   </div>
 </script>
+
 <script type="text/ng-template" id="editCategory.html">
   <div class="modal-header">
     <h3 class="modal-title" id="modal-title">Edit Category</h3>
@@ -153,14 +154,7 @@
               <h5 ng-show="vm.isShow" style="color:red"> Category dupplicate </h5>
             </div>
           </div>
-          <div class="" style="margin-top:55px !important">
-            <label for="ckey" class="control-label col-lg-2">Keys
-              <span class="required">*</span>
-            </label>
-            <div class="col-lg-10">
-              <input class="form-control" id="ckey" name="key" mtype="text" ng-model="vm.key" required />
-            </div>
-          </div>
+
         </div>
       </div>
     </div>
