@@ -268,7 +268,7 @@ function getPathBaoDanSinh(path, spiderId, catelogyId) {
                         'status': true
                       });
                     }
-                    if (total >= 500) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -677,7 +677,7 @@ function getPathUpdateBaoDanSinh(path, spiderId, catelogyId) {
                         'status': true
                       });
                     }
-                    if (total >= 500) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,

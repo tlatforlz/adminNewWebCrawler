@@ -11,7 +11,6 @@ var SpiderServiceNongNghiepVietNam = require('./spiderNongNghiepVietNam');
 var SpiderServiceBaoDanSinh = require('./spiderBaoDanSinh');
 var SpiderServiceKhoaHocTv = require('./spiderKhoaHocTv');
 var SpiderServiceKhuyenNong = require('./spiderKhuyenNong');
-var SpiderServiceKyThuatNuoiTrong = require('./spiderKyThuatNuoiTrong');
 var SpiderServiceThuySanVietNam = require('./spiderThuySanVietNam');
 
 module.exports = {
@@ -27,7 +26,6 @@ module.exports = {
   searchByKeyBaoDanSinh: searchByKeyBaoDanSinh,
   searchByKeyKhoaHocTv: searchByKeyKhoaHocTv,
   searchByKeyKhuyenNong: searchByKeyKhuyenNong,
-  searchByKeyKyThuatNuoiTrong: searchByKeyKyThuatNuoiTrong,
   searchByKeyThuySanVietNam: searchByKeyThuySanVietNam
 }
 
@@ -239,7 +237,7 @@ function searchByKeyKyThuatNuoiTrong(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 200) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -264,7 +262,7 @@ function searchByKeyKyThuatNuoiTrong(path, spiderId, categoryId, searchKey) {
       })
   });
 }
-//chua fix
+
 function searchByKeyKhuyenNong(path, spiderId, categoryId, searchKey) {
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
@@ -273,98 +271,105 @@ function searchByKeyKhuyenNong(path, spiderId, categoryId, searchKey) {
     var total = 0;
     var arrayNews = [];
     var orgi = path;
-    async.whilst(function () {
-        return path !== undefined
-      }, function (next) {
-        async.series({
-            gotoPage: function (callback) {
-              request(path, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                  var $ = cheerio.load(body);
-                  var i = 1;
-                  var length = $('.list_news_cate li').length;
-                  var temp = new Promise(function (resolve, reject) {
-                    $('.list_news_cate li').each(function () {
-                      if (length == 0 || length == undefined) {
-                        resolve(true);
-                      }
-                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
-                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
-                      title = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').text();
-                      console.log(title);
-                      if (image === undefined) {
-                        image = null;
-                      }
-                      var news = new News({
-                        originalLink: url,
-                        spiderId: spiderId,
-                        categoryId: categoryId,
-                        image: image,
-                        description: des,
-                        active: false,
-                        updateDate: Date.now()
-                      });
+    SpiderModel.findById({
+      _id: spiderId
+    }).then(spider => {
+      UrlModel.findById({
+        _id: spider.urlId
+      }).then(urlHost => {
+        async.whilst(function () {
+            return path !== undefined
+          }, function (next) {
+            async.series({
+                gotoPage: function (callback) {
+                  request(path, function (error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                      var $ = cheerio.load(body);
+                      var i = 1;
+                      var length = $('.contentx .xitem').length;
+                      var temp = new Promise(function (resolve, reject) {
+                        $('.contentx .xitem').each(function () {
+                          if (length == 0 || length == undefined) {
+                            resolve(true);
+                          }
+                          url = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > h2 > a').attr('href');
+                          image = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > a > img').attr('src');
+                          des = $('div.contentx > div:nth-child(' + i + ') > span').text();
+                          title = $('div.contentx > div:nth-child(1) > h2 > a').text().trim();
+                          console.log(title);
+                          if (image === undefined) {
+                            image = null;
+                          }
+                          var news = new News({
+                            originalLink: url,
+                            spiderId: spiderId,
+                            categoryId: categoryId,
+                            image: image,
+                            description: des,
+                            active: false,
+                            updateDate: Date.now()
+                          });
 
-                      if (title.indexOf(searchKey.toLowerCase()) > -1) {
-                        News.findOne({
-                          originalLink: news.originalLink
-                        }, function (err, New) {
-                          if (New === null) {
-                            total++;
-                            arrayNews.push(news._id);
-                            news.save().then(function () {
-                              resolve(true);
+                          if (title.indexOf(searchKey.toLowerCase()) > -1) {
+                            News.findOne({
+                              originalLink: news.originalLink
+                            }, function (err, New) {
+                              if (New === null) {
+                                total++;
+                                arrayNews.push(news._id);
+                                news.save().then(function () {
+                                  resolve(true);
+                                });
+                              } else {
+                                total++;
+                                New.updateDate = Date.now();
+                                New.active = false;
+                                New.save();
+                                arrayNews.push(New._id);
+                                resolve(true);
+                              }
                             });
-                          } else {
-                            total++;
-                            New.updateDate = Date.now();
-                            New.active = false;
-                            New.save();
-                            arrayNews.push(New._id);
+                          }
+                          i++;
+                          if (i == length) {
                             resolve(true);
                           }
                         });
-                      }
-                      i++;
-                      if (i == length) {
-                        resolve(true);
-                      }
-                    });
+                      });
+                      temp.then(function (res) {
+                        var gotoPage = urlHost.hostname + $('#dnn_ctr530_Main_UserNewsCategory__UserPagger_nextx').attr('href');
+                        if (gotoPage === undefined) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
+                        }
+                        if (total >= 100) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
+                        }
+                        callback(null, gotoPage);
+                      })
+                    } else {
+                      return reject(false);
+                    }
                   });
-                  temp.then(function (res) {
-                    var x = $('.paging a').length;
-                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
-                    if (gotoPage === undefined) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    if (total >= 200) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    callback(null, gotoPage);
-                  })
-                } else {
-                  return reject(false);
                 }
+              },
+              function (err, result) {
+                path = result.gotoPage;
+                next();
               });
-            }
           },
-          function (err, result) {
-            path = orgi + result.gotoPage;
-            next();
-          });
-      },
-      function (err) {
-        return resolve(true);
-      })
+          function (err) {
+            return resolve(true);
+          })
+      });
+    });
   });
 }
 //chua fix
@@ -445,7 +450,7 @@ function searchByKeyKhoaHocTv(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 200) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -548,7 +553,7 @@ function searchByKeyBaoDanSinh(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 200) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -1294,17 +1299,23 @@ function spiderCatagoryGetByUrl(urlId) {
           if (!error && response.statusCode === 200) {
             var $ = cheerio.load(body);
             console.log(Url.hostname);
-            var lengthHeader = $('header, nav, .mainMenu, .header, .nav, #nav').find('a').length;
+            var lengthHeader = $('header, nav, .mainMenu, .header, .nav, #nav, .simplemenu, .menuleft').find('a').length;
             var FirstPromise = new Promise(function (resolve, reject) {
-              $('header, nav, .mainMenu, .header, .nav, #nav').find('a').each(function () {
+              $('header, nav, .mainMenu, .header, .nav, #nav, .simplemenu, .menuleft').find('a').each(function () {
                 var url = $(this).attr('href');
                 console.log(url);
                 if (url.indexOf(Url.hostname) !== -1 && url.split(Url.hostname)[1] !== '/') {
-                  if (url.trim() !== "http://www.thuysanvietnam.com.vn") {
+                  if (url.trim() !== Url.hostname + "/") {
+                    if (Url.hostname == "http://www.khuyennongvn.gov.vn") {
+                      url = "/" + url;
+                    }
                     arrayPath.push(url);
                   }
                 }
                 if (url.indexOf(url.hostname) === -1 && url.trim() !== "http://www.thuysanvietnam.com.vn") {
+                  if (Url.hostname == "http://www.khuyennongvn.gov.vn") {
+                    url = "/" + url;
+                  }
                   arrayPath.push(Url.hostname + url);
                 }
                 lengthHeader--;

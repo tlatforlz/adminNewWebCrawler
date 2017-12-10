@@ -6,6 +6,7 @@ var News = require('./../model/news.model');
 var SpiderModel = require('./../model/spider.model');
 var async = require('async');
 var restrictDao = require('./../dao/restrict.dao');
+var UrlModel = require('./../model/url.model');
 
 module.exports = {
   spiderCountUpdateAll: spiderCountUpdateAll,
@@ -201,96 +202,104 @@ function getPathKhuyenNong(path, spiderId, catelogyId) {
     var total = 0;
     var arrayNews = [];
     var orgi = path;
-    async.whilst(function () {
-        return path !== undefined
-      }, function (next) {
-        async.series({
-            gotoPage: function (callback) {
-              request(path, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                  var $ = cheerio.load(body);
-                  let i = 1;
-                  var length = $('.list_news_cate li').length;
-                  if (length === 0) {
-                    resolve(true);
-                  }
-                  var temp = new Promise(function (resolve, reject) {
-                    $('.list_news_cate li').each(function () {
-                      if (length == 0 || length == undefined) {
+    SpiderModel.findById({
+      _id: spiderId
+    }).then(spider => {
+      UrlModel.findById({
+        _id: spider.urlId
+      }).then(urlHost => {
+        async.whilst(function () {
+            return path !== undefined
+          }, function (next) {
+            async.series({
+                gotoPage: function (callback) {
+                  request(path, function (error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                      var $ = cheerio.load(body);
+                      let i = 1;
+                      var length = $('.contentx .xitem').length;
+                      if (length === 0) {
                         resolve(true);
                       }
-                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
-                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
-                      if (image === undefined) {
-                        image = null;
-                      }
-                      var news = new News({
-                        originalLink: url,
-                        spiderId: spiderId,
-                        categoryId: catelogyId,
-                        image: image,
-                        description: des,
-                        active: false,
-                        updateDate: Date.now()
+                      var temp = new Promise(function (resolve, reject) {
+                        $('.contentx .xitem').each(function () {
+                          if (length == 0 || length == undefined) {
+                            resolve(true);
+                          }
+                          url = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > h2 > a').attr('href');
+                          image = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > a > img').attr('src');
+                          des = $('div.contentx > div:nth-child(' + i + ') > span').text();
+                          if (image === undefined) {
+                            image = null;
+                          }
+                          var news = new News({
+                            originalLink: url,
+                            spiderId: spiderId,
+                            categoryId: catelogyId,
+                            image: image,
+                            description: des,
+                            active: false,
+                            updateDate: Date.now()
+                          });
+                          News.findOne({
+                            originalLink: news.originalLink
+                          }, function (err, New) {
+                            if (New === null) {
+                              console.log(news.originalLink + " " + total);
+                              if (news.originalLink === undefined || news.originalLink === '') {
+                                resolve(true);
+                              }
+                              total++;
+                              if (total === 200) {
+                                resolve(true);
+                              }
+                              arrayNews.push(news._id);
+                              news.save().then(function () {
+                                resolve(true);
+                              })
+                            }
+                          });
+                          i++;
+                          if (i == length) {
+                            resolve(true);
+                          }
+                        });
                       });
-                      News.findOne({
-                        originalLink: news.originalLink
-                      }, function (err, New) {
-                        if (New === null) {
-                          console.log(news.originalLink + " " + total);
-                          if (news.originalLink === undefined || news.originalLink === '') {
-                            resolve(true);
-                          }
-                          total++;
-                          if (total === 500) {
-                            resolve(true);
-                          }
-                          arrayNews.push(news._id);
-                          news.save().then(function () {
-                            resolve(true);
-                          })
+                      temp.then(function (res) {
+                        var gotoPage = urlHost.hostname + $('#dnn_ctr530_Main_UserNewsCategory__UserPagger_nextx').attr('href');
+                        if (gotoPage === undefined) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
                         }
-                      });
-                      i++;
-                      if (i == length) {
-                        resolve(true);
-                      }
-                    });
+                        if (total >= 100) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
+                        }
+                        callback(null, gotoPage);
+                      })
+                    } else {
+                      return reject(false);
+                    }
                   });
-                  temp.then(function (res) {
-                    var x = $('.paging a').length;
-                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
-                    if (gotoPage === undefined) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    if (total >= 500) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    callback(null, gotoPage);
-                  })
-                } else {
-                  return reject(false);
                 }
+              },
+              function (err, result) {
+                path = result.gotoPage;
+                next();
               });
-            }
           },
-          function (err, result) {
-            path = orgi + result.gotoPage;
-            next();
-          });
-      },
-      function (err) {
-        return resolve(true);
-      })
+          function (err) {
+            return resolve(true);
+          })
+      });
+    });
+
   });
 }
 
@@ -419,25 +428,20 @@ function spiderKhuyenNongUpdatePath(categoryId) {
               var $ = cheerio.load(body);
               async.series({
                   title: function (callback) {
-                    news[page].title = $('.title_detail').text();
+                    news[page].title = $('.xtext h1').text();
                     callback(null, news[page].title);
                   },
                   content: function (callback) {
-                    let content = $('#content_detail_news').html();
+                    let content = $('.xcontents').html();
                     callback(null, content);
                   },
                   author: function (callback) {
-                    let author = "Báo Dân Sinh";
+                    let author = "Báo Khuyến Nông";
                     news[page].author = author;
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
-                    var date = new Date();
-                    var dateF = $('.date').text().split('/');
-                    date.setDate(dateF[0]);
-                    date.setMonth(dateF[1]);
-                    date.setFullYear(dateF[2]);
-                    callback(null, date);
+                    callback(null, Date.now());
                   },
                   updateDate: function (callback) {
                     callback(null, Date.now());
@@ -483,11 +487,11 @@ function spiderKhuyenNongUpdateUrl(url) {
           var $ = cheerio.load(body);
           async.series({
               title: function (callback) {
-                news.title = $('.title_detail').text();
+                news.title = $('.xtext h1').text()
                 callback(null, news.title);
               },
               content: function (callback) {
-                let content = $('#content_detail_news').html();
+                let content = $('.xcontents').html();
                 //#the-post > div > div.entry > div
                 // let remove_review_overview = $('#main-content > div.content > article > div > div.entry > div.review-box.review-top.review-stars').html();
                 callback(null, content);
@@ -497,17 +501,11 @@ function spiderKhuyenNongUpdateUrl(url) {
                 callback(null, content);
               },
               author: function (callback) {
-                let author = "Báo Dân Sinh";
-                news.author = author;
-                callback(null, news.author);
+                let author = "Báo Khuyến Nông";
+                callback(null, author);
               },
               createDate: function (callback) {
-                var date = new Date();
-                var dateF = $('.date').text().split('/');
-                date.setDate(dateF[0]);
-                date.setMonth(dateF[1]);
-                date.setFullYear(dateF[2]);
-                callback(null, date);
+                callback(null, Date.now());
               },
               updateDate: function (callback) {
                 callback(null, Date.now());
@@ -545,27 +543,22 @@ function spiderKhuyenNongUpdateUrlVersion2(url) {
             var $ = cheerio.load(body);
             async.series({
                 title: function (callback) {
-                  upNews.title = $('.title_detail').text();
+                  upNews.title = $('.xtext h1').text();
                   callback(null, upNews.title);
                 },
                 content: function (callback) {
-                  let content = $('#content_detail_news').html();
+                  let content = $('.xcontents').html();
                   callback(null, content);
                 },
                 contentText: function (callback) {
-                  let content = $('#content_detail_news').text();
+                  let content = $('.xcontents').text();
                   callback(null, content);
                 },
                 author: function (callback) {
-                  upNews.author = "Báo Dân Sinh";
+                  upNews.author = "Báo Khuyến Nông";
                   callback(null, upNews.author);
                 },
                 createDate: function (callback) {
-                  var date = new Date();
-                  var dateF = $('.date').text().split('/');
-                  date.setDate(dateF[0]);
-                  date.setMonth(dateF[1]);
-                  date.setFullYear(dateF[2]);
                   callback(null, Date.now());
                 },
                 updateDate: function (callback) {
@@ -612,93 +605,101 @@ function getPathUpdateKhuyenNong(path, spiderId, catelogyId) {
     var total = 0;
     var arrayNews = [];
     var orgi = path;
-    async.whilst(function () {
-        return path !== undefined
-      }, function (next) {
-        async.series({
-            gotoPage: function (callback) {
-              request(path, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                  var $ = cheerio.load(body);
-                  let i = 1;
-                  var length = $('.list_news_cate li').length;
-                  if (length === 0) {
-                    resolve(true);
-                  }
-                  var temp = new Promise(function (resolve, reject) {
-                    $('.list_news_cate li').each(function () {
-                      if (length == 0 || length == undefined) {
+    SpiderModel.findById({
+      _id: spiderId
+    }).then(spider => {
+      UrlModel.findById({
+        _id: spider.urlId
+      }).then(urlHost => {
+        async.whilst(function () {
+            return path !== undefined
+          }, function (next) {
+            async.series({
+                gotoPage: function (callback) {
+                  request(path, function (error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                      var $ = cheerio.load(body);
+                      let i = 1;
+                      var length = $('.contentx .xitem').length;
+                      if (length === 0) {
                         resolve(true);
                       }
-                      url = ($('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > h2 > a').attr('href'));
-                      image = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > a > img').attr('src');
-                      des = $('body > div.wrapper > div.grid980 > div.content_main > div.content_bottom.clearfix > div.grid640.fl > div.col440.col440_cate.fl > ul > li:nth-child(' + i + ') > div > div.sapo').text();
-                      if (image === undefined) {
-                        image = null;
-                      }
-                      var news = new News({
-                        originalLink: url,
-                        spiderId: spiderId,
-                        categoryId: catelogyId,
-                        image: image,
-                        description: des,
-                        active: false,
-                        updateDate: Date.now()
+                      var temp = new Promise(function (resolve, reject) {
+                        $('.contentx .xitem').each(function () {
+                          if (length == 0 || length == undefined) {
+                            resolve(true);
+                          }
+                          url = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > h2 > a').attr('href');
+                          image = urlHost.hostname + $('div.contentx > div:nth-child(' + i + ') > a > img').attr('src');
+                          des = $('div.contentx > div:nth-child(' + i + ') > span').text();
+                          if (image === undefined) {
+                            image = null;
+                          }
+                          var news = new News({
+                            originalLink: url,
+                            spiderId: spiderId,
+                            categoryId: catelogyId,
+                            image: image,
+                            description: des,
+                            active: false,
+                            updateDate: Date.now()
+                          });
+                          News.findOne({
+                            originalLink: news.originalLink
+                          }, function (err, New) {
+                            if (New === null) {
+                              arrayNews.push(news._id);
+                              news.save();
+                            } else {
+                              New.updateDate = Date.now();
+                              arrayNews.push(New._id);
+                              New.save();
+                            }
+                            total++;
+                            if (total === 200) {
+                              resolve(true);
+                            }
+                          });
+                          i++;
+                          if (i == length) {
+                            resolve(true);
+                          }
+                        });
                       });
-                      News.findOne({
-                        originalLink: news.originalLink
-                      }, function (err, New) {
-                        if (New === null) {
-                          arrayNews.push(news._id);
-                          news.save();
-                        } else {
-                          New.updateDate = Date.now();
-                          arrayNews.push(New._id);
-                          New.save();
+                      temp.then(function (res) {
+                        var gotoPage = urlHost.hostname + $('#dnn_ctr530_Main_UserNewsCategory__UserPagger_nextx').attr('href');
+                        if (gotoPage === undefined) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
                         }
-                        total++;
-                        if (total === 500) {
-                          resolve(true);
+                        if (total >= 100) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
                         }
-                      });
-                      i++;
-                      if (i == length) {
-                        resolve(true);
-                      }
-                    });
+                        callback(null, gotoPage);
+                      })
+                    } else {
+                      return reject(false);
+                    }
                   });
-                  temp.then(function (res) {
-                    var x = $('.paging a').length;
-                    var gotoPage = $('.paging a:nth-child(' + x + ')').attr('href');
-                    if (gotoPage === undefined) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    if (total >= 500) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    callback(null, gotoPage);
-                  })
-                } else {
-                  return reject(false);
                 }
+              },
+              function (err, result) {
+                path = result.gotoPage;
+                next();
               });
-            }
           },
-          function (err, result) {
-            path = orgi + result.gotoPage;
-            next();
-          });
-      },
-      function (err) {
-        return resolve(true);
-      })
+          function (err) {
+            return resolve(true);
+          })
+      });
+    });
+
   });
 }

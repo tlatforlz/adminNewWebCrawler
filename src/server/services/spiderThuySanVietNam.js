@@ -280,7 +280,7 @@ function getPathThuySanVietNam(path, spiderId, catelogyId) {
                             'status': true
                           });
                         }
-                        if (total >= 500) {
+                        if (total >= 100) {
                           return resolve({
                             'total': total,
                             'listNewsId': arrayNews,
@@ -691,7 +691,7 @@ function getPathUpdateThuySanVietNam(path, spiderId, catelogyId) {
                         'status': true
                       });
                     }
-                    if (total >= 500) {
+                    if (total >= 100) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
