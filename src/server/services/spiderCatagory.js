@@ -37,8 +37,8 @@ module.exports = {
 // http://www.khuyennongvn.gov.vn/ky-thuat-trong-trot_t113c105
 // http://khoahoc.tv/s/k%E1%BB%B9+thu%E1%BA%ADt+tr%E1%BB%93ng+tr%E1%BB%8Dt?p=2
 
-//chua fix
 function searchByKeyThuySanVietNam(path, spiderId, categoryId, searchKey) {
+  console.log(path);
   return new Promise(function (resolve, reject) {
     if (path === undefined) {
       return reject(false);
@@ -46,105 +46,119 @@ function searchByKeyThuySanVietNam(path, spiderId, categoryId, searchKey) {
     var total = 0;
     var arrayNews = [];
     var orgi = path;
-    async.whilst(function () {
-        return path !== undefined
-      }, function (next) {
-        async.series({
-            gotoPage: function (callback) {
-              request(path, function (error, response, body) {
-                if (!error && response.statusCode === 200) {
-                  var $ = cheerio.load(body);
-                  var i = 1;
-                  var length = $('.main-cat-contentleft li').length;
-                  var temp = new Promise(function (resolve, reject) {
-                    $('.main-cat-contentleft li').each(function () {
-                      if (length == 0 || length == undefined) {
+    SpiderModel.findById({
+      _id: spiderId
+    }).then(spider => {
+      console.log(spider);
+      UrlModel.findById({
+        _id: spider.urlId
+      }).then(urlHost => {
+        console.log(urlHost);
+        async.whilst(function () {
+            return path !== undefined
+          }, function (next) {
+            async.series({
+                gotoPage: function (callback) {
+                  request(path, function (error, response, body) {
+                    if (!error && response.statusCode === 200) {
+                      var $ = cheerio.load(body);
+                      var i = 1;
+                      var length = $('.main-cat-contentleft li').length;
+                      if (length === 0) {
                         resolve(true);
                       }
-                      url = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').attr('href');
-                      image = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a > img').attr('src');
-                      des = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > p').text();
-                      title = $('#main-box-content > div.main-cat-contentleft > div > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').text();
-                      console.log(title);
-                      if (image === undefined) {
-                        image = null;
-                      }
-                      var news = new News({
-                        originalLink: url,
-                        spiderId: spiderId,
-                        categoryId: categoryId,
-                        image: image,
-                        description: des,
-                        active: false,
-                        updateDate: Date.now()
-                      });
+                      var temp = new Promise(function (resolve, reject) {
+                        $('.main-cat-contentleft li').each(function () {
+                          if (length == 0 || length == undefined) {
+                            resolve(true);
+                          }
+                          url = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').attr('href');
+                          image = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a > img').attr('src');
+                          des = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > p').text();
+                          title = $('#main-box-content > div.main-cat-contentleft > div.main-social > div > div > div > ul > li:nth-child(' + i + ') > a.title.video').text();
+                          console.log(title);
+                          if (image === undefined) {
+                            image = null;
+                          }
+                          var news = new News({
+                            originalLink: url,
+                            spiderId: spiderId,
+                            categoryId: categoryId,
+                            image: image,
+                            description: des,
+                            active: false,
+                            updateDate: Date.now()
+                          });
 
-                      if (title.indexOf(searchKey.toLowerCase()) > -1) {
-                        News.findOne({
-                          originalLink: news.originalLink
-                        }, function (err, New) {
-                          if (New === null) {
-                            total++;
-                            arrayNews.push(news._id);
-                            news.save().then(function () {
-                              resolve(true);
+                          if (title.indexOf(searchKey.toLowerCase()) > -1) {
+                            News.findOne({
+                              originalLink: news.originalLink
+                            }, function (err, New) {
+                              if (New === null) {
+                                total++;
+                                arrayNews.push(news._id);
+                                news.save().then(function () {
+                                  resolve(true);
+                                });
+                              } else {
+                                total++;
+                                New.updateDate = Date.now();
+                                New.active = false;
+                                New.save();
+                                arrayNews.push(New._id);
+                                resolve(true);
+                              }
                             });
-                          } else {
-                            total++;
-                            New.updateDate = Date.now();
-                            New.active = false;
-                            New.save();
-                            arrayNews.push(New._id);
+                          }
+                          i++;
+                          if (i == length) {
                             resolve(true);
                           }
                         });
-                      }
-                      i++;
-                      if (i == length) {
-                        resolve(true);
-                      }
-                    });
-                  });
-                  temp.then(function (res) {
-                    var page = $('#main-box-content > div.main-cat-contentleft > div.view-all > a');
-                    var gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a').attr('href');
-                    if (page.length != 1) {
-                      gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a:nth-child(2)').attr('href');
-                    }
-                    if (gotoPage === undefined) {
+                      });
+                      temp.then(function (res) {
+                        console.log(total);
+                        var page = $('#main-box-content > div.main-cat-contentleft > div.view-all > a');
+                        var gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a').attr('href');
+                        if (page.length != 1) {
+                          gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a:nth-child(2)').attr('href');
+                        }
+                        if (gotoPage === undefined) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
+                        }
+                        if (total >= 50) {
+                          return resolve({
+                            'total': total,
+                            'listNewsId': arrayNews,
+                            'status': true
+                          });
+                        }
+                        callback(null, gotoPage);
+                      })
+                    } else {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
                         'status': true
                       });
                     }
-                    if (total >= 200) {
-                      return resolve({
-                        'total': total,
-                        'listNewsId': arrayNews,
-                        'status': true
-                      });
-                    }
-                    callback(null, gotoPage);
-                  })
-                } else {
-                  return resolve({
-                    'total': total,
-                    'listNewsId': arrayNews,
-                    'status': true
                   });
                 }
+              },
+              function (err, result) {
+                path = result.gotoPage;
+                next();
               });
-            }
           },
-          function (err, result) {
-            path = result.gotoPage;
-            next();
-          });
-      },
-      function (err) {
-        return resolve(true);
-      })
+          function (err) {
+            return resolve(true);
+          })
+      });
+    });
   });
 }
 //chua fix
@@ -972,6 +986,10 @@ function searchByKey(crawlingName, searchKey) {
                     listNewsId.push(news);
                   });
                   total += res.total;
+                  if (total >= 50) {
+                    console.log(listNewsId.length);
+                    resolve(true);
+                  }
                   index++;
                   if (index === url.path.length - 1) {
                     resolve(true);

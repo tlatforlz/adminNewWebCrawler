@@ -273,7 +273,6 @@ function getPathThuySanVietNam(path, spiderId, catelogyId) {
                         if (page.length != 1) {
                           gotoPage = urlHost.hostname + $('#main-box-content > div.main-cat-contentleft > div.view-all > a:nth-child(2)').attr('href');
                         }
-                        console.log('fucking ' + gotoPage);
                         if (gotoPage === undefined) {
                           return resolve({
                             'total': total,
@@ -497,10 +496,15 @@ function spiderThuySanVietNamUpdateUrl(url) {
                 callback(null, news.title);
               },
               content: function (callback) {
-                let content = $('.ct-entry').html().split($('.ct-time-public').html()).join('').split('.comments-section').join('').split('.ct-other').join('').split('.ct-other').join('');
+                let content = $('.ct-entry').html();
+                var removeCT = $('.ct-time-public').html();
+                var removeCT1 = $('.star-rating').html();
+                var removeCT2 = $('.comments-section').html();
+                var removeCT3 = $('.ct-other').first().html();
+                var removeCT4 = $('.ct-other').last().html();
                 //#the-post > div > div.entry > div
                 // let remove_review_overview = $('#main-content > div.content > article > div > div.entry > div.review-box.review-top.review-stars').html();
-                callback(null, content);
+                callback(null, content.split(removeCT).join('').split(removeCT1).join('').split(removeCT2).join('').split(removeCT3).join('').split(removeCT4).join(''));
               },
               contentText: function (callback) {
                 let content = $('.ct-entry').text();
@@ -554,8 +558,15 @@ function spiderThuySanVietNamUpdateUrlVersion2(url) {
                   callback(null, upNews.title);
                 },
                 content: function (callback) {
-                  let content = $('.ct-entry').html().split($('.ct-time-public').html()).join('').split('.comments-section').join('').split('.ct-other').join('').split('.ct-other').join('');
-                  callback(null, content);
+                  let content = $('.ct-entry').html();
+                  var removeCT = $('.ct-time-public').html();
+                  var removeCT1 = $('.star-rating').html();
+                  var removeCT2 = $('.comments-section').html();
+                  var removeCT3 = $('.ct-other').first().html();
+                  var removeCT4 = $('.ct-other').last().html();
+                  //#the-post > div > div.entry > div
+                  // let remove_review_overview = $('#main-content > div.content > article > div > div.entry > div.review-box.review-top.review-stars').html();
+                  callback(null, content.split(removeCT).join('').split(removeCT1).join('').split(removeCT2).join('').split(removeCT3).join('').split(removeCT4).join(''));
                 },
                 contentText: function (callback) {
                   let content = $('.ct-entry').text();
