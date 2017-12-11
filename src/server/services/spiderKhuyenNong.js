@@ -366,7 +366,7 @@ function spiderKhuyenNongUpdateAll() {
                   },
                   content: function (callback) {
                     //#the-post > div
-                    let content = $('#content_detail_news').html();
+                    let content = $('div.xcontents').html().split('src="/').join('src="www.khuyennongvn.gov.vn/');
                     //#post-ratings-2150
                     callback(null, content);
                   },
@@ -432,7 +432,7 @@ function spiderKhuyenNongUpdatePath(categoryId) {
                     callback(null, news[page].title);
                   },
                   content: function (callback) {
-                    let content = $('.xcontents').html();
+                    let content = $('div.xcontents').html().split('src="/').join('src="www.khuyennongvn.gov.vn/');
                     callback(null, content);
                   },
                   author: function (callback) {
@@ -491,7 +491,7 @@ function spiderKhuyenNongUpdateUrl(url) {
                 callback(null, news.title);
               },
               content: function (callback) {
-                let content = $('.xcontents').html();
+                let content = $('div.xcontents').html().split('src="/').join('src="www.khuyennongvn.gov.vn/');
                 //#the-post > div > div.entry > div
                 // let remove_review_overview = $('#main-content > div.content > article > div > div.entry > div.review-box.review-top.review-stars').html();
                 callback(null, content);
@@ -547,7 +547,7 @@ function spiderKhuyenNongUpdateUrlVersion2(url) {
                   callback(null, upNews.title);
                 },
                 content: function (callback) {
-                  let content = $('.xcontents').html();
+                  let content = $('div.xcontents').html().split('src="/').join('src="www.khuyennongvn.gov.vn/') ;
                   callback(null, content);
                 },
                 contentText: function (callback) {
