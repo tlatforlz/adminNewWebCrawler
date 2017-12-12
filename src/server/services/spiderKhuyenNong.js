@@ -274,7 +274,7 @@ function getPathKhuyenNong(path, spiderId, catelogyId) {
                             'status': true
                           });
                         }
-                        if (total >= 100) {
+                        if (total >= 10) {
                           return resolve({
                             'total': total,
                             'listNewsId': arrayNews,
@@ -675,7 +675,7 @@ function getPathUpdateKhuyenNong(path, spiderId, catelogyId) {
                             'status': true
                           });
                         }
-                        if (total >= 100) {
+                        if (total >= 10) {
                           return resolve({
                             'total': total,
                             'listNewsId': arrayNews,

@@ -237,7 +237,7 @@ function searchByKeyKyThuatNuoiTrong(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 100) {
+                    if (total >= 10) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -345,7 +345,7 @@ function searchByKeyKhuyenNong(path, spiderId, categoryId, searchKey) {
                             'status': true
                           });
                         }
-                        if (total >= 100) {
+                        if (total >= 10) {
                           return resolve({
                             'total': total,
                             'listNewsId': arrayNews,
@@ -450,7 +450,7 @@ function searchByKeyKhoaHocTv(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 100) {
+                    if (total >= 10) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -553,7 +553,7 @@ function searchByKeyBaoDanSinh(path, spiderId, categoryId, searchKey) {
                         'status': true
                       });
                     }
-                    if (total >= 100) {
+                    if (total >= 10) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
@@ -794,6 +794,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -827,6 +830,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -860,6 +866,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -893,6 +902,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -926,6 +938,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -959,6 +974,9 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
+                  if (total == 5) {
+                    resolve(true);
+                  }
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -991,11 +1009,11 @@ function searchByKey(crawlingName, searchKey) {
                     listNewsId.push(news);
                   });
                   total += res.total;
-                  if (total >= 50) {
-                    console.log(listNewsId.length);
+
+                  index++;
+                  if (total == 5) {
                     resolve(true);
                   }
-                  index++;
                   if (index === url.path.length - 1) {
                     resolve(true);
                   }
@@ -1303,20 +1321,36 @@ function spiderCatagoryGetByUrl(urlId) {
             var FirstPromise = new Promise(function (resolve, reject) {
               $('header, nav, .mainMenu, .header, .nav, #nav, .simplemenu, .menuleft').find('a').each(function () {
                 var url = $(this).attr('href');
-                console.log(url);
-                if (url.indexOf(Url.hostname) !== -1 && url.split(Url.hostname)[1] !== '/') {
-                  if (url.trim() !== Url.hostname + "/") {
-                    if (Url.hostname == "http://www.khuyennongvn.gov.vn") {
-                      url = "/" + url;
+                if (Url.hostname == "http://baodansinh.vn") {
+                  if (url.indexOf(Url.hostname) !== -1) {
+                    if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {
+                      arrayPath.push(url);
                     }
-                    arrayPath.push(url);
                   }
-                }
-                if (url.indexOf(url.hostname) === -1 && url.trim() !== "http://www.thuysanvietnam.com.vn") {
-                  if (Url.hostname == "http://www.khuyennongvn.gov.vn") {
-                    url = "/" + url;
+                } else {
+                  if (Url.hostname == "http://nongnghiepvietnam.edu.vn" || Url.hostname == "https://tinnongnghiep.vn") {
+                    if (url.indexOf(Url.hostname) !== -1) {
+                      if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {
+                        arrayPath.push(url);
+                      }
+                    }
                   }
-                  arrayPath.push(Url.hostname + url);
+                  if (url.indexOf(Url.hostname) === -1) {
+                    if (Url.hostname == "http://www.khuyennongvn.gov.vn") {
+                      if (url[0] != "/") {
+                        url = "/" + url;
+                      }
+                      url = Url.hostname + url;
+                      if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {
+                        arrayPath.push(url);
+                      }
+                    }
+                    if (Url.hostname == "http://www.thuysanvietnam.com.vn") {
+                      url = Url.hostname + url;
+                      arrayPath.push(url);
+                    }
+
+                  }
                 }
                 lengthHeader--;
               });

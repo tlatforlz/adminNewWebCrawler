@@ -358,12 +358,7 @@ function spiderNongNghiepVietNamUpdateAll() {
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
-                    var date = new Date();
-                    var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
-                    date.setDate(dateF[0]);
-                    date.setMonth(dateF[1]);
-                    date.setFullYear(dateF[2]);
-                    callback(null, date);
+                    callback(null, Date.now());
                   },
                   updateDate: function (callback) {
                     callback(null, Date.now());
@@ -426,12 +421,7 @@ function spiderNongNghiepVietNamUpdatePath(categoryId) {
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
-                    var date = new Date();
-                    var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
-                    date.setDate(dateF[0]);
-                    date.setMonth(dateF[1]);
-                    date.setFullYear(dateF[2]);
-                    callback(null, date);
+                    callback(null, Date.now());
                   },
                   updateDate: function (callback) {
                     callback(null, Date.now());
@@ -497,12 +487,7 @@ function spiderNongNghiepVietNamUpdateUrl(url) {
                 callback(null, news.author);
               },
               createDate: function (callback) {
-                var date = new Date();
-                var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
-                date.setDate(dateF[0]);
-                date.setMonth(dateF[1]);
-                date.setFullYear(dateF[2]);
-                callback(null, date);
+                callback(null, Date.now());
               },
               updateDate: function (callback) {
                 callback(null, Date.now());
@@ -557,12 +542,6 @@ function spiderNongNghiepVietNamUpdateUrlVersion2(url) {
                   callback(null, upNews.author);
                 },
                 createDate: function (callback) {
-                  var date = new Date();
-                  var dateF = $('#the-post > div > p > span.tie-date').text().split('/');
-                  console.log(dateF);
-                  //   date.setDate(dateF[0]);
-                  //   date.setMonth(dateF[1]);
-                  //   date.setFullYear(dateF[2]);
                   callback(null, Date.now());
                 },
                 updateDate: function (callback) {

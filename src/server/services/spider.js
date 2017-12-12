@@ -437,12 +437,7 @@ function spiderTinNongNghiepUpdateAll() {
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
-                    var date = new Date();
-                    var dateF = $('#main-content > div.content > article > div > p > span:nth-child(2)').text().split('/');
-                    date.setDate(dateF[0]);
-                    date.setMonth(dateF[1]);
-                    date.setFullYear(dateF[2]);
-                    callback(null, date);
+                    callback(null, Date.now());
                   },
                   updateDate: function (callback) {
                     callback(null, Date.now());
@@ -502,12 +497,7 @@ function spiderTinNongNghiepUpdatePath(categoryId) {
                     callback(null, news[page].author);
                   },
                   createDate: function (callback) {
-                    var date = new Date();
-                    var dateF = $('#main-content > div.content > article > div > p > span:nth-child(2)').text().split('/');
-                    date.setDate(dateF[0]);
-                    date.setMonth(dateF[1]);
-                    date.setFullYear(dateF[2]);
-                    callback(null, date);
+                    callback(null, Date.now());
                   },
                   updateDate: function (callback) {
                     callback(null, Date.now());
@@ -569,12 +559,7 @@ function spiderTinNongNghiepUpdateUrlVersion2(url) {
                   callback(null, upNews.author);
                 },
                 createDate: function (callback) {
-                  var date = new Date();
-                  var dateF = $('#main-content > div.content > article > div > p > span:nth-child(2)').text().split('/');
-                  date.setDate(dateF[0]);
-                  date.setMonth(dateF[1]);
-                  date.setFullYear(dateF[2]);
-                  callback(null, date);
+                  callback(null, Date.now());
                 },
                 updateDate: function (callback) {
                   callback(null, Date.now());
@@ -640,12 +625,7 @@ function spiderTinNongNghiepUpdateUrl(url) {
                 callback(null, upNews.author);
               },
               createDate: function (callback) {
-                var date = new Date();
-                var dateF = $('#main-content > div.content > article > div > p > span:nth-child(2)').text().split('/');
-                date.setDate(dateF[0]);
-                date.setMonth(dateF[1]);
-                date.setFullYear(dateF[2]);
-                callback(null, date);
+                callback(null, Date.now());
               },
               updateDate: function (callback) {
                 callback(null, Date.now());

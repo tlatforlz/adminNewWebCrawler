@@ -252,7 +252,7 @@ function getPathThuySanVietNam(path, spiderId, catelogyId) {
                                 resolve(true);
                               }
                               total++;
-                              if (total === 500) {
+                              if (total === 10) {
                                 resolve(true);
                               }
                               arrayNews.push(news._id);
@@ -280,7 +280,7 @@ function getPathThuySanVietNam(path, spiderId, catelogyId) {
                             'status': true
                           });
                         }
-                        if (total >= 100) {
+                        if (total >= 10) {
                           return resolve({
                             'total': total,
                             'listNewsId': arrayNews,
@@ -668,7 +668,7 @@ function getPathUpdateThuySanVietNam(path, spiderId, catelogyId) {
                           New.save();
                         }
                         total++;
-                        if (total === 500) {
+                        if (total === 10) {
                           resolve(true);
                         }
                       });
@@ -691,7 +691,7 @@ function getPathUpdateThuySanVietNam(path, spiderId, catelogyId) {
                         'status': true
                       });
                     }
-                    if (total >= 100) {
+                    if (total >= 10) {
                       return resolve({
                         'total': total,
                         'listNewsId': arrayNews,
