@@ -18,8 +18,7 @@ module.exports = {
   spiderTinNongNghiepUpdateUrl: spiderTinNongNghiepUpdateUrl,
   spiderTinNongNghiepUpdateUrlVersion2: spiderTinNongNghiepUpdateUrlVersion2,
   getPathspiderTinNongNghiep: getPathspiderTinNongNghiep,
-  getPathUpdateSpiderTinNongNghiep: getPathUpgit add .
-  dateSpiderTinNongNghiep,
+  getPathUpdateSpiderTinNongNghiep: getPathUpdateSpiderTinNongNghiep,
 
   checkRestrictedKey: checkRestrictedKey
 }
