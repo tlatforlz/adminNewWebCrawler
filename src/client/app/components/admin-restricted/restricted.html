@@ -102,7 +102,7 @@
             <tr ng-repeat="row in $data">
               <td data-title="'id'" filter="{_id: 'text'}">{{row._id}}</td>
               <td data-title="'name'" filter="{name: 'text'}">{{row.name}}</td>
-              <td data-title="'level'">{{row.level}}</td>
+              <!-- <td ng-show="false" data-title="'level'">{{row.level}}</td> -->
               <td data-title="'action'">
                 <div class="btn-group">
                   <a class="btn btn-success" ng-click="vm.edit(row._id)">
