@@ -1,0 +1,146 @@
+<style>
+  .modal {
+    text-align: center;
+    padding: 0!important;
+  }
+
+  .modal::before {
+    content: '';
+    display: inline-block;
+    height: 90%;
+    vertical-align: middle;
+    margin-right: -4px;
+  }
+
+  .modal-dialog {
+    display: inline-block;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  .header1 {
+    margin-top: 25px;
+  }
+
+  .content1 {
+    margin-top: 20px;
+  }
+
+
+  .btn-left {
+    margin-top: 20px;
+  }
+
+</style>
+
+
+<section id="main-content">
+  <section class="wrapper">
+    <div class="row">
+      <div class="col-lg-6">
+        <h3 class="page-header">
+          <i class="fa fa-table"></i>Spider</h3>
+      </div>
+      <div class="col-lg-6">
+        <h3 class="page-header">
+          <i class="fa fa-table"></i> Information</h3>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <h5 class="col-lg-10" style="font-weight:bold;font-size:20px">Test Crawl Path</h5>
+          <button class="btn btn-primary">Test Path</button>
+        </div>
+
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Path
+          </label>
+          <div class="col-lg-9 ">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Go page
+          </label>
+          <div class="col-lg-9 ">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group ">
+          <label style="margin-bottom:20px" for="ctitle" class="header1 control-label col-lg-2">Image
+          </label>
+          <div class="col-lg-9">
+            <input style="margin-bottom:20px" class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title"
+              required />
+          </div>
+          <a style="margin-bottom:20px;background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <h5 class="col-lg-10" style="font-weight:bold;font-size:20px">Test crawl Url</h5>
+          <button class="btn btn-warning">Test Url</button>
+        </div>
+
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Url
+          </label>
+          <div class="col-lg-9">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Title
+          </label>
+          <div class="col-lg-9">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Content
+          </label>
+          <div class="col-lg-9">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Author
+          </label>
+          <div class="col-lg-9">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group">
+          <label for="ctitle" class="header1 control-label col-lg-2">Create Date
+          </label>
+          <div class="col-lg-9">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+      </div>
+      <div class="rol-lg-6" style="border-radius: 5px;border-color:red"></div>
+    </div>
+  </section>
+</section>
