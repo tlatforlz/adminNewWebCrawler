@@ -30,6 +30,32 @@ var spiderSchema = new Schema({
   crawlingName: {
     type: String,
     require: true
+  },
+  spiderInformation: {
+    title: {
+      selector: String,
+      remove: [String]
+    },
+    content: {
+      selector: String,
+      remove: [String]
+    },
+    author: {
+      selector: String,
+      remove: [String]
+    },
+    createDate: {
+      selector: String,
+      remove: [String]
+    },
+    image: {
+      selector: String,
+      remove: [String]
+    },
+    nextPage: {
+      selector: String,
+      remove: [String]
+    }
   }
 });
 

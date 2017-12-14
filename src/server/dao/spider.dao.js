@@ -40,7 +40,6 @@ module.exports = {
   updateNewsSpiderUrlByNewsId: updateNewsSpiderUrlByNewsId,
   getNewsByDate: getNewsByDate,
 
-
   searchByKey: searchByKey
 };
 

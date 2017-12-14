@@ -23,6 +23,7 @@ app.use(logger('dev'));
 
 app.use(config.BASE_URL + '/url', require('./routes/url.routes')());
 app.use(config.BASE_URL + '/spider', require('./routes/spider.routes')());
+app.use(config.BASE_URL + '/crawl', require('./routes/crawl.routes')());
 app.use(config.BASE_URL + '/category', require('./routes/category.routes')());
 app.use(config.BASE_URL + '/news', require('./routes/news.routes')());
 app.use(config.BASE_URL + '/archive', require('./routes/archive.routes')());
