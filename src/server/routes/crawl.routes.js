@@ -5,6 +5,7 @@ module.exports = function () {
   router.post('/', createSpider);
   router.put('/', updateSpider);
   router.get('/getRemove/:spiderId/:name', getRemove);
+  router.post('/addRemove/:spiderId/:name', addRemove);
   router.post('/addSelectorTitle', addSelectorTitle);
   router.post('/addPathSelectorTitle', addPathSelectorTitle);
   router.post('/removePathSelectorTitle', removePathSelectorTitle);
@@ -34,6 +35,20 @@ module.exports = function () {
   router.post('/addPathSelectorDescription', addPathSelectorDescription);
   router.post('/removePathSelectorDescription', removePathSelectorDescription);
 
+  function addRemove(req, res, next) {
+    var request = {
+      spiderId: req.params.spiderId,
+      name: req.params.name,
+      selector: req.body.selector
+    }
+    crawlDao.addRemove(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function getRemove(req, res, next) {
     var request = {

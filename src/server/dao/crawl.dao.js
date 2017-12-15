@@ -8,6 +8,7 @@ module.exports = {
   createSpider: createSpider,
   updateSpider: updateSpider,
   getRemove: getRemove,
+  addRemove: addRemove,
 
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
@@ -36,6 +37,98 @@ module.exports = {
   addSelectorDescription: addSelectorDescription,
   addPathSelectorDescription: addPathSelectorDescription,
   removePathSelectorDescription: removePathSelectorDescription
+}
+
+function addRemove(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var t = new Promise(function (resolve, reject) {
+      switch (request.name) {
+        case 'nextPage':
+          {
+            addPathSelectorNextPage(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'image':
+          {
+            addPathSelectorImage(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'createDate':
+          {
+            addPathSelectorCreatedDate(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'author':
+          {
+            addPathSelectorAuthor(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'content':
+          {
+            addPathSelectorContent(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'title':
+          {
+            addPathSelectorTitle(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'description':
+          {
+            addPathSelectorDescription(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+      }
+
+    })
+    return t.then(res => {
+      return Promise.resolve(res);
+    })
+  })
 }
 
 function getRemove(request) {

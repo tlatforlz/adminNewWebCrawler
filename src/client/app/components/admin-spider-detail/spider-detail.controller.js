@@ -77,6 +77,21 @@
       });
     }
 
+    vm.add = function (value) {
+      $rootScope.name = value;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'addRemove.html',
+        controller: 'addRemove',
+        controllerAs: 'vm',
+        size: 'md',
+        backdrop: 'static',
+        keyboard: false
+      });
+    }
+
     vm.save = function () {
       var data = {
         'spiderId': $rootScope.spiderId,
@@ -126,6 +141,48 @@
       vm.listKeys = w;
     })
     vm.ok = function () {
+      $uibModalInstance.close();
+    };
+  }
+
+  angular.module('app.admincategory')
+    .controller('addRemove', ['$q', '$http', '$state', '$scope', '$uibModalInstance', '$rootScope', addRemove]);
+
+  function addRemove($q, $http, $state, $scope, $uibModalInstance, $rootScope) {
+    var vm = this;
+
+    function add(data) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/addRemove/' + $rootScope.spiderId + "/" + $rootScope.name,
+        data: data
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    vm.ok = function () {
+      var data = {
+        'selector': vm.selector,
+        'spiderId': $rootScope.spiderId,
+        'name': $rootScope.name
+      };
+      add(data).then(function (res) {
+        if (res === true) {
+          $uibModalInstance.close();
+        } else {
+          vm.isShow = true;
+        }
+      }, function () {
+        vm.isShow = true;
+      });
+    };
+
+    vm.cancel = function () {
       $uibModalInstance.close();
     };
   }
