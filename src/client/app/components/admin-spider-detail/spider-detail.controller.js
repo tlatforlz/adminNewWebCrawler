@@ -38,6 +38,19 @@
       return deferred.promise;
     }
 
+    function getRemove(name) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/crawl/getRemove/' + $stateParams.id + "/" + name,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     getSpider().then(w => {
       vm.gopage = w.spider.spiderInformation.nextPage.selector;
       vm.image = w.spider.spiderInformation.image.selector;
@@ -48,8 +61,20 @@
       vm.des = w.spider.spiderInformation.description.selector;
     })
 
+
     vm.edit = function (value) {
-      console.log(value);
+      $rootScope.name = value;
+      var modalInstance = $uibModal.open({
+        animation: vm.animationsEnabled,
+        ariaLabelledBy: 'modal-title',
+        ariaDescribedBy: 'modal-body',
+        templateUrl: 'showRemove.html',
+        controller: 'showRemove',
+        controllerAs: 'vm',
+        size: 'md',
+        backdrop: 'static',
+        keyboard: false
+      });
     }
 
     vm.save = function () {
@@ -65,7 +90,6 @@
       }
       saveSpider(data).then(function () {
         getSpider().then(w => {
-          console.log(w);
           vm.gopage = w.spider.spiderInformation.nextPage.selector;
           vm.image = w.spider.spiderInformation.image.selector;
           vm.title = w.spider.spiderInformation.title.selector;
@@ -79,4 +103,30 @@
     }
   }
 
+  angular.module('app.admincallspider')
+    .controller('showRemove', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', 'NgTableParams', showRemove]);
+
+  function showRemove($q, $http, $state, $scope, $rootScope, $uibModalInstance, NgTableParams) {
+    var vm = this;
+
+    function getRemove(name) {
+      var deferred = $q.defer();
+      $http({
+        method: 'GET',
+        url: '/api/crawl/getRemove/' + $rootScope.spiderId + "/" + name,
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    getRemove($rootScope.name).then(w => {
+      vm.listKeys = w;
+    })
+    vm.ok = function () {
+      $uibModalInstance.close();
+    };
+  }
 })();

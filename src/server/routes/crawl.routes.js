@@ -4,7 +4,7 @@ var crawlDao = require('./../dao/crawl.dao');
 module.exports = function () {
   router.post('/', createSpider);
   router.put('/', updateSpider);
-
+  router.get('/getRemove/:spiderId/:name', getRemove);
   router.post('/addSelectorTitle', addSelectorTitle);
   router.post('/addPathSelectorTitle', addPathSelectorTitle);
   router.post('/removePathSelectorTitle', removePathSelectorTitle);
@@ -34,6 +34,20 @@ module.exports = function () {
   router.post('/addPathSelectorDescription', addPathSelectorDescription);
   router.post('/removePathSelectorDescription', removePathSelectorDescription);
 
+
+  function getRemove(req, res, next) {
+    var request = {
+      spiderId: req.params.spiderId,
+      name: req.params.name
+    }
+    crawlDao.getRemove(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function addSelectorDescription(req, res, next) {
     var request = {

@@ -7,6 +7,8 @@ var failMessage = require('./../services/failMessage');
 module.exports = {
   createSpider: createSpider,
   updateSpider: updateSpider,
+  getRemove: getRemove,
+
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
   removePathSelectorTitle: removePathSelectorTitle,
@@ -34,6 +36,57 @@ module.exports = {
   addSelectorDescription: addSelectorDescription,
   addPathSelectorDescription: addPathSelectorDescription,
   removePathSelectorDescription: removePathSelectorDescription
+}
+
+function getRemove(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var listRemove = [];
+    var t = new Promise(function (resolve, reject) {
+      switch (request.name) {
+        case 'nextPage':
+          {
+            listRemove = spider.spiderInformation.nextPage.remove;
+            break;
+          }
+        case 'image':
+          {
+            listRemove = spider.spiderInformation.image.remove;
+            break;
+          }
+        case 'createDate':
+          {
+            listRemove = spider.spiderInformation.createDate.remove;
+            break;
+          }
+        case 'author':
+          {
+            listRemove = spider.spiderInformation.author.remove;
+            break;
+          }
+        case 'content':
+          {
+            listRemove = spider.spiderInformation.content.remove;
+            break;
+          }
+        case 'title':
+          {
+            listRemove = spider.spiderInformation.title.remove;
+            break;
+          }
+        case 'description':
+          {
+            listRemove = spider.spiderInformation.description.remove;
+            break;
+          }
+      }
+      resolve(listRemove);
+    })
+    return t.then(res => {
+      return Promise.resolve(res);
+    })
+  })
 }
 
 function addPathSelectorDescription(request) {
