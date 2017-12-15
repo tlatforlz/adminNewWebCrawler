@@ -57,7 +57,7 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Path
           </label>
           <div class="col-lg-9 ">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.path" required />
           </div>
           <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
             <i class="fa fa-edit"></i>
@@ -67,9 +67,9 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Go page
           </label>
           <div class="col-lg-9 ">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.gopage" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('gopage')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
@@ -77,15 +77,26 @@
           <label style="margin-bottom:20px" for="ctitle" class="header1 control-label col-lg-2">Image
           </label>
           <div class="col-lg-9">
-            <input style="margin-bottom:20px" class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title"
+            <input style="margin-bottom:20px" class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.image"
               required />
           </div>
-          <a style="margin-bottom:20px;background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="margin-bottom:20px;background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('image')">
+            <i class="fa fa-edit"></i>
+          </a>
+        </div>
+        <div class="form-group ">
+          <label style="margin-bottom:20px" for="ctitle" class="header1 control-label col-lg-2">Description
+          </label>
+          <div class="col-lg-9">
+            <input style="margin-bottom:20px" class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.des" required
+            />
+          </div>
+          <a style="margin-bottom:20px;background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('des')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
         <div class="form-group">
-          <h5 class="col-lg-10" style="font-weight:bold;font-size:20px">Test crawl Url</h5>
+          <h5 class="col-lg-10" style="font-weight:bold;font-size:20px">Test Crawl Url</h5>
           <button class="btn btn-warning">Test Url</button>
         </div>
 
@@ -93,9 +104,9 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Url
           </label>
           <div class="col-lg-9">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.url" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('url')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
@@ -105,7 +116,7 @@
           <div class="col-lg-9">
             <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('title')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
@@ -113,9 +124,9 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Content
           </label>
           <div class="col-lg-9">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.content" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('content')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
@@ -123,9 +134,9 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Author
           </label>
           <div class="col-lg-9">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.author" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('author')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
@@ -133,14 +144,17 @@
           <label for="ctitle" class="header1 control-label col-lg-2">Create Date
           </label>
           <div class="col-lg-9">
-            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.title" required />
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.createdate" required />
           </div>
-          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('path')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('createdate')">
             <i class="fa fa-edit"></i>
           </a>
         </div>
       </div>
       <div class="rol-lg-6" style="border-radius: 5px;border-color:red"></div>
     </div>
+    <button ng-click="vm.save()" style="margin-top:40px; padding-left:20px; padding-right:20px; margin-left:42%" class='btn btn-primary'>Save</button>
+    <br>
+    <label>* You must use selector in Jquery to enter selectors in spider.</label>
   </section>
 </section>

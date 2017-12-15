@@ -3,6 +3,8 @@ var crawlDao = require('./../dao/crawl.dao');
 
 module.exports = function () {
   router.post('/', createSpider);
+  router.put('/', updateSpider);
+
   router.post('/addSelectorTitle', addSelectorTitle);
   router.post('/addPathSelectorTitle', addPathSelectorTitle);
   router.post('/removePathSelectorTitle', removePathSelectorTitle);
@@ -26,6 +28,75 @@ module.exports = function () {
   router.post('/addSelectorImage', addSelectorImage);
   router.post('/addPathSelectorImage', addPathSelectorImage);
   router.post('/removePathSelectorImage', removePathSelectorImage);
+
+
+  router.post('/addSelectorDescription', addSelectorDescription);
+  router.post('/addPathSelectorDescription', addPathSelectorDescription);
+  router.post('/removePathSelectorDescription', removePathSelectorDescription);
+
+
+  function addSelectorDescription(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.addSelectorDescription(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function addPathSelectorDescription(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.addPathSelectorDescription(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function removePathSelectorDescription(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.removePathSelectorDescription(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+
+  function updateSpider(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      title: req.body.title,
+      content: req.body.content,
+      author: req.body.author,
+      createddate: req.body.createddate,
+      nextpage: req.body.nextpage,
+      image: req.body.image,
+      description: req.body.description
+    }
+    crawlDao.updateSpider(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function addSelectorImage(req, res, next) {
     var request = {
@@ -68,6 +139,7 @@ module.exports = function () {
         res.status(400).send(err).end();
       })
   }
+
   function addSelectorNextPage(req, res, next) {
     var request = {
       spiderId: req.body.spiderId,

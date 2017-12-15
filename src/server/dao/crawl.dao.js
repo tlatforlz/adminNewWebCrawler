@@ -6,6 +6,7 @@ var successMessage = require('./../services/successMessage');
 var failMessage = require('./../services/failMessage');
 module.exports = {
   createSpider: createSpider,
+  updateSpider: updateSpider,
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
   removePathSelectorTitle: removePathSelectorTitle,
@@ -29,6 +30,111 @@ module.exports = {
   addSelectorImage: addSelectorImage,
   addPathSelectorImage: addPathSelectorImage,
   removePathSelectorImage: removePathSelectorImage,
+
+  addSelectorDescription: addSelectorDescription,
+  addPathSelectorDescription: addPathSelectorDescription,
+  removePathSelectorDescription: removePathSelectorDescription
+}
+
+function addPathSelectorDescription(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.description.remove.length == 0) {
+        resolve(true);
+      }
+      var i = 0;
+      spider.spiderInformation.description.remove.forEach(element => {
+        if (element == request.selector) {
+          reject(false);
+        }
+        i++;
+        if (i == spider.spiderInformation.description.remove.length) {
+          resolve(true);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.description.remove.push(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function removePathSelectorDescription(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.description.remove.length == 0) {
+        resolve(false);
+      }
+      var i = 0;
+      spider.spiderInformation.description.remove.forEach(element => {
+        if (element == request.selector) {
+          resolve(true);
+        }
+        i++;
+        if (i == spider.spiderInformation.description.remove.length) {
+          reject(false);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.description.remove.pull(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function addSelectorDescription(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    if (spider.spiderInformation.description.selector == request.selector) {
+      return Promise.resolve({
+        message: false
+      })
+    }
+    spider.spiderInformation.description.selector = request.selector;
+    spider.save();
+    return Promise.resolve({
+      message: true
+    })
+  })
+}
+
+function updateSpider(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    spider.spiderInformation.title.selector = request.title;
+    spider.spiderInformation.content.selector = request.content;
+    spider.spiderInformation.author.selector = request.author;
+    spider.spiderInformation.createDate.selector = request.createddate;
+    spider.spiderInformation.image.selector = request.image;
+    spider.spiderInformation.nextPage.selector = request.nextpage;
+    spider.spiderInformation.description.selector = request.description;
+    spider.save();
+    return Promise.resolve({
+      message: true
+    })
+  })
 }
 
 function addPathSelectorImage(request) {

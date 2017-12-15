@@ -55,6 +55,10 @@ var spiderSchema = new Schema({
     nextPage: {
       selector: String,
       remove: [String]
+    },
+    description: {
+      selector: String,
+      remove: [String]
     }
   }
 });
