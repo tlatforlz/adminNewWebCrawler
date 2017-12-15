@@ -59,6 +59,10 @@ var spiderSchema = new Schema({
     description: {
       selector: String,
       remove: [String]
+    },
+    listnews: {
+      selector: String,
+      remove: [String]
     }
   }
 });

@@ -30,10 +30,13 @@ module.exports = function () {
   router.post('/addPathSelectorImage', addPathSelectorImage);
   router.post('/removePathSelectorImage', removePathSelectorImage);
 
-
   router.post('/addSelectorDescription', addSelectorDescription);
   router.post('/addPathSelectorDescription', addPathSelectorDescription);
   router.post('/removePathSelectorDescription', removePathSelectorDescription);
+
+  router.post('/addSelectorListNews', addSelectorListNews);
+  router.post('/addPathSelectorListNews', addPathSelectorListNews);
+  router.post('/removePathSelectorListNews', removePathSelectorListNews);
 
   function addRemove(req, res, next) {
     var request = {
@@ -56,6 +59,48 @@ module.exports = function () {
       name: req.params.name
     }
     crawlDao.getRemove(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function addSelectorListNews(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.addSelectorListNews(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function addPathSelectorListNews(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.addPathSelectorListNews(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function removePathSelectorListNews(req, res, next) {
+    var request = {
+      spiderId: req.body.spiderId,
+      selector: req.body.selector
+    };
+    crawlDao.removePathSelectorListNews(request)
       .then(function (status) {
         res.status(200).send(status).end();
       })
@@ -116,8 +161,10 @@ module.exports = function () {
       createddate: req.body.createddate,
       nextpage: req.body.nextpage,
       image: req.body.image,
-      description: req.body.description
+      description: req.body.description,
+      listnews: req.body.listnews
     }
+    console.log(request);
     crawlDao.updateSpider(request)
       .then(function (status) {
         res.status(200).send(status).end();

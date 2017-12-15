@@ -61,9 +61,22 @@
           </div>
         </div>
         <div class="form-group">
-          <label for="ctitle" class="header1 control-label col-lg-2">Go page
+          <label for="ctitle" class="header1 control-label col-lg-2">List news
           </label>
           <div class="col-lg-8 ">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.listnews" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('listnews')">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a class="btn-left col-lg-1 btn btn-primary" ng-click="vm.add('listnews')">
+            <i class="fa fa-plus"></i>
+          </a>
+        </div>
+        <div class="form-group ">
+          <label for="ctitle" class="header1 control-label col-lg-2">Go page
+          </label>
+          <div class="col-lg-8">
             <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.gopage" required />
           </div>
           <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('nextPage')">
@@ -79,7 +92,7 @@
           <div class="col-lg-8">
             <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.image" required />
           </div>
-          <a style="margin-bottom:20px;background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('image')">
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('image')">
             <i class="fa fa-edit"></i>
           </a>
           <a class="btn-left col-lg-1 btn btn-primary" ng-click="vm.add('image')">

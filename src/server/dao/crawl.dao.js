@@ -36,7 +36,11 @@ module.exports = {
 
   addSelectorDescription: addSelectorDescription,
   addPathSelectorDescription: addPathSelectorDescription,
-  removePathSelectorDescription: removePathSelectorDescription
+  removePathSelectorDescription: removePathSelectorDescription,
+
+  addSelectorListNews: addSelectorListNews,
+  addPathSelectorListNews: addPathSelectorListNews,
+  removePathSelectorListNews: removePathSelectorListNews
 }
 
 function addRemove(request) {
@@ -122,6 +126,17 @@ function addRemove(request) {
             })
             break;
           }
+        case 'listnews':
+          {
+            addPathSelectorListNews(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
       }
 
     })
@@ -173,6 +188,11 @@ function getRemove(request) {
             listRemove = spider.spiderInformation.description.remove;
             break;
           }
+        case 'listnews':
+          {
+            listRemove = spider.spiderInformation.listnews.remove;
+            break;
+          }
       }
       resolve(listRemove);
     })
@@ -181,6 +201,90 @@ function getRemove(request) {
     })
   })
 }
+
+function addPathSelectorListNews(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.listnews.remove.length == 0) {
+        resolve(true);
+      }
+      var i = 0;
+      spider.spiderInformation.listnews.remove.forEach(element => {
+        if (element == request.selector) {
+          reject(false);
+        }
+        i++;
+        if (i == spider.spiderInformation.listnews.remove.length) {
+          resolve(true);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.listnews.remove.push(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function removePathSelectorListNews(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.listnews.remove.length == 0) {
+        resolve(false);
+      }
+      var i = 0;
+      spider.spiderInformation.listnews.remove.forEach(element => {
+        if (element == request.selector) {
+          resolve(true);
+        }
+        i++;
+        if (i == spider.spiderInformation.listnews.remove.length) {
+          reject(false);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.listnews.remove.pull(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function addSelectorListNews(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    if (spider.spiderInformation.listnews.selector == request.selector) {
+      return Promise.resolve({
+        message: false
+      })
+    }
+    spider.spiderInformation.listnews.selector = request.selector;
+    spider.save();
+    return Promise.resolve({
+      message: true
+    })
+  })
+}
+
 
 function addPathSelectorDescription(request) {
   return Spider.findById({
@@ -269,6 +373,8 @@ function updateSpider(request) {
   return Spider.findById({
     _id: request.spiderId
   }).exec().then(spider => {
+    console.log(spider);
+    console.log(request);
     spider.spiderInformation.title.selector = request.title;
     spider.spiderInformation.content.selector = request.content;
     spider.spiderInformation.author.selector = request.author;
@@ -276,6 +382,7 @@ function updateSpider(request) {
     spider.spiderInformation.image.selector = request.image;
     spider.spiderInformation.nextPage.selector = request.nextpage;
     spider.spiderInformation.description.selector = request.description;
+    spider.spiderInformation.listnews.selector = request.listnews;
     spider.save();
     return Promise.resolve({
       message: true

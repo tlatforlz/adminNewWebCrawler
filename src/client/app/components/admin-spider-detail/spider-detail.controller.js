@@ -59,6 +59,7 @@
       vm.author = w.spider.spiderInformation.author.selector;
       vm.createdate = w.spider.spiderInformation.createDate.selector;
       vm.des = w.spider.spiderInformation.description.selector;
+      vm.listnews = w.spider.spiderInformation.listnews.selector;
     })
 
 
@@ -101,9 +102,12 @@
         'createddate': vm.createdate,
         'nextpage': vm.gopage,
         'image': vm.image,
-        'description': vm.des
+        'description': vm.des,
+        'listnews': vm.listnews
       }
+     
       saveSpider(data).then(function () {
+        console.log(data);
         getSpider().then(w => {
           vm.gopage = w.spider.spiderInformation.nextPage.selector;
           vm.image = w.spider.spiderInformation.image.selector;
@@ -112,6 +116,7 @@
           vm.author = w.spider.spiderInformation.author.selector;
           vm.createdate = w.spider.spiderInformation.createDate.selector;
           vm.des = w.spider.spiderInformation.description.selector;
+          vm.listnews = w.spider.spiderInformation.listnews.selector;
         })
 
       })
