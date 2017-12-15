@@ -6,6 +6,9 @@ module.exports = function () {
   router.put('/', updateSpider);
   router.get('/getRemove/:spiderId/:name', getRemove);
   router.post('/addRemove/:spiderId/:name', addRemove);
+  router.post('/RemoveSelector/:spiderId/:name', RemoveSelector);
+  router.post('/UpdateSelector/:spiderId/:name', UpdateSelector)
+
   router.post('/addSelectorTitle', addSelectorTitle);
   router.post('/addPathSelectorTitle', addPathSelectorTitle);
   router.post('/removePathSelectorTitle', removePathSelectorTitle);
@@ -37,6 +40,37 @@ module.exports = function () {
   router.post('/addSelectorListNews', addSelectorListNews);
   router.post('/addPathSelectorListNews', addPathSelectorListNews);
   router.post('/removePathSelectorListNews', removePathSelectorListNews);
+
+  function UpdateSelector(req, res, next) {
+    var request = {
+      spiderId: req.params.spiderId,
+      name: req.params.name,
+      selector: req.body.selector,
+      newselector: req.body.newselector
+    }
+    crawlDao.UpdateSelector(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function RemoveSelector(req, res, next) {
+    var request = {
+      spiderId: req.params.spiderId,
+      name: req.params.name,
+      selector: req.body.selector
+    }
+    crawlDao.RemoveSelector(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
 
   function addRemove(req, res, next) {
     var request = {

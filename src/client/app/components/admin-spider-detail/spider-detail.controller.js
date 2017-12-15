@@ -105,7 +105,7 @@
         'description': vm.des,
         'listnews': vm.listnews
       }
-     
+
       saveSpider(data).then(function () {
         console.log(data);
         getSpider().then(w => {
@@ -142,12 +142,75 @@
       return deferred.promise;
     }
 
+    function removePath(name) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/RemoveSelector/' + $rootScope.spiderId + "/" + $rootScope.name,
+        data: {
+          selector: name
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    //UpdateSelector
+    function UpdateSelector(name, newname) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/UpdateSelector/' + $rootScope.spiderId + "/" + $rootScope.name,
+        data: {
+          selector: name,
+          newselector: newname
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
     getRemove($rootScope.name).then(w => {
       vm.listKeys = w;
     })
     vm.ok = function () {
       $uibModalInstance.close();
     };
+
+
+    vm.conform = function (value) {
+      removePath(value).then(w => {
+        getRemove($rootScope.name).then(w => {
+          vm.listKeys = w;
+        })
+      })
+    }
+
+    vm.editCate = function (value) {
+      vm.isShow = function (cate) {
+        if (value == cate) {
+          return true;
+        }
+      }
+      vm.newcate = value;
+      vm.old = value;
+    }
+
+    vm.save = function () {
+      UpdateSelector(vm.old, vm.newcate).then(w => {
+        getRemove($rootScope.name).then(w => {
+          vm.isShow = function (value) {
+            return false;
+          };
+          vm.listKeys = w;
+        })
+      })
+    }
   }
 
   angular.module('app.admincategory')

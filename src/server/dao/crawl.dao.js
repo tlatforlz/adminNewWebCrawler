@@ -9,6 +9,8 @@ module.exports = {
   updateSpider: updateSpider,
   getRemove: getRemove,
   addRemove: addRemove,
+  RemoveSelector: RemoveSelector,
+  UpdateSelector: UpdateSelector,
 
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
@@ -42,6 +44,270 @@ module.exports = {
   addPathSelectorListNews: addPathSelectorListNews,
   removePathSelectorListNews: removePathSelectorListNews
 }
+
+
+function UpdateSelector(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var t = new Promise(function (resolve, reject) {
+      switch (request.name) {
+        case 'nextPage':
+          {
+            removePathSelectorNextPage(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorNextPage(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'image':
+          {
+            removePathSelectorImage(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorImage(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'createDate':
+          {
+            removePathSelectorCreatedDate(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorCreatedDate(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'author':
+          {
+            removePathSelectorAuthor(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorAuthor(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'content':
+          {
+            removePathSelectorContent(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorContent(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'title':
+          {
+            removePathSelectorTitle(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorTitle(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'description':
+          {
+            removePathSelectorDescription(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorDescription(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'listnews':
+          {
+            removePathSelectorListNews(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorListNews(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+      }
+
+    })
+    return t.then(res => {
+      return Promise.resolve(res);
+    })
+  })
+}
+
+function RemoveSelector(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var t = new Promise(function (resolve, reject) {
+      switch (request.name) {
+        case 'nextPage':
+          {
+            removePathSelectorNextPage(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'image':
+          {
+            removePathSelectorImage(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'createDate':
+          {
+            removePathSelectorCreatedDate(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'author':
+          {
+            removePathSelectorAuthor(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'content':
+          {
+            removePathSelectorContent(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'title':
+          {
+            removePathSelectorTitle(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'description':
+          {
+            removePathSelectorDescription(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'listnews':
+          {
+            removePathSelectorListNews(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+      }
+
+    })
+    return t.then(res => {
+      return Promise.resolve(res);
+    })
+  })
+}
+
 
 function addRemove(request) {
   return Spider.findById({
