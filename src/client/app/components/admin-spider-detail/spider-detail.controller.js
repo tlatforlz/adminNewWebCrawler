@@ -67,6 +67,39 @@
       return deferred.promise;
     }
 
+    function callPathTest(url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/CallPathTest/' + $stateParams.id,
+        data: {
+          'Url': url
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+    function callNextPageTest(url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/CallPageTest/' + $stateParams.id,
+        data: {
+          'Url': url
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
+
     getSpider().then(w => {
       vm.gopage = w.spider.spiderInformation.nextPage.selector;
       vm.image = w.spider.spiderInformation.image.selector;
@@ -80,8 +113,18 @@
       vm.titlepath = w.spider.spiderInformation.titlePath.selector;
     })
 
+    vm.calltestpath = function () {
+      vm.showresult = false;
+      vm.showresulttestpage = false;
+      vm.showresultPath = true;
+      callPathTest(vm.path).then(w => {
+        vm.listNews = w.listNews;
+      })
+    }
     vm.callTestUrl = function () {
       callUrlTest(vm.url).then(w => {
+        vm.showresulttestpage = false;
+        vm.showresultPath = false;
         vm.showresult = true;
         vm.retitle = w.title;
         vm.reauthor = w.author;
