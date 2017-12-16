@@ -11,6 +11,7 @@ module.exports = function () {
 
   router.post('/CallUrlTest/:spiderId', CallUrlTest);
   router.post('/CallPathTest/:spiderId', CallPathTest);
+  router.post('/CallPageTest/:spiderId', CallPageTest);
 
   router.post('/addSelectorTitlePath', addSelectorTitlePath);
   router.post('/addPathSelectorTitlePath', addPathSelectorTitlePath);
@@ -72,6 +73,20 @@ module.exports = function () {
       Url: req.body.Url
     }
     crawlDao.CallPathTest(request)
+      .then(function (status) {
+        res.status(200).send(status).end();
+      })
+      .catch(function (err) {
+        res.status(400).send(err).end();
+      })
+  }
+
+  function CallPageTest(req, res, next) {
+    var request = {
+      spiderId: req.params.spiderId,
+      Url: req.body.Url
+    }
+    crawlDao.CallPageTest(request)
       .then(function (status) {
         res.status(200).send(status).end();
       })

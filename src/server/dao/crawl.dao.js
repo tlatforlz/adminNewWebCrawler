@@ -15,6 +15,7 @@ module.exports = {
 
   CallUrlTest: CallUrlTest,
   CallPathTest: CallPathTest,
+  CallPageTest: CallPageTest,
 
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
@@ -68,6 +69,14 @@ function CallUrlTest(request) {
 
 function CallPathTest(request) {
   return SpiderTest.spiderCallPathForTest(request.spiderId, request.Url).then(w => {
+    return Promise.resolve(w);
+  }).catch(err => {
+    return Promise.resolve(err);
+  })
+}
+
+function CallPageTest(request) {
+  return SpiderTest.spiderCallPageForTest(request.spiderId, request.Url).then(w => {
     return Promise.resolve(w);
   }).catch(err => {
     return Promise.resolve(err);

@@ -14,7 +14,52 @@ module.exports = {
 }
 
 function spiderCallPageForTest(spiderId, Url) {
+  return new Promise(function (resolve, reject) {
+    return SpiderModel.findById({
+      _id: spiderId
+    }).exec().then(spider => {
+      if (spider != null) {
+        var total = 0;
+        var arrayPage = [];
+        async.whilst(function () {
+          return Url !== undefined
+        }, function (next) {
+          async.series({
+              Url: function (callback) {
+                request(Url, function (err, res, body) {
+                  if (!err && res.statusCode == 200) {
+                    var $ = cheerio.load(body);
+                    arrayPage.push(Url);
+                    total++;
+                    Url = $(spider.spiderInformation.nextPage.selector).attr('href');
+                    console.log(Url);
+                    if (Url == undefined) {
+                      resolve({
+                        listPage: arrayPage,
+                        total: total
+                      })
+                    }
+                    callback(null, Url)
+                  } else {
+                    resolve({
+                      listPage: arrayPage,
+                      total: total
+                    })
+                  }
+                })
+              }
+            },
+            function (err, result) {
+              Url = result.Url;
+              next();
+            })
+        })
 
+      } else {
+        reject(false);
+      }
+    })
+  })
 }
 
 function spiderCallPathForTest(spiderId, Url) {
@@ -70,7 +115,7 @@ function spiderCallPathForTest(spiderId, Url) {
           }
         })
       } else {
-
+        reject(false);
       }
     })
   })
