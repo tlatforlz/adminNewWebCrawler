@@ -124,7 +124,7 @@ function spiderCallPathForTest(spiderId, Url) {
                       let selectorImage = spider.spiderInformation.image.selector.split('@value@')[0] + i + spider.spiderInformation.image.selector.split('@value@')[1];
                       let selectorDescription = spider.spiderInformation.description.selector.split('@value@')[0] + i + spider.spiderInformation.description.selector.split('@value@')[1];
                       var rawUrl = $(selectorUrl).attr('href');
-                      if (rawUrl.includes("http://") == false || rawUrl.includes("https://") == false) {
+                      if (rawUrl.includes("http") == false && rawUrl.includes("https") == false) {
                         rawUrl = host.hostname + rawUrl;
                       }
                       news.originalLink = rawUrl
@@ -133,7 +133,7 @@ function spiderCallPathForTest(spiderId, Url) {
                       console.log(news.title);
 
                       var rawImage = $(selectorImage).attr('src');
-                      if (rawImage.includes("http://") == false || rawImage.includes("https://") == false) {
+                      if (rawImage.includes("http") == false && rawImage.includes("https") == false) {
                         rawImage = host.hostname + rawImage;
                       }
                       console.log(rawImage);
