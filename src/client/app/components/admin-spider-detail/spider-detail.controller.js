@@ -51,6 +51,22 @@
       return deferred.promise;
     }
 
+    function callUrlTest(url) {
+      var deferred = $q.defer();
+      $http({
+        method: 'POST',
+        url: '/api/crawl/CallUrlTest/' + $stateParams.id,
+        data: {
+          'Url': url
+        }
+      }).then(function successCallback(res) {
+        deferred.resolve(res.data);
+      }, function () {
+        deferred.reject(null);
+      });
+      return deferred.promise;
+    }
+
     getSpider().then(w => {
       vm.gopage = w.spider.spiderInformation.nextPage.selector;
       vm.image = w.spider.spiderInformation.image.selector;
@@ -62,7 +78,15 @@
       vm.listnews = w.spider.spiderInformation.listnews.selector;
     })
 
-
+    vm.callTestUrl = function () {
+      callUrlTest(vm.url).then(w => {
+        vm.showresult = true;
+        vm.retitle = w.title;
+        vm.reauthor = w.author;
+        vm.recreateDate = w.createDate;
+        vm.recontent = w.content;
+      })
+    }
     vm.edit = function (value) {
       $rootScope.name = value;
       var modalInstance = $uibModal.open({

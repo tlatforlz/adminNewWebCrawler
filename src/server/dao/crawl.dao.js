@@ -4,6 +4,7 @@ var News = require('./../model/news.model');
 var async = require('async');
 var successMessage = require('./../services/successMessage');
 var failMessage = require('./../services/failMessage');
+var SpiderTest = require('./../services/crawl');
 module.exports = {
   createSpider: createSpider,
   updateSpider: updateSpider,
@@ -11,6 +12,7 @@ module.exports = {
   addRemove: addRemove,
   RemoveSelector: RemoveSelector,
   UpdateSelector: UpdateSelector,
+  CallUrlTest: CallUrlTest,
 
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
@@ -45,6 +47,13 @@ module.exports = {
   removePathSelectorListNews: removePathSelectorListNews
 }
 
+function CallUrlTest(request) {
+  return SpiderTest.spiderCallUrlForTest(request.spiderId, request.Url).then(w => {
+    return Promise.resolve(w);
+  }).catch(err => {
+    return Promise.resolve(err);
+  })
+}
 
 function UpdateSelector(request) {
   return Spider.findById({
