@@ -132,6 +132,15 @@
         vm.recontent = w.content;
       })
     }
+
+    vm.calltestpage = function () {
+      vm.showresult = false;
+      vm.showresultPath = false;
+      vm.showresulttestpage = true;
+      callNextPageTest(vm.path).then(w => {
+        vm.listPage = w.listPage;
+      })
+    }
     vm.edit = function (value) {
       $rootScope.name = value;
       var modalInstance = $uibModal.open({

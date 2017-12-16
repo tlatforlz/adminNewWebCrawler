@@ -88,7 +88,7 @@
       <div class="col-lg-6">
         <div class="form-group">
           <h5 class="col-lg-10" style="font-weight:bold;font-size:20px">Test Next Page</h5>
-          <button ng-click="vm.calltestpath()" class="btn btn-danger">Test Path</button>
+          <button ng-click="vm.calltestpage()" class="btn btn-danger">Test Page</button>
         </div>
         <div class="form-group">
           <label for="ctitle" class="header1 control-label col-lg-2">Path
@@ -281,7 +281,14 @@
             </div>
           </div>
         </div>
-        <div ng-show="vm.showresulttestpage"></div>
+        <div ng-show="vm.showresulttestpage" id="callurl">
+          <div class="right-info" ng-repeat="page in vm.listPage">
+            <h5 style="margin-top:10px;margin-bottom:10px">
+              <label>Page : </label>
+              <a target="_blank" href="{{page}}">{{page}}</a>
+            </h5>
+          </div>
+        </div>
       </div>
     </div>
 
