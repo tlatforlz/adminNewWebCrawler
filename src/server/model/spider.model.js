@@ -36,6 +36,14 @@ var spiderSchema = new Schema({
       selector: String,
       remove: [String]
     },
+    titlePath: {
+      selector: String,
+      remove: []
+    },
+    urlPath: {
+      selector: String,
+      remove: []
+    },
     content: {
       selector: String,
       remove: [String]

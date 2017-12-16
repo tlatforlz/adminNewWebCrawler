@@ -8,17 +8,80 @@ var async = require('async');
 var restrictDao = require('./../dao/restrict.dao');
 
 module.exports = {
-  spiderCallUrlForTest: spiderCallUrlForTest
+  spiderCallUrlForTest: spiderCallUrlForTest,
+  spiderCallPathForTest: spiderCallPathForTest,
+  spiderCallPageForTest: spiderCallPageForTest
 }
 
-function spiderCallUrlForTest(spiderId, Url) {
-  console.log(Url);
+function spiderCallPageForTest(spiderId, Url) {
+
+}
+
+function spiderCallPathForTest(spiderId, Url) {
   return new Promise(function (resolve, reject) {
     return SpiderModel.findById({
       _id: spiderId
     }).exec().then(spider => {
       if (spider !== null) {
-        console.log(spider);
+        var total = 0;
+        var arrayNews = [];
+        async.series({
+          gotoPage: function (callback) {
+            request(Url, function (err, response, body) {
+              if (!err && response.statusCode === 200) {
+                var $ = cheerio.load(body);
+                var i = 1;
+                var length = $(spider.spiderInformation.listnews.selector).length;
+                if (length === 0 || length === undefined) {
+                  resolve({
+                    status: false,
+                    message: "No find news. Please check ListNews Selector"
+                  });
+                }
+                var temp = new Promise(function (resolve, reject) {
+                  $(spider.spiderInformation.listnews.selector).each(function () {
+                    var news = new NewsModel();
+                    let selectorUrl = spider.spiderInformation.urlPath.selector.split('@value@')[0] + i + spider.spiderInformation.urlPath.selector.split('@value@')[1];
+                    let selectorTitle = spider.spiderInformation.titlePath.selector.split('@value@')[0] + i + spider.spiderInformation.titlePath.selector.split('@value@')[1];
+                    let selectorImage = spider.spiderInformation.image.selector.split('@value@')[0] + i + spider.spiderInformation.image.selector.split('@value@')[1];
+                    let selectorDescription = spider.spiderInformation.description.selector.split('@value@')[0] + i + spider.spiderInformation.description.selector.split('@value@')[1];
+                    news.originalLink = $(selectorUrl).attr('href');
+                    console.log(news.originalLink);
+                    news.title = $(selectorTitle).text();
+                    console.log(news.title);
+                    news.image = $(selectorImage).attr('src');
+                    news.description = $(selectorDescription).text();
+                    arrayNews.push(news);
+                    total++;
+                    if (i === length) {
+                      resolve({
+                        total: total,
+                        listNews: arrayNews
+                      })
+                    }
+                    i++;
+                  })
+                })
+                temp.then(res => {
+                  resolve(res);
+                })
+              }
+            })
+          }
+        })
+      } else {
+
+      }
+    })
+  })
+}
+
+function spiderCallUrlForTest(spiderId, Url) {
+  return new Promise(function (resolve, reject) {
+    return SpiderModel.findById({
+      _id: spiderId
+    }).exec().then(spider => {
+      if (spider !== null) {
         request(Url, function (err, res, body) {
           if (!err && res.statusCode == 200) {
             var $ = cheerio.load(body)

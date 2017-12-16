@@ -12,11 +12,21 @@ module.exports = {
   addRemove: addRemove,
   RemoveSelector: RemoveSelector,
   UpdateSelector: UpdateSelector,
+
   CallUrlTest: CallUrlTest,
+  CallPathTest: CallPathTest,
 
   addSelectorTitle: addSelectorTitle,
   addPathSelectorTitle: addPathSelectorTitle,
   removePathSelectorTitle: removePathSelectorTitle,
+
+  addSelectorTitlePath: addSelectorTitlePath,
+  addPathSelectorTitlePath: addPathSelectorTitlePath,
+  removePathSelectorTitlePath: removePathSelectorTitlePath,
+
+  addSelectorUrlPath: addSelectorUrlPath,
+  addPathSelectorUrlPath: addPathSelectorUrlPath,
+  removePathSelectorUrlPath: removePathSelectorUrlPath,
 
   addSelectorContent: addSelectorContent,
   addPathSelectorContent: addPathSelectorContent,
@@ -54,6 +64,16 @@ function CallUrlTest(request) {
     return Promise.resolve(err);
   })
 }
+
+
+function CallPathTest(request) {
+  return SpiderTest.spiderCallPathForTest(request.spiderId, request.Url).then(w => {
+    return Promise.resolve(w);
+  }).catch(err => {
+    return Promise.resolve(err);
+  })
+}
+
 
 function UpdateSelector(request) {
   return Spider.findById({
@@ -205,6 +225,42 @@ function UpdateSelector(request) {
             })
             break;
           }
+        case 'urlPath':
+          {
+            removePathSelectorUrlPath(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorUrlPath(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'titlePath':
+          {
+            removePathSelectorTitlePath(request).then(res => {
+              if (res.message == true) {
+                request.selector = request.newselector;
+                addPathSelectorTitlePath(request).then(res => {
+                  if (res.message == true) {
+                    resolve(true);
+                  } else {
+                    resolve(false);
+                  }
+                })
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
       }
 
     })
@@ -300,6 +356,28 @@ function RemoveSelector(request) {
         case 'listnews':
           {
             removePathSelectorListNews(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'urlPath':
+          {
+            removePathSelectorUrlPath(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'titlePath':
+          {
+            removePathSelectorTitlePath(request).then(res => {
               if (res.message == true) {
                 resolve(true);
               } else {
@@ -412,6 +490,28 @@ function addRemove(request) {
             })
             break;
           }
+        case 'urlPath':
+          {
+            addPathSelectorUrlPath(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
+        case 'titlePath':
+          {
+            addPathSelectorTitlePath(request).then(res => {
+              if (res.message == true) {
+                resolve(true);
+              } else {
+                resolve(false);
+              }
+            })
+            break;
+          }
       }
 
     })
@@ -466,6 +566,16 @@ function getRemove(request) {
         case 'listnews':
           {
             listRemove = spider.spiderInformation.listnews.remove;
+            break;
+          }
+        case 'urlPath':
+          {
+            listRemove = spider.spiderInformation.urlPath.remove;
+            break;
+          }
+        case 'titlePath':
+          {
+            listRemove = spider.spiderInformation.titlePath.remove;
             break;
           }
       }
@@ -648,8 +758,6 @@ function updateSpider(request) {
   return Spider.findById({
     _id: request.spiderId
   }).exec().then(spider => {
-    console.log(spider);
-    console.log(request);
     spider.spiderInformation.title.selector = request.title;
     spider.spiderInformation.content.selector = request.content;
     spider.spiderInformation.author.selector = request.author;
@@ -658,6 +766,8 @@ function updateSpider(request) {
     spider.spiderInformation.nextPage.selector = request.nextpage;
     spider.spiderInformation.description.selector = request.description;
     spider.spiderInformation.listnews.selector = request.listnews;
+    spider.spiderInformation.urlPath.selector = request.urlpath;
+    spider.spiderInformation.titlePath.selector = request.titlepath;
     spider.save();
     return Promise.resolve({
       message: true
@@ -1157,6 +1267,172 @@ function addSelectorTitle(request) {
       })
     }
     spider.spiderInformation.title.selector = request.selector;
+    spider.save();
+    return Promise.resolve({
+      message: true
+    })
+  })
+}
+
+function addPathSelectorTitlePath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.titlePath.remove.length == 0) {
+        resolve(true);
+      }
+      var i = 0;
+      spider.spiderInformation.titlePath.remove.forEach(element => {
+        if (element == request.selector) {
+          reject(false);
+        }
+        i++;
+        if (i == spider.spiderInformation.titlePath.remove.length) {
+          resolve(true);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.titlePath.remove.push(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function removePathSelectorTitlePath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.titlePath.remove.length == 0) {
+        resolve(false);
+      }
+      var i = 0;
+      spider.spiderInformation.titlePath.remove.forEach(element => {
+        if (element == request.selector) {
+          resolve(true);
+        }
+        i++;
+        if (i == spider.spiderInformation.titlePath.remove.length) {
+          reject(false);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.titlePath.remove.pull(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function addSelectorTitlePath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    if (spider.spiderInformation.titlePath.selector == request.selector) {
+      return Promise.resolve({
+        message: false
+      })
+    }
+    spider.spiderInformation.titlePath.selector = request.selector;
+    spider.save();
+    return Promise.resolve({
+      message: true
+    })
+  })
+}
+
+function addPathSelectorUrlPath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.urlPath.remove.length == 0) {
+        resolve(true);
+      }
+      var i = 0;
+      spider.spiderInformation.urlPath.remove.forEach(element => {
+        if (element == request.selector) {
+          reject(false);
+        }
+        i++;
+        if (i == spider.spiderInformation.urlPath.remove.length) {
+          resolve(true);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.urlPath.remove.push(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function removePathSelectorUrlPath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    var check = new Promise(function (resolve, reject) {
+      if (spider.spiderInformation.urlPath.remove.length == 0) {
+        resolve(false);
+      }
+      var i = 0;
+      spider.spiderInformation.urlPath.remove.forEach(element => {
+        if (element == request.selector) {
+          resolve(true);
+        }
+        i++;
+        if (i == spider.spiderInformation.urlPath.remove.length) {
+          reject(false);
+        }
+      });
+    });
+    return check.then(w => {
+      spider.spiderInformation.urlPath.remove.pull(request.selector);
+      spider.save();
+      return Promise.resolve({
+        message: true
+      })
+    }).catch(err => {
+      return Promise.resolve({
+        message: false
+      })
+    })
+  })
+}
+
+function addSelectorUrlPath(request) {
+  return Spider.findById({
+    _id: request.spiderId
+  }).exec().then(spider => {
+    if (spider.spiderInformation.urlPath.selector == request.selector) {
+      return Promise.resolve({
+        message: false
+      })
+    }
+    spider.spiderInformation.urlPath.selector = request.selector;
     spider.save();
     return Promise.resolve({
       message: true

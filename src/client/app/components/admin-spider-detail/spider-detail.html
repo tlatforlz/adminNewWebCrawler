@@ -96,6 +96,32 @@
           </a>
         </div>
         <div class="form-group ">
+          <label for="ctitle" class="header1 control-label col-lg-2">Url Path
+          </label>
+          <div class="col-lg-8">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.urlpath" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('urlPath')">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a class="btn-left col-lg-1 btn btn-primary" ng-click="vm.add('urlPath')">
+            <i class="fa fa-plus"></i>
+          </a>
+        </div>
+        <div class="form-group ">
+          <label for="ctitle" class="header1 control-label col-lg-2"> Title Path
+          </label>
+          <div class="col-lg-8">
+            <input class="content1 form-control" id="ctitle" name="title" type="text" ng-model="vm.titlepath" required />
+          </div>
+          <a style="background-color: indianred;" class="btn-left col-lg-1 btn btn-warning" ng-click="vm.edit('titlePath')">
+            <i class="fa fa-edit"></i>
+          </a>
+          <a class="btn-left col-lg-1 btn btn-primary" ng-click="vm.add('titlePath')">
+            <i class="fa fa-plus"></i>
+          </a>
+        </div>
+        <div class="form-group ">
           <label for="ctitle" class="header1 control-label col-lg-2">Image
           </label>
           <div class="col-lg-8">
@@ -196,7 +222,7 @@
         <div ng-show="vm.showresult" id="callurl">
           <h3>{{vm.retitle}}</h3>
           <h5>Author : {{vm.reauthor}}</h5>
-          <h5>CreateDate : {{vm.recreateDate}}</h5>
+          <h5>CreateDate : {{vm.recreateDate | date: "yyyy-MM-dd HH:mm:ss" }}</h5>
           <h5>Content : </h5>
           <div ng-bind-html="vm.recontent"></div>
         </div>

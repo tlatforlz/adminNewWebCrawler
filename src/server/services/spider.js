@@ -509,7 +509,6 @@ function spiderTinNongNghiepUpdatePath(categoryId) {
                   news[page].author = result.author;
                   news[page].createDate = result.createDate;
                   news[page].updateDate = result.updateDate;
-                  console.log(news[page].title + " hihiihih");
                   checkRestrictedKey(news[page]._id, result.content);
                   news[page].save(function (err) {
                     if (err) {}

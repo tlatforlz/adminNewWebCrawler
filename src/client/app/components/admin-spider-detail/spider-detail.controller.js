@@ -76,6 +76,8 @@
       vm.createdate = w.spider.spiderInformation.createDate.selector;
       vm.des = w.spider.spiderInformation.description.selector;
       vm.listnews = w.spider.spiderInformation.listnews.selector;
+      vm.urlpath = w.spider.spiderInformation.urlPath.selector;
+      vm.titlepath = w.spider.spiderInformation.titlePath.selector;
     })
 
     vm.callTestUrl = function () {
@@ -127,7 +129,9 @@
         'nextpage': vm.gopage,
         'image': vm.image,
         'description': vm.des,
-        'listnews': vm.listnews
+        'listnews': vm.listnews,
+        'urlpath': vm.urlpath,
+        'titlepath': vm.titlepath
       }
 
       saveSpider(data).then(function () {
@@ -141,6 +145,8 @@
           vm.createdate = w.spider.spiderInformation.createDate.selector;
           vm.des = w.spider.spiderInformation.description.selector;
           vm.listnews = w.spider.spiderInformation.listnews.selector;
+          vm.urlpath = w.spider.spiderInformation.urlPath.selector;
+          vm.titlepath = w.spider.spiderInformation.titlePath.selector;
         })
 
       })
