@@ -52,7 +52,7 @@ function spiderCallPageForTest(spiderId, Url) {
                         arrayPage.push(Url);
                         total++;
                         var rawUrl = $(spider.spiderInformation.nextPage.selector).attr('href');
-                        if (rawUrl.includes("http://") == false || rawUrl.includes("https://") == false) {
+                        if (rawUrl.includes("http") == false && rawUrl.includes("https") == false) {
                           rawUrl = host.hostname + rawUrl;
                         }
                         console.log(rawUrl);
