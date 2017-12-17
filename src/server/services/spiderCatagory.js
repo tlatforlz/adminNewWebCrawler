@@ -1328,7 +1328,15 @@ function spiderCatagoryGetByUrl(urlId) {
                     }
                   }
                 } else {
-                  if (Url.hostname == "http://nongnghiepvietnam.edu.vn" || Url.hostname == "https://tinnongnghiep.vn") {
+                  if (Url.hostname == "http://nongnghiepvietnam.edu.vn") {
+                    if (url.indexOf(Url.hostname) !== -1) {
+                      if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {
+                        arrayPath.push(url);
+                      }
+                    }
+                  }
+                  if(Url.hostname == "http://tinnongnghiep.vn"){
+                    console.log(url);
                     if (url.indexOf(Url.hostname) !== -1) {
                       if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {
                         arrayPath.push(url);

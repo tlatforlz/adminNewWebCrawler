@@ -11,11 +11,13 @@
     vm.listSpider = [];
 
 
+    $rootScope.spiderId = $stateParams.id
+
     function getNewsSpider() {
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: '/api/spider/getNewsCall/' + $stateParams.id
+        url: '/api/spider/getNewsCall/' + $rootScope.spiderId
       }).then(function successCallback(res) {
         deferred.resolve(res.data);
       }, function () {
@@ -28,7 +30,7 @@
       var deferred = $q.defer();
       $http({
         method: 'GET',
-        url: '/api/spider/' + $stateParams.id
+        url: '/api/spider/' + $rootScope.spiderId
       }).then(function successCallback(res) {
         deferred.resolve(res.data);
       }, function () {
@@ -328,6 +330,7 @@
           backdrop: 'static',
           keyboard: false
         }).closed.then(function () {
+          console.log('fuck sadsa');
           getNewsSpider().then(function (res) {
             vm.listSpider = res.news;
             vm.tableParams = new NgTableParams({
@@ -1562,10 +1565,6 @@
       $uibModalInstance.close();
     };
 
-    vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
-
     function getNewsSpider(id) {
       var deferred = $q.defer();
       $http({
@@ -1583,7 +1582,6 @@
       $rootScope.urlId = urlId;
       $rootScope.cateId = cateId;
       $rootScope.namePath = namePath;
-      $uibModalInstance.close();
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
