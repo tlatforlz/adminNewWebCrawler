@@ -9,6 +9,7 @@ function layoutConfig($stateProvider) {
           url: '',
           templateUrl: 'app/components/layout/layout.html',
           controller: 'layoutController',
+          controllerAs: 'vm'
         }
       }
     })

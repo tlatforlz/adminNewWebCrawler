@@ -1,14 +1,14 @@
-'use strict';
-angular.module('app.layout')
-  .controller('layoutController', ['$state', layoutController]);
+(function () {
+  angular.module('app.layout')
+    .controller('layoutController', ['$state', 'authService', layoutController]);
 
-function layoutController($state) {
-  var vm = this;
-  vm.logout = logout;
+  function layoutController($state, authService) {
+    var vm = this;
+    console.log('log');
 
-  console.log('hihi');
-
-  function logout() {
-    $state.go('auth.login');
+    vm.logout = function () {
+      toastr.success(authService.logout());
+      $state.go('adminlogin');
+    }
   }
-}
+})();

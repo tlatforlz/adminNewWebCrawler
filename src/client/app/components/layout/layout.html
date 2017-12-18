@@ -1,13 +1,9 @@
 <header class="admin-header dark-bg">
-  <a href="/adminpage" class="logo">News Crawler</a>
+  <a href="/adminpage" class="logo">News Crawler - Admin Page</a>
 
   <div class="nav search-row" id="top_menu">
     <ul class="nav top-menu">
-      <!-- <li>
-        <form class="navbar-form">
-          <input class="form-control" placeholder="Search" type="text">
-        </form>
-      </li> -->
+
     </ul>
   </div>
 
@@ -23,12 +19,10 @@
         </a>
         <ul class="dropdown-menu extended logout">
           <div class="log-arrow-up"></div>
-
           <li>
             <a ng-click="vm.logout()">
-              <i class="icon_key_alt"></i> Log Out</a>
+              <i ng-click="vm.logout()" class="icon_key_alt"></i> Log Out</a>
           </li>
-
         </ul>
       </li>
     </ul>
