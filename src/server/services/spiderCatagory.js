@@ -782,7 +782,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -794,7 +794,7 @@ function searchByKey(crawlingName, searchKey) {
                   });
                   total += res.total;
                   index++;
-                  if (total == 5) {
+                  if (total >= 5) {
                     resolve(true);
                   }
                   if (index === url.path.length - 1) {
@@ -818,7 +818,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -854,7 +854,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -890,7 +890,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -926,7 +926,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -962,7 +962,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -998,7 +998,7 @@ function searchByKey(crawlingName, searchKey) {
             _id: res.urlId
           }).then(url => {
             var total = 0;
-            var index = 1;
+            var index = 0;
             var listNewsId = [];
             var t = new Promise(function (resolve, reject) {
               url.path.forEach(element => {
@@ -1335,7 +1335,7 @@ function spiderCatagoryGetByUrl(urlId) {
                       }
                     }
                   }
-                  if(Url.hostname == "http://tinnongnghiep.vn"){
+                  if (Url.hostname == "http://tinnongnghiep.vn") {
                     console.log(url);
                     if (url.indexOf(Url.hostname) !== -1) {
                       if (url.indexOf(".html") === -1 && url.split(Url.hostname)[1] !== "/" && url.split(Url.hostname).length === 2) {

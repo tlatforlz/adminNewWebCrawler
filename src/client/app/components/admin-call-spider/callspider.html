@@ -40,7 +40,7 @@
       <div class="col-lg-12" ng-show='!vm.loading'>
         <div class="action" style="margin-bottom:50px">
           <h4 style="margin-left:20px;float:left">Total : {{vm.total}} News</h4>
-          <div class="button-action" style="float:right">
+          <div ng-show='vm.showAction'class="button-action" style="float:right">
             <button class="btn btn-primary" ng-click="vm.activePathAll()">Active All</button>
             <button class="btn btn-danger" ng-click="vm.updatePathAll()">Update All</button>
           </div>
@@ -84,7 +84,7 @@
       </div>
     </div>
   </div>
-  <div class="modal-footer">
+  <div ng-show='vm.loadingOK' class="modal-footer">
     <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
@@ -98,7 +98,7 @@
         <h3 style="margin-left:20px">Crawling...</h3>
       </div>
       <div class="col-lg-12" ng-show='!vm.loading'>
-        <div class="action" style="margin-bottom:50px">
+        <div ng-show="vm.IsCallingUpdate" class="action" style="margin-bottom:50px">
           <h4 style="margin-left:20px;float:left">Total : {{vm.total}} News</h4>
           <h4 style="margin-left:20px;float:left">Total news have restrict words : {{vm.Error}} News</h4>
           <div class="button-action" style="float:right">
@@ -147,7 +147,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button ng-show='vm.showOkNewsCall' class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
 <script type="text/ng-template" id="showNewsCallPath.html">
@@ -206,7 +206,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button ng-show="vm.showOkNewsCall" class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
 <script type="text/ng-template" id="callSpiderByPath.html">
@@ -248,7 +248,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
+    <button ng-show="vm.showOkCallSpiderByPath" class="btn btn-primary" type="button" ng-click="vm.ok()">OK</button>
   </div>
 </script>
 <script type="text/ng-template" id="newsDetail.html">
@@ -389,7 +389,7 @@
 </script>
 <script type="text/ng-template" id="updateNewsByCategory.html">
   <div class="modal-header">
-    <h3 class="modal-title" id="modal-title">Call Spider By Path</h3>
+    <h3 class="modal-title" id="modal-title">Update News By Path</h3>
   </div>
   <div class="modal-body" id="modal-body">
     <div class="row">

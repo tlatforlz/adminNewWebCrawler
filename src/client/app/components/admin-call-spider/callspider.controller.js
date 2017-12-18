@@ -346,6 +346,7 @@
     };
 
     vm.updateNewsByCategory = function () {
+      vm.IsShowUpdateNews = true;
       getSpider().then(function (res) {
         $rootScope.spiderId = res.spider._id;
         $rootScope.spiderName = res.spider.crawlingName;
@@ -439,7 +440,6 @@
     };
   }
 
-
   angular.module('app.admincallspider')
     .controller('searchByKey', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', searchByKey]);
 
@@ -523,7 +523,6 @@
       $uibModalInstance.close();
     };
   }
-
 
   angular.module('app.admincallspider')
     .controller('addSearchKeyInCategory', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', addSearchKeyInCategory]);
@@ -765,7 +764,7 @@
       $rootScope.urlId = urlId;
       $rootScope.cateId = cateId;
       $rootScope.namePath = namePath;
-      $uibModalInstance.close();
+      vm.showOkNewsCall = false;
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -877,6 +876,8 @@
 
     vm.loading = true;
     vm.loadingNews = true;
+    vm.loadingOK = false;
+    vm.showAction = true;
     searchByKey($rootScope.spiderName, $rootScope.searchKey).then(result => {
       vm.loading = false;
       vm.loadingNews = false;
@@ -884,6 +885,7 @@
       $rootScope.listNewsId = result.listNewsId;
       $rootScope.total = result.total;
       vm.listSpider = [];
+      vm.loadingOK = true;
       $rootScope.listNewsId.forEach(newsId => {
         getNewsCalled(newsId).then(res => {
           vm.listSpider.push(res.news);
@@ -992,6 +994,8 @@
 
     vm.loadingNews = false;
     vm.updatePathAll = function () {
+      vm.showAction = false;
+      vm.loadingOK = false;
       getSpider($rootScope.spiderId).then(function (res) {
         getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
           vm.listSpider = news.news;
@@ -1005,6 +1009,8 @@
               if (index === vm.total) {
                 setTimeout(function () {
                   vm.loadingNews = false;
+                  vm.showAction = true;
+                  vm.loadingOK = true;
                   getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
                     vm.listSpider = news.news;
                     vm.tableParams = new NgTableParams({
@@ -1041,6 +1047,8 @@
     vm.loadingNews = false;
     vm.activePathAll = function () {
       vm.loadingNewsActive = true;
+      vm.showAction = false;
+      vm.loadingOK = false;
       getSpider($rootScope.spiderId).then(function (res) {
         getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
           vm.total = news.news.length;
@@ -1056,19 +1064,19 @@
               vm.index = index;
               if (index == vm.total - 1) {
                 vm.loadingNews = false;
-                setTimeout(function () {
-                  vm.loadingNews = false;
-                  getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
-                    vm.listSpider = news.news;
-                    vm.tableParams = new NgTableParams({
-                      page: 1,
-                      count: 15,
-                      header: false
-                    }, {
-                      dataset: vm.listSpider
-                    });
-                  })
-                }, 3000);
+                vm.loadingNews = false;
+                vm.showAction = true;
+                vm.loadingOK = true;
+                getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
+                  vm.listSpider = news.news;
+                  vm.tableParams = new NgTableParams({
+                    page: 1,
+                    count: 15,
+                    header: false
+                  }, {
+                    dataset: vm.listSpider
+                  });
+                })
               }
             })
           });
@@ -1125,6 +1133,7 @@
     }
 
   }
+
   angular.module('app.admincallspider')
     .controller('updateNewsByCategory', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', updateNewsByCategory]);
 
@@ -1169,10 +1178,6 @@
       $uibModalInstance.close();
     };
 
-    vm.cancel = function () {
-      $uibModalInstance.dismiss('cancel');
-    };
-
     function getNewsSpider(id) {
       var deferred = $q.defer();
       $http({
@@ -1185,11 +1190,13 @@
       });
       return deferred.promise;
     }
+    vm.showOkNewsCall = false;
 
     vm.callPath = function (urlId, namePath, cateId) {
       $rootScope.urlId = urlId;
       $rootScope.cateId = cateId;
       $rootScope.namePath = namePath;
+      vm.showOkNewsCall = false;
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -1268,9 +1275,11 @@
       return deferred.promise;
     }
 
+    vm.showOkNewsCall = false;
     vm.loading = true;
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
+        vm.showOkNewsCall = true;
         if (call.status === true) {
           if (call.total > 0) {
             vm.loading = false;
@@ -1520,7 +1529,6 @@
     };
   }
 
-
   angular.module('app.admincallspider')
     .controller('callSpiderByPath', ['$q', '$http', '$state', '$scope', '$rootScope', '$uibModalInstance', '$uibModal', 'NgTableParams', callSpiderByPath]);
 
@@ -1578,10 +1586,12 @@
       return deferred.promise;
     }
 
+    vm.showOkCallSpiderByPath = true;
     vm.callPath = function (urlId, namePath, cateId) {
       $rootScope.urlId = urlId;
       $rootScope.cateId = cateId;
       $rootScope.namePath = namePath;
+      vm.showOkNewsCall = false;
       var modalInstance = $uibModal.open({
         animation: vm.animationsEnabled,
         ariaLabelledBy: 'modal-title',
@@ -1683,13 +1693,14 @@
         keyboard: false
       });
     }
-
+    vm.showOkNewsCall = false;
     vm.Error = 0;
     vm.loading = true;
     getSpider($rootScope.spiderId).then(spider => {
       callPath(spider.spider.crawlingName, $rootScope.namePath, $rootScope.cateId).then(call => {
         console.log(call);
         if (call.status === true) {
+          vm.showOkNewsCall = true;
           if (call.total > 0) {
             vm.loading = false;
             vm.total = call.total;
@@ -1756,13 +1767,17 @@
       return deferred.promise;
     }
 
-
+    vm.IsCallingUpdate = true;
     vm.loadingNews = false;
+    vm.showOkNewsCall = false;
     vm.updatePathAll = function () {
+      vm.IsCallingUpdate = false;
+      vm.showOkNewsCall = false;
       getSpider($rootScope.spiderId).then(function (res) {
         getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
           vm.listSpider = news.news;
           var index = 0;
+
           vm.listSpider.forEach(element => {
             //originalLink
             vm.loadingNews = true;
@@ -1772,6 +1787,9 @@
               if (index === vm.total - 1) {
                 setTimeout(function () {
                   vm.loadingNews = false;
+                  vm.IsCallingUpdate = true;
+                  vm.loading = false;
+                  vm.showOkNewsCall = true;
                   getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
                     vm.listSpider = news.news;
                     vm.tableParams = new NgTableParams({
@@ -1828,8 +1846,11 @@
 
     vm.index = 0;
     vm.loadingNews = false;
+    vm.IsCallingUpdate = true;
     vm.activePathAll = function () {
       vm.loadingNewsActive = true;
+      vm.IsCallingUpdate = false;
+      vm.showOkNewsCall = false;
       getSpider($rootScope.spiderId).then(function (res) {
         getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
           vm.total = news.news.length;
@@ -1847,6 +1868,8 @@
                 vm.loadingNews = false;
                 setTimeout(function () {
                   vm.loadingNews = false;
+                  vm.IsCallingUpdate = true;
+                  vm.showOkNewsCall = true;
                   getNewsNeastCall($rootScope.spiderId, vm.total).then(news => {
                     vm.listSpider = news.news;
                     vm.tableParams = new NgTableParams({
